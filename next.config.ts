@@ -1,5 +1,4 @@
 import type { NextConfig } from 'next';
-import { withSentryConfig } from '@sentry/nextjs';
 
 const nextConfig = {
   typescript: {
@@ -15,10 +14,3 @@ const nextConfig = {
   // https://nextjs.org/docs/app/api-reference/config/next-config-js/output#automatically-copying-traced-files
   output: 'standalone',
 } satisfies NextConfig;
-
-export default withSentryConfig(nextConfig, {
-  org: 'titanom-solutions-gmbh',
-  project: 'nextjs-template',
-  silent: true,
-  disableLogger: true,
-});

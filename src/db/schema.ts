@@ -30,7 +30,7 @@ export const taskTargetEnum = pgEnum('task_target', [
   'next_player',
 ]);
 
-export const gameModes = pgTable('game_modes', {
+export const gameModesTable = pgTable('game_modes', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: varchar('name', { length: 100 }).notNull().unique(),
   description: text('description'),
@@ -41,7 +41,7 @@ export const gameModes = pgTable('game_modes', {
     .$onUpdate(() => new Date()),
 });
 
-export const tasks = pgTable('tasks', {
+export const tasksTable = pgTable('tasks', {
   id: uuid('id').primaryKey().defaultRandom(),
   text: text('text').notNull(),
   type: taskTypeEnum('type').notNull(),
@@ -54,21 +54,21 @@ export const tasks = pgTable('tasks', {
     .$onUpdate(() => new Date()),
 });
 
-export const gameModeTasks = pgTable('game_mode_tasks', {
+export const gameModeTasksTable = pgTable('game_mode_tasks', {
   gameModeId: uuid('game_mode_id')
     .notNull()
-    .references(() => gameModes.id, { onDelete: 'cascade' }),
+    .references(() => gameModesTable.id, { onDelete: 'cascade' }),
   taskId: uuid('task_id')
     .notNull()
-    .references(() => tasks.id, { onDelete: 'cascade' }),
+    .references(() => tasksTable.id, { onDelete: 'cascade' }),
 });
 
-export const games = pgTable('games', {
+export const gamesTable = pgTable('games', {
   id: uuid('id').primaryKey().defaultRandom(),
-  gameCode: varchar('game_code', { length: 6 }).unique(),
+  gameCode: varchar('game_code', { length: 4 }).unique(),
   status: gameStatusEnum('status').default('lobby').notNull(),
-  currentModeId: uuid('current_mode_id').references(() => gameModes.id, { onDelete: 'set null' }),
-  currentTaskId: uuid('current_task_id').references(() => tasks.id, { onDelete: 'set null' }),
+  currentModeId: uuid('current_mode_id').references(() => gameModesTable.id, { onDelete: 'set null' }),
+  currentTaskId: uuid('current_task_id').references(() => tasksTable.id, { onDelete: 'set null' }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
     .defaultNow()
@@ -76,11 +76,11 @@ export const games = pgTable('games', {
     .$onUpdate(() => new Date()),
 });
 
-export const players = pgTable('players', {
+export const playersTable = pgTable('players', {
   id: uuid('id').primaryKey().defaultRandom(),
   gameId: uuid('game_id')
     .notNull()
-    .references(() => games.id, { onDelete: 'cascade' }),
+    .references(() => gamesTable.id, { onDelete: 'cascade' }),
   name: varchar('name', { length: 50 }).notNull(),
   isHost: boolean('is_host').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -91,9 +91,9 @@ export const players = pgTable('players', {
 });
 
 // Define relation types for potential use with drizzle queries
-export type Game = typeof games.$inferSelect;
-export type NewGame = typeof games.$inferInsert;
-export type Player = typeof players.$inferSelect;
-export type NewPlayer = typeof players.$inferInsert;
-export type GameMode = typeof gameModes.$inferSelect;
-export type Task = typeof tasks.$inferSelect;
+export type Game = typeof gamesTable.$inferSelect;
+export type NewGame = typeof gamesTable.$inferInsert;
+export type Player = typeof playersTable.$inferSelect;
+export type NewPlayer = typeof playersTable.$inferInsert;
+export type GameMode = typeof gameModesTable.$inferSelect;
+export type Task = typeof tasksTable.$inferSelect;

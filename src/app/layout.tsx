@@ -1,15 +1,11 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
-import { Toaster } from 'react-hot-toast';
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 
-const geistSans = Inter({
-  subsets: ['latin'],
-});
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Next.js Template v15',
-  description: 'Created by ab@deutschlandgpt.de and mb@titanom.com. Use as a template',
+  title: "Pertolo - The Drinking Game",
+  description: "Get the party started with Pertolo!",
 };
 
 export default function RootLayout({
@@ -19,9 +15,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.className} antialiased`}>
-        {children}
-        <Toaster />
+      <body className={inter.className}>
+        <main className="container mx-auto p-4">
+          {children}
+        </main>
       </body>
     </html>
   );
