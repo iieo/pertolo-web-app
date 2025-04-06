@@ -16,17 +16,7 @@ const JoinGameSchema = z.object({
   gameCode: z.string().length(6, { message: 'Game code must be 6 characters long' }).toUpperCase(),
 });
 
-export async function createGame(formData: FormData) {
-  const validatedFields = CreateGameSchema.safeParse({
-    hostName: formData.get('hostName'),
-  });
-
-  if (!validatedFields.success) {
-    console.error('Validation failed:', validatedFields.error.flatten().fieldErrors);
-    return { errors: validatedFields.error.flatten().fieldErrors };
-  }
-
-  const { hostName } = validatedFields.data;
+export async function createGame(hostName: string) {
   let gameCode: string;
   let gameExists = true;
   let attempts = 0;
@@ -68,8 +58,7 @@ export async function createGame(formData: FormData) {
       name: hostName,
       isHost: true,
     });
-
-    redirect(`/game/${gameCode}`);
+    return { gameCode };
   } catch (error) {
     console.error('Error creating game:', error);
     throw new Error('Could not create game.');

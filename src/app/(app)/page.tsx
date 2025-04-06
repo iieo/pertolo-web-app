@@ -49,17 +49,15 @@ export default function HomePage() {
   const onCreateSubmit = async (data: CreateGameFormData) => {
     setIsCreating(true);
     setCreateError(null);
-    const formData = new FormData();
-    formData.append('hostName', data.hostName);
-
+    const name = data.hostName.trim();
     try {
-      const result = await createGame(formData);
-      // createGame redirects on success, so we only handle errors here
-      if (result?.errors) {
-        // Basic error handling, refine as needed
-        const errorMessages = Object.values(result.errors).flat().join(', ');
-        setCreateError(errorMessages || "Failed to create game.");
+      const result = await createGame(name);
+
+      if (result?.gameCode) {
+        // Redirect to the game page
+        window.location.href = `/game/${result.gameCode}`;
       }
+
     } catch (error) {
       console.error("Create game error:", error);
       setCreateError(error instanceof Error ? error.message : "An unexpected error occurred.");

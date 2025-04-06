@@ -2,12 +2,7 @@ import { getGameData, getGameModes, selectGameMode, startGame } from '@/db/funct
 import { GameMode, Player } from '@/db/schema';
 
 import { notFound } from 'next/navigation';
-
-interface GamePageProps {
-    params: {
-        gameCode: string;
-    };
-}
+import { z } from 'zod';
 
 // Simple components for demonstration, move to components/ later
 function PlayerList({ players }: { players: Player[] }) {
@@ -71,8 +66,13 @@ function StartGameButton({ gameId }: { gameId: string }) {
     )
 }
 
-export default async function GamePage({ params }: GamePageProps) {
-    const gameCode = params.gameCode.toUpperCase();
+const pageContextSchema = z.object({
+    id: z.string().uuid(),
+});
+
+export default async function GamePage({ params }: { params: Promise<{ id: string }> }) {
+    const loadedParams = await params;
+    const gameCode = loadedParams.id.toUpperCase();
     const gameData = await getGameData(gameCode);
     const availableGameModes = await getGameModes();
 
