@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  lint_format_types:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Check out repository
+        uses: actions/checkout@v3
+
+      - name: 🟢 Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: 📦 Set up pnpm
+        run: |
+          npm install -g corepack@latest
+          corepack enable
+          corepack prepare
+
+      - name: 🔄 Install dependencies
+        run: pnpm install
+
+      - name: ✨ Run format
+        run: pnpm format:check
+
+      - name: 🧹 Run lint
+        run: pnpm lint
+
+      - name: 🔍 Run types
+        run: pnpm types
