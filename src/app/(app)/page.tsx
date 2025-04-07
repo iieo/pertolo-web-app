@@ -4,7 +4,9 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useState } from 'react';
-import { createGame, joinGame } from '@/db/functions/game';
+import { createGame, joinGame } from './actions';
+import { redirect } from 'next/navigation';
+
 
 const CreateGameFormSchema = z.object({
   hostName: z.string().min(1, { message: "Host name cannot be empty" }).max(50, "Host name max 50 chars"),
@@ -50,44 +52,28 @@ export default function HomePage() {
     setIsCreating(true);
     setCreateError(null);
     const name = data.hostName.trim();
-    try {
-      const result = await createGame(name);
-
-      if (result?.gameCode) {
-        // Redirect to the game page
-        window.location.href = `/game/${result.gameCode}`;
-      }
-
-    } catch (error) {
-      console.error("Create game error:", error);
-      setCreateError(error instanceof Error ? error.message : "An unexpected error occurred.");
-    } finally {
-      setIsCreating(false);
-      // Optionally reset form on error: resetCreateForm();
+    const result = await createGame(name);
+    if (result.success) {
+      redirect(`/game/${result.data.gameCode}/modes`);
+    } else {
+      console.error("Create game error:", result.error);
+      setCreateError(result.error);
     }
+    setIsCreating(false);
   };
 
   const onJoinSubmit = async (data: JoinGameFormData) => {
     setIsJoining(true);
     setJoinError(null);
-    const formData = new FormData();
-    formData.append('playerName', data.playerName);
-    formData.append('gameCode', data.gameCode); // Already uppercase from validation/transform
-
-    try {
-      const result = await joinGame(formData);
-      // joinGame redirects on success, so we only handle errors here
-      if (result?.errors) {
-        const errorMessages = Object.values(result.errors).flat().join(', ');
-        setJoinError(errorMessages || "Failed to join game.");
-      }
-    } catch (error) {
-      console.error("Join game error:", error);
-      setJoinError(error instanceof Error ? error.message : "An unexpected error occurred.");
-    } finally {
-      setIsJoining(false);
-      // Optionally reset form on error: resetJoinForm();
+    const result = await joinGame(data.gameCode);
+    // joinGame redirects on success, so we only handle errors here
+    if (result.success) {
+      redirect(`/game/${data.gameCode}`);
+    } else {
+      console.error("Create game error:", result.error);
+      setCreateError(result.error);
     }
+    setIsJoining(false);
   };
 
   return (
