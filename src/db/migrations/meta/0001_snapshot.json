@@ -1,6 +1,6 @@
 {
-  "id": "af6bd199-4f00-4840-95ea-fca528a799c4",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "49d2b277-1b78-4053-98bb-6e31da7e726e",
+  "prevId": "af6bd199-4f00-4840-95ea-fca528a799c4",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -27,8 +27,12 @@
           "name": "game_mode_tasks_game_mode_id_game_modes_id_fk",
           "tableFrom": "game_mode_tasks",
           "tableTo": "game_modes",
-          "columnsFrom": ["game_mode_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "game_mode_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -36,8 +40,12 @@
           "name": "game_mode_tasks_task_id_tasks_id_fk",
           "tableFrom": "game_mode_tasks",
           "tableTo": "tasks",
-          "columnsFrom": ["task_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "task_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -90,7 +98,9 @@
         "game_modes_name_unique": {
           "name": "game_modes_name_unique",
           "nullsNotDistinct": false,
-          "columns": ["name"]
+          "columns": [
+            "name"
+          ]
         }
       }
     },
@@ -107,17 +117,9 @@
         },
         "game_code": {
           "name": "game_code",
-          "type": "varchar(6)",
+          "type": "varchar(4)",
           "primaryKey": false,
-          "notNull": false
-        },
-        "status": {
-          "name": "status",
-          "type": "game_status",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'lobby'"
+          "notNull": true
         },
         "current_mode_id": {
           "name": "current_mode_id",
@@ -152,8 +154,12 @@
           "name": "games_current_mode_id_game_modes_id_fk",
           "tableFrom": "games",
           "tableTo": "game_modes",
-          "columnsFrom": ["current_mode_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "current_mode_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -161,8 +167,12 @@
           "name": "games_current_task_id_tasks_id_fk",
           "tableFrom": "games",
           "tableTo": "tasks",
-          "columnsFrom": ["current_task_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "current_task_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -172,7 +182,9 @@
         "games_game_code_unique": {
           "name": "games_game_code_unique",
           "nullsNotDistinct": false,
-          "columns": ["game_code"]
+          "columns": [
+            "game_code"
+          ]
         }
       }
     },
@@ -227,8 +239,12 @@
           "name": "players_game_id_games_id_fk",
           "tableFrom": "players",
           "tableTo": "games",
-          "columnsFrom": ["game_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "game_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -296,11 +312,6 @@
     }
   },
   "enums": {
-    "public.game_status": {
-      "name": "game_status",
-      "schema": "public",
-      "values": ["lobby", "active", "paused", "finished"]
-    },
     "public.task_target": {
       "name": "task_target",
       "schema": "public",

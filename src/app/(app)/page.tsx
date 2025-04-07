@@ -7,16 +7,22 @@ import { useState } from 'react';
 import { createGame, joinGame } from './actions';
 import { redirect } from 'next/navigation';
 
-
 const CreateGameFormSchema = z.object({
-  hostName: z.string().min(1, { message: "Host name cannot be empty" }).max(50, "Host name max 50 chars"),
+  hostName: z
+    .string()
+    .min(1, { message: 'Host name cannot be empty' })
+    .max(50, 'Host name max 50 chars'),
 });
 
 const JoinGameFormSchema = z.object({
-  playerName: z.string().min(1, { message: "Player name cannot be empty" }).max(50, "Player name max 50 chars"),
-  gameCode: z.string()
-    .length(6, { message: "Game code must be 6 characters" })
-    .regex(/^[A-Z0-9]{6}$/, { message: "Code must be uppercase letters/numbers" })
+  playerName: z
+    .string()
+    .min(1, { message: 'Player name cannot be empty' })
+    .max(50, 'Player name max 50 chars'),
+  gameCode: z
+    .string()
+    .length(6, { message: 'Game code must be 6 characters' })
+    .regex(/^[A-Z0-9]{6}$/, { message: 'Code must be uppercase letters/numbers' })
     .toUpperCase(),
 });
 
@@ -56,7 +62,7 @@ export default function HomePage() {
     if (result.success) {
       redirect(`/game/${result.data.gameCode}/modes`);
     } else {
-      console.error("Create game error:", result.error);
+      console.error('Create game error:', result.error);
       setCreateError(result.error);
     }
     setIsCreating(false);
@@ -70,7 +76,7 @@ export default function HomePage() {
     if (result.success) {
       redirect(`/game/${data.gameCode}`);
     } else {
-      console.error("Create game error:", result.error);
+      console.error('Create game error:', result.error);
       setCreateError(result.error);
     }
     setIsJoining(false);
@@ -82,23 +88,26 @@ export default function HomePage() {
       <p className="text-xl mb-12 text-center">The ultimate party drinking game!</p>
 
       <div className="flex flex-col md:flex-row gap-8 w-full max-w-md md:max-w-2xl">
-
         {/* Create Game Form */}
         <div className="flex-1 bg-gray-800 p-6 rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold mb-4 text-center">Create New Game</h2>
           <form onSubmit={handleCreateSubmit(onCreateSubmit)} className="flex flex-col gap-4">
             <div>
-              <label htmlFor="hostName" className="block text-sm font-medium mb-1">Your Name (Host)</label>
+              <label htmlFor="hostName" className="block text-sm font-medium mb-1">
+                Your Name (Host)
+              </label>
               <input
                 type="text"
                 id="hostName"
-                {...registerCreate("hostName")}
+                {...registerCreate('hostName')}
                 maxLength={50}
                 className={`w-full px-3 py-2 border rounded-md bg-gray-700 focus:outline-none focus:ring-2 ${createErrors.hostName ? 'border-red-500 focus:ring-red-500' : 'border-gray-600 focus:ring-purple-500'}`}
                 placeholder="Enter your name"
                 disabled={isCreating}
               />
-              {createErrors.hostName && <p className="text-red-500 text-xs mt-1">{createErrors.hostName.message}</p>}
+              {createErrors.hostName && (
+                <p className="text-red-500 text-xs mt-1">{createErrors.hostName.message}</p>
+              )}
             </div>
             {createError && <p className="text-red-500 text-sm mt-1">{createError}</p>}
             <button
@@ -116,29 +125,35 @@ export default function HomePage() {
           <h2 className="text-2xl font-semibold mb-4 text-center">Join Existing Game</h2>
           <form onSubmit={handleJoinSubmit(onJoinSubmit)} className="flex flex-col gap-4">
             <div>
-              <label htmlFor="playerName" className="block text-sm font-medium mb-1">Your Name</label>
+              <label htmlFor="playerName" className="block text-sm font-medium mb-1">
+                Your Name
+              </label>
               <input
                 type="text"
                 id="playerName"
-                {...registerJoin("playerName")}
+                {...registerJoin('playerName')}
                 maxLength={50}
                 className={`w-full px-3 py-2 border rounded-md bg-gray-700 focus:outline-none focus:ring-2 ${joinErrors.playerName ? 'border-red-500 focus:ring-red-500' : 'border-gray-600 focus:ring-purple-500'}`}
                 placeholder="Enter your name"
                 disabled={isJoining}
               />
-              {joinErrors.playerName && <p className="text-red-500 text-xs mt-1">{joinErrors.playerName.message}</p>}
+              {joinErrors.playerName && (
+                <p className="text-red-500 text-xs mt-1">{joinErrors.playerName.message}</p>
+              )}
             </div>
             <div>
-              <label htmlFor="gameCode" className="block text-sm font-medium mb-1">Game Code</label>
+              <label htmlFor="gameCode" className="block text-sm font-medium mb-1">
+                Game Code
+              </label>
               <input
                 type="text"
                 id="gameCode"
-                {...registerJoin("gameCode", {
+                {...registerJoin('gameCode', {
                   onChange: (e) => {
                     const upperCaseValue = e.target.value.toUpperCase();
                     e.target.value = upperCaseValue; // Ensure input visually shows uppercase
-                    setJoinValue("gameCode", upperCaseValue); // Update form state
-                  }
+                    setJoinValue('gameCode', upperCaseValue); // Update form state
+                  },
                 })}
                 maxLength={6}
                 minLength={6}
@@ -146,7 +161,9 @@ export default function HomePage() {
                 placeholder="Enter 6-digit code"
                 disabled={isJoining}
               />
-              {joinErrors.gameCode && <p className="text-red-500 text-xs mt-1">{joinErrors.gameCode.message}</p>}
+              {joinErrors.gameCode && (
+                <p className="text-red-500 text-xs mt-1">{joinErrors.gameCode.message}</p>
+              )}
             </div>
             {joinError && <p className="text-red-500 text-sm mt-1">{joinError}</p>}
             <button

@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react';
 
-
 export default function Error({
   error,
   reset,
@@ -10,7 +9,6 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-
   return (
     <div>
       <h1>Something went wrong</h1>

@@ -4,7 +4,6 @@ import { db } from '@/db';
 import { gamesTable, playersTable } from '@/db/schema';
 import { eq } from 'drizzle-orm';
 
-
 export async function getGameData(gameCode: string) {
   // Use aliased table variable with db.select()
   const gamesFound = await db
