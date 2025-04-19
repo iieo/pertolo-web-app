@@ -7,18 +7,7 @@ import { useState } from 'react';
 import { createGame, joinGame } from './actions';
 import { redirect } from 'next/navigation';
 
-const CreateGameFormSchema = z.object({
-  hostName: z
-    .string()
-    .min(1, { message: 'Host name cannot be empty' })
-    .max(50, 'Host name max 50 chars'),
-});
-
 const JoinGameFormSchema = z.object({
-  playerName: z
-    .string()
-    .min(1, { message: 'Player name cannot be empty' })
-    .max(50, 'Player name max 50 chars'),
   gameCode: z
     .string()
     .length(6, { message: 'Game code must be 6 characters' })
@@ -26,7 +15,6 @@ const JoinGameFormSchema = z.object({
     .toUpperCase(),
 });
 
-type CreateGameFormData = z.infer<typeof CreateGameFormSchema>;
 type JoinGameFormData = z.infer<typeof JoinGameFormSchema>;
 
 export default function HomePage() {
@@ -34,15 +22,6 @@ export default function HomePage() {
   const [joinError, setJoinError] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [isJoining, setIsJoining] = useState(false);
-
-  const {
-    register: registerCreate,
-    handleSubmit: handleCreateSubmit,
-    formState: { errors: createErrors },
-    reset: resetCreateForm,
-  } = useForm<CreateGameFormData>({
-    resolver: zodResolver(CreateGameFormSchema),
-  });
 
   const {
     register: registerJoin,
@@ -54,11 +33,10 @@ export default function HomePage() {
     resolver: zodResolver(JoinGameFormSchema),
   });
 
-  const onCreateSubmit = async (data: CreateGameFormData) => {
+  const onCreateSubmit = async () => {
     setIsCreating(true);
     setCreateError(null);
-    const name = data.hostName.trim();
-    const result = await createGame(name);
+    const result = await createGame();
     if (result.success) {
       redirect(`/game/${result.data.gameCode}/modes`);
     } else {
@@ -91,24 +69,7 @@ export default function HomePage() {
         {/* Create Game Form */}
         <div className="flex-1 bg-gray-800 p-6 rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold mb-4 text-center">Create New Game</h2>
-          <form onSubmit={handleCreateSubmit(onCreateSubmit)} className="flex flex-col gap-4">
-            <div>
-              <label htmlFor="hostName" className="block text-sm font-medium mb-1">
-                Your Name (Host)
-              </label>
-              <input
-                type="text"
-                id="hostName"
-                {...registerCreate('hostName')}
-                maxLength={50}
-                className={`w-full px-3 py-2 border rounded-md bg-gray-700 focus:outline-none focus:ring-2 ${createErrors.hostName ? 'border-red-500 focus:ring-red-500' : 'border-gray-600 focus:ring-purple-500'}`}
-                placeholder="Enter your name"
-                disabled={isCreating}
-              />
-              {createErrors.hostName && (
-                <p className="text-red-500 text-xs mt-1">{createErrors.hostName.message}</p>
-              )}
-            </div>
+          <form onSubmit={onCreateSubmit} className="flex flex-col gap-4">
             {createError && <p className="text-red-500 text-sm mt-1">{createError}</p>}
             <button
               type="submit"
@@ -124,23 +85,7 @@ export default function HomePage() {
         <div className="flex-1 bg-gray-800 p-6 rounded-lg shadow-lg">
           <h2 className="text-2xl font-semibold mb-4 text-center">Join Existing Game</h2>
           <form onSubmit={handleJoinSubmit(onJoinSubmit)} className="flex flex-col gap-4">
-            <div>
-              <label htmlFor="playerName" className="block text-sm font-medium mb-1">
-                Your Name
-              </label>
-              <input
-                type="text"
-                id="playerName"
-                {...registerJoin('playerName')}
-                maxLength={50}
-                className={`w-full px-3 py-2 border rounded-md bg-gray-700 focus:outline-none focus:ring-2 ${joinErrors.playerName ? 'border-red-500 focus:ring-red-500' : 'border-gray-600 focus:ring-purple-500'}`}
-                placeholder="Enter your name"
-                disabled={isJoining}
-              />
-              {joinErrors.playerName && (
-                <p className="text-red-500 text-xs mt-1">{joinErrors.playerName.message}</p>
-              )}
-            </div>
+
             <div>
               <label htmlFor="gameCode" className="block text-sm font-medium mb-1">
                 Game Code

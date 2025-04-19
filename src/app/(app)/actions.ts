@@ -6,7 +6,7 @@ import { db } from '@/db';
 import { gamesTable, playersTable } from '@/db/schema';
 import { Result } from '@/util/types';
 
-export async function createGame(hostName: string): Promise<Result<{ gameCode: string }>> {
+export async function createGame(): Promise<Result<{ gameCode: string }>> {
   let gameCode: string;
   let gameExists = true;
   let attempts = 0;
@@ -40,13 +40,6 @@ export async function createGame(hostName: string): Promise<Result<{ gameCode: s
     if (newGame === undefined || newGame.length === 0 || gameId === undefined) {
       throw new Error('Failed to create game.');
     }
-
-    // Use aliased table variable with db.insert()
-    await db.insert(playersTable).values({
-      gameId: gameId,
-      name: hostName,
-      isHost: true,
-    });
     return { success: true, data: { gameCode } };
   } catch (error) {
     console.error('Error creating game:', error);
