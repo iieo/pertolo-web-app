@@ -69,14 +69,17 @@ export const gameModeTasksTable = pgTable('game_mode_tasks', {
 
 export type GameSettings = {
   players: string[];
-  currentGameModeId: string;
-  currentTaskId: string;
+  currentGameModeId: string | null;
+  currentTaskId: string | null;
 };
 
 export const gamesTable = pgTable('games', {
   id: uuid('id').primaryKey().defaultRandom(),
   gameCode: varchar('game_code', { length: 4 }).unique().notNull(),
-  gameSettings: json('game_settings').$type<GameSettings>().notNull(),
+  gameSettings: json('game_settings')
+    .$type<GameSettings>()
+    .notNull()
+    .default({ players: [], currentGameModeId: null, currentTaskId: null }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
     .defaultNow()

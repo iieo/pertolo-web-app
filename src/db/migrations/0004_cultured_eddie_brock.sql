@@ -1,0 +1,1 @@
+ALTER TABLE "games" ALTER COLUMN "game_settings" SET DEFAULT '{"players":[],"currentGameModeId":null,"currentTaskId":null}'::json;
