@@ -67,13 +67,16 @@ export const gameModeTasksTable = pgTable('game_mode_tasks', {
     .$onUpdate(() => new Date()),
 });
 
+export type GameSettings = {
+  players: string[];
+  currentGameModeId: string;
+  currentTaskId: string;
+};
+
 export const gamesTable = pgTable('games', {
   id: uuid('id').primaryKey().defaultRandom(),
   gameCode: varchar('game_code', { length: 4 }).unique().notNull(),
-  currentModeId: uuid('current_mode_id').references(() => gameModesTable.id, {
-    onDelete: 'set null',
-  }),
-  currentTaskId: uuid('current_task_id').references(() => tasksTable.id, { onDelete: 'set null' }),
+  gameSettings: json('game_settings').$type<GameSettings>().notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
     .defaultNow()
