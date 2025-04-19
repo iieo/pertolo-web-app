@@ -1,3 +1,4 @@
+import { TaskContent } from '@/types/task';
 import {
   pgTable,
   uuid,
@@ -7,6 +8,7 @@ import {
   integer,
   timestamp,
   pgEnum,
+  json,
 } from 'drizzle-orm/pg-core';
 
 export const taskTypeEnum = pgEnum('task_type', [
@@ -42,10 +44,7 @@ export const gameModesTable = pgTable('game_modes', {
 
 export const tasksTable = pgTable('tasks', {
   id: uuid('id').primaryKey().defaultRandom(),
-  text: text('text').notNull(),
-  type: taskTypeEnum('type').notNull(),
-  target: taskTargetEnum('target').notNull(),
-  drinks: integer('drinks').default(1),
+  content: json('content').$type<TaskContent>().notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
     .defaultNow()
@@ -54,12 +53,18 @@ export const tasksTable = pgTable('tasks', {
 });
 
 export const gameModeTasksTable = pgTable('game_mode_tasks', {
+  id: uuid('id').primaryKey().defaultRandom(),
   gameModeId: uuid('game_mode_id')
     .notNull()
     .references(() => gameModesTable.id, { onDelete: 'cascade' }),
   taskId: uuid('task_id')
     .notNull()
     .references(() => tasksTable.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export const gamesTable = pgTable('games', {

@@ -15,6 +15,13 @@
       "when": 1744057140997,
       "tag": "0001_square_luke_cage",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1745065930348,
+      "tag": "0002_lovely_riptide",
+      "breakpoints": true
     }
   ]
 }
