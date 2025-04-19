@@ -1,23 +1,34 @@
 import { redirect } from 'next/navigation';
 import { getGameData } from '../actions';
 import { dbSetGameMode, getGameModes } from './actions';
+import { dbGetGameByCode, dbUpdateGameSettings } from '@/app/(app)/actions';
 
 export default async function GameModeScreen({ params }: { params: Promise<{ id: string }> }) {
   const loadedParams = await params;
   const gameCode = loadedParams.id.toUpperCase();
-  const gameData = await getGameData(gameCode);
+  const game = await dbGetGameByCode(gameCode);
 
-  if (gameData == null) {
+  if (game.success === false) {
     return <div>Game not found</div>;
   }
 
   const modes = await getGameModes();
 
   async function setGameMode(modeId: string) {
-    if (gameData == null) {
+    if (game.success === false) {
       return;
     }
-    const result = await dbSetGameMode(gameData.id, modeId);
+
+    const settings = game.data.gameSettings;
+
+
+    const result = await dbUpdateGameSettings({
+      gameId: game.data.id,
+      gameSettings: {
+        ...settings,
+        currentGameModeId: modeId,
+      },
+    })
     if (result) {
       redirect(`/game/${gameCode}`);
     } else {
@@ -33,7 +44,6 @@ export default async function GameModeScreen({ params }: { params: Promise<{ id:
         {modes.map((mode) => (
           <li key={mode.id} className="mb-2">
             <button type="button" onClick={() => setGameMode(mode.id)}>
-              {' '}
               <strong>{mode.name}</strong>: {mode.description}
             </button>
           </li>
