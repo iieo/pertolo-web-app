@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Plus, Play } from 'lucide-react';
+import { Plus, Play, X } from 'lucide-react';
 
 const AddPlayerFormSchema = z.object({
   hostName: z
@@ -81,7 +81,17 @@ function AddPlayerForm({ gameId, gameSettings }: { gameId: string, gameSettings:
                   <div className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-800 text-purple-200 font-bold text-lg uppercase">
                     {player.slice(0, 2)}
                   </div>
-                  <span className="text-purple-100 font-medium text-lg">{player}</span>
+                  <span className="text-purple-100 font-medium text-lg flex-1">{player}</span>
+                  <Button
+                    type="button"
+                    size="icon"
+                    variant="ghost"
+                    className="text-purple-300 hover:text-red-500"
+                    aria-label="Remove Player"
+                    onClick={() => setPlayers(players => players.filter((_, i) => i !== idx))}
+                  >
+                    <X size={20} />
+                  </Button>
                 </div>
               ))}
             </div>
