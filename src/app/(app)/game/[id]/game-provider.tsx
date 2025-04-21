@@ -1,24 +1,31 @@
 "use client"
-import { GameModel, GameSettings } from '@/db/schema';
+import { GameModel, GameSettings, TaskModel } from '@/db/schema';
 import { replaceNames } from '@/util/tasks';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type GameContextType = {
     settings: GameSettings;
     game: GameModel;
+    currentTask: TaskModel;
+    tasks: TaskModel[];
     replacePlayerNames: (content: string) => string;
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
-export const GameProvider = ({ children, game }: { children: ReactNode, game: GameModel }) => {
+export const GameProvider = ({ children, game, tasks }: { children: ReactNode, game: GameModel, tasks: TaskModel[] }) => {
+    const initialTask = tasks[0];
+    if (!initialTask) {
+        throw new Error('No tasks available');
+    }
+    const [currentTask, setCurrentTask] = useState<TaskModel>(initialTask);
 
     const replacePlayerNames = (content: string) => {
         return replaceNames(content, game.gameSettings.players);
     };
 
     return (
-        <GameContext.Provider value={{ game, settings: game.gameSettings, replacePlayerNames }}>
+        <GameContext.Provider value={{ game, settings: game.gameSettings, replacePlayerNames, tasks, currentTask }}>
             {children}
         </GameContext.Provider>
     );

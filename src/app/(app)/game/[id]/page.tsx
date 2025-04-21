@@ -25,7 +25,7 @@ export default async function GameScreen({ params }: { params: Promise<{ id: str
   const tasks = tasksData.data;
 
   return <div>
-    <GameProvider game={gameData.data}>
+    <GameProvider game={gameData.data} tasks={tasks}>
       <ul className="list-disc pl-6">
         {tasks.map((task) => (
           <li key={task.id} className="mb-2">
