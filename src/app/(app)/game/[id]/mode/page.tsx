@@ -1,6 +1,3 @@
-// 'use client' is not needed since this is a server component, but we need to use shadcn UI and match the home page style
-
-import { redirect } from 'next/navigation';
 import { getGameModes } from './actions';
 import { dbGetGameByCode } from '@/app/(app)/actions';
 

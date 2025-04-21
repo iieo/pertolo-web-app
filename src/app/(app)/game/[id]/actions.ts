@@ -1,7 +1,6 @@
 'use server';
 
 import { eq, sql } from 'drizzle-orm';
-import { generateGameCode } from '@/util/code';
 import { db } from '@/db';
 import { GameModel, GameSettings, gamesTable, TaskModel, tasksTable } from '@/db/schema';
 import { Result } from '@/util/types';

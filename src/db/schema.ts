@@ -1,15 +1,5 @@
 import { TaskContent } from '@/types/task';
-import {
-  pgTable,
-  uuid,
-  varchar,
-  text,
-  boolean,
-  integer,
-  timestamp,
-  pgEnum,
-  json,
-} from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, text, timestamp, pgEnum, json } from 'drizzle-orm/pg-core';
 
 export const taskTypeEnum = pgEnum('task_type', [
   'question',
