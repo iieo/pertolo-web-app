@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en" className='w-[100dvw] h-[100dvh] overflow-hidden'>
       <body className={inter.className}>
-        <main>{children}</main>
+        {children}
       </body>
     </html>
   );

@@ -66,12 +66,12 @@ function AddPlayerForm({ gameId, gameSettings }: { gameId: string, gameSettings:
       <div className="h-full flex flex-col justify-center items-center px-4 py-8 max-w-lg w-full">
         <Card className="w-full bg-gradient-to-br from-purple-800/90 to-purple-900/90 border-none shadow-2xl">
           <CardHeader>
-            <CardTitle className="text-center text-2xl text-purple-100">Added Players</CardTitle>
+            <CardTitle className="text-center text-2xl text-purple-100">Hinzugefügte Spieler</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-2 min-h-[96px]">
               {players.length === 0 && (
-                <div className="col-span-2 text-purple-300/60 italic text-sm text-center">No players added yet.</div>
+                <div className="col-span-2 text-purple-300/60 italic text-sm text-center">Noch keine Spieler hinzugefügt.</div>
               )}
               {players.map((player, idx) => (
                 <div

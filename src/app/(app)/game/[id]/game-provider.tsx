@@ -6,26 +6,44 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 type GameContextType = {
     settings: GameSettings;
     game: GameModel;
-    currentTask: TaskModel;
+    currentTask: TaskModel | null;
     tasks: TaskModel[];
+    showNextTask: () => void;
     replacePlayerNames: (content: string) => string;
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
+export const GameProvider = ({
+    children,
+    game,
+    tasks,
+}: {
+    children: ReactNode;
+    game: GameModel;
+    tasks: TaskModel[];
+}) => {
+    const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
 
-export const GameProvider = ({ children, game, tasks }: { children: ReactNode, game: GameModel, tasks: TaskModel[] }) => {
-    const initialTask = tasks[0];
-    if (!initialTask) {
-        throw new Error('No tasks available');
-    }
-    const [currentTask, setCurrentTask] = useState<TaskModel>(initialTask);
+    const replacePlayerNames = React.useCallback(
+        (content: string) => replaceNames(content, game.gameSettings.players),
+        [game.gameSettings.players]
+    );
 
-    const replacePlayerNames = (content: string) => {
-        return replaceNames(content, game.gameSettings.players);
-    };
+    const showNextTask = React.useCallback(() => {
+        setCurrentTaskIndex(current => current + 1);
+    }, [tasks.length]);
+
+    const currentTask = tasks[currentTaskIndex] ?? null;
 
     return (
-        <GameContext.Provider value={{ game, settings: game.gameSettings, replacePlayerNames, tasks, currentTask }}>
+        <GameContext.Provider value={{
+            game,
+            settings: game.gameSettings,
+            replacePlayerNames,
+            tasks,
+            currentTask,
+            showNextTask,
+        }}>
             {children}
         </GameContext.Provider>
     );

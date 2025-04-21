@@ -43,13 +43,13 @@ export default async function GameModeScreen({ params }: { params: Promise<{ id:
   const modes = await getGameModes();
 
   return (
-    <main className="flex flex-col justify-between min-h-screen bg-gradient-to-br from-purple-950 via-purple-900 to-gray-900 px-4">
+    <main className="flex flex-col justify-between h-[100dvh] w-[100dvw] bg-gradient-to-br from-purple-950 via-purple-900 to-gray-900 px-4 items-center">
       <div className="mt-12 mb-8 text-center">
         <h1 className="text-5xl font-extrabold tracking-tight text-purple-300 drop-shadow-lg mb-2">
           Game Modes
         </h1>
-        <p className="text-xl text-purple-100/80 font-medium flex items-center justify-center gap-2">
-          Choose a mode for your game
+        <p className="text-xl text-purple-100/80 font-medium flex items-center justify-center gap-2 w-full">
+          Wähle deinen Spielmodus
         </p>
       </div>
       <ul className="flex flex-col gap-4 w-full max-w-xl">

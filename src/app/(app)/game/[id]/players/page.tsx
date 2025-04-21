@@ -9,7 +9,7 @@ export default async function PlayersScreen({ params }: { params: Promise<{ id: 
     if (gameData.success === false) {
         return (
             <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-950 via-purple-900 to-gray-900 px-4">
-                <div className="text-2xl text-red-400 font-bold">Game not found</div>
+                <div className="text-2xl text-red-400 font-bold">Spiel nicht gefunden</div>
             </main>
         );
     }
@@ -18,7 +18,7 @@ export default async function PlayersScreen({ params }: { params: Promise<{ id: 
         <main className="flex flex-col items-center h-[100dvh] bg-gradient-to-br from-purple-950 via-purple-900 to-gray-900 bg-red-300">
             <div className="mt-12 mb-8 text-center">
                 <h1 className="text-5xl font-extrabold tracking-tight text-purple-300 drop-shadow-lg mb-2">
-                    Players
+                    Spieler
                 </h1>
                 <p className="text-xl text-purple-100/80 font-medium flex items-center justify-center gap-2">
                     Game Code: <GameCodeCopy code={gameData.data.gameCode} />
