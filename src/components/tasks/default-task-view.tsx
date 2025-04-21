@@ -2,25 +2,8 @@ import { useGame } from "@/app/(app)/game/[id]/game-provider";
 import { DefaultTask } from "@/types/task";
 import { cw } from "@/util/tailwind";
 
-
-import { useEffect, useState } from "react";
-
 function DefaultTaskView({ task }: { task: DefaultTask }) {
-    const { replacePlayerNames, showNextTask } = useGame();
-
-    const gradients = [
-        "from-purple-950 via-purple-900 to-gray-900",
-        "from-pink-900 via-fuchsia-900 to-indigo-900",
-        "from-blue-900 via-cyan-900 to-teal-900",
-        "from-emerald-900 via-green-900 to-lime-900",
-        "from-yellow-900 via-orange-900 to-red-900",
-    ];
-
-    const [gradient, setGradient] = useState(gradients[0]);
-
-    useEffect(() => {
-        setGradient(gradients[Math.floor(Math.random() * gradients.length)]);
-    }, []);
+    const { replacePlayerNames, showNextTask, gradient } = useGame();
 
     return (
         <div
