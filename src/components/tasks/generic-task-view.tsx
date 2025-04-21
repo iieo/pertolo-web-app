@@ -1,21 +1,21 @@
 "use client";
-import { TaskModel } from "@/db/schema";
 import DefaultTaskView from "./default-task-view";
 import ChallengeTaskView from "./challenge-task-view";
 import FactTaskView from "./fact-task-view";
+import { useGame } from "@/app/(app)/game/[id]/game-provider";
 
-function GenericTaskView({ task }: { task: TaskModel }) {
-
-    switch (task.content.type) {
+function GenericTaskViewer() {
+    const { currentTask } = useGame();
+    switch (currentTask.content.type) {
         case 'default':
-            return <DefaultTaskView task={task.content} />;
+            return <DefaultTaskView task={currentTask.content} />;
         case 'challenge':
-            return <ChallengeTaskView task={task.content} />;
+            return <ChallengeTaskView task={currentTask.content} />;
         case 'fact':
-            return <FactTaskView task={task.content} />;
+            return <FactTaskView task={currentTask.content} />;
         default:
             return <div>Unknown task type</div>;
     }
 }
 
-export default GenericTaskView;
+export default GenericTaskViewer;
