@@ -5,8 +5,8 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { dbUpdateGameSettings } from '@/app/(app)/actions';
 import { GameSettings } from '@/db/schema';
+import { dbUpdateGameSettings } from '../actions';
 
 const AddPlayerFormSchema = z.object({
   hostName: z

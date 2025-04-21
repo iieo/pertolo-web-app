@@ -1,5 +1,7 @@
 import GenericTaskView from "@/components/tasks/generic-task-view";
-import { dbGetGameByCode, dbGetRandomTasks } from "../../actions";
+import { dbGetGameByCode } from "../../actions";
+import { dbGetRandomTasks } from "./actions";
+import { GameProvider } from "./game-provider";
 
 
 export default async function GameScreen({ params }: { params: Promise<{ id: string }> }) {
@@ -23,13 +25,15 @@ export default async function GameScreen({ params }: { params: Promise<{ id: str
   const tasks = tasksData.data;
 
   return <div>
-    <ul className="list-disc pl-6">
-      {tasks.map((task) => (
-        <li key={task.id} className="mb-2">
-          <GenericTaskView task={task} />
-        </li>
-      ))}
-    </ul>
+    <GameProvider game={gameData.data}>
+      <ul className="list-disc pl-6">
+        {tasks.map((task) => (
+          <li key={task.id} className="mb-2">
+            <GenericTaskView task={task} />
+          </li>
+        ))}
+      </ul>
+    </GameProvider>
 
   </div>;
 }

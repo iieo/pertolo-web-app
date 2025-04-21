@@ -34,5 +34,3 @@ export function getErrorWithStack(error: unknown) {
 
   return { message: getErrorMessage(error) };
 }
-
-export type Result<T> = [T, undefined] | [undefined, Error];

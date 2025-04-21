@@ -1,5 +1,5 @@
 "use client";
-import { dbUpdateGameSettings } from '@/app/(app)/actions';
+
 import {
     Card,
     CardHeader,
@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/card';
 import { GameModel, GameModeModel } from '@/db/schema';
 import { redirect } from 'next/navigation';
+import { dbUpdateGameSettings } from '../actions';
 
 
 function GameModeCard({

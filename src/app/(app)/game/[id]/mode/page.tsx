@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation';
 import { getGameModes } from './actions';
-import { dbGetGameByCode, dbUpdateGameSettings } from '@/app/(app)/actions';
+import { dbGetGameByCode } from '@/app/(app)/actions';
 
 import {
   Card,
