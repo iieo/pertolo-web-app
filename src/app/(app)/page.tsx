@@ -49,7 +49,7 @@ export default function HomePage() {
     setCreateError(null);
     const result = await createGame();
     if (result.success) {
-      redirect(`/game/${result.data.gameCode}/mode`);
+      redirect(`/game/${result.data.gameCode}/players`);
     } else {
       setCreateError(result.error);
     }

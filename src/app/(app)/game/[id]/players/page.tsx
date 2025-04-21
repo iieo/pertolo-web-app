@@ -14,17 +14,9 @@ export default async function PlayersScreen({ params }: { params: Promise<{ id: 
     return (
         <div>
             <h1 className="text-3xl font-bold mb-2">Players</h1>
-            <p className="text-xl mb-4">Players in Game:</p>
-            <ul className="list-disc pl-6">
-                {players.map((player: any) => (
-                    <li key={player.id} className="mb-2">
-                        <strong>{player.name}</strong>:
-                    </li>
-                ))}
-            </ul>
             <p className="text-xl mb-4">Game Code: {gameData.data.gameCode}</p>
 
-            <AddPlayerForm gameId={gameData.data.id} />
+            <AddPlayerForm gameId={gameData.data.id} gameSettings={gameData.data.gameSettings} />
         </div>
     );
 }
