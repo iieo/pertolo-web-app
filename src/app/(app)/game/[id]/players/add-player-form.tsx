@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Plus, Play } from 'lucide-react';
 
 const AddPlayerFormSchema = z.object({
   hostName: z
@@ -62,53 +63,75 @@ function AddPlayerForm({ gameId, gameSettings }: { gameId: string, gameSettings:
   }
 
   return (
-    <Card className="bg-gradient-to-br from-purple-800/80 to-purple-900/80 border-none shadow-2xl">
-      <CardHeader>
-        <CardTitle className="text-center text-2xl text-purple-100">Add Players</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="mb-4 flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="hostName" className="text-purple-200">Player Name</Label>
-            <Input
-              type="text"
-              id="hostName"
-              {...register('hostName')}
-              className={`uppercase text-white tracking-widest text-lg bg-purple-950/80 border-gray-700 focus-visible:ring-purple-500 ${createErrors.hostName ? 'border-red-500' : ''}`}
-              autoComplete="off"
-              disabled={isSubmitting}
-            />
-            {createErrors.hostName && (
-              <Alert variant="destructive">
-                <AlertDescription>{createErrors.hostName.message}</AlertDescription>
-              </Alert>
+    <>
+      <Card className="bg-gradient-to-br from-purple-800/80 to-purple-900/80 border-none shadow-2xl mb-32">
+        <CardHeader>
+          <CardTitle className="text-center text-2xl text-purple-100">Added Players</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 gap-2 min-h-[96px]">
+            {players.length === 0 && (
+              <div className="col-span-2 text-purple-300/60 italic text-sm">No players added yet.</div>
             )}
-          </div>
-          <div className="flex gap-2 mt-2">
-            <Button type="submit" className="bg-gradient-to-r from-purple-600 to-purple-500 text-lg" disabled={isSubmitting}>
-              Add Player
-            </Button>
-            <Button
-              type="button"
-              variant="secondary"
-              className="bg-green-600 text-white text-lg"
-              onClick={handleStartGame}
-              disabled={players.length === 0 || isSubmitting}
-            >
-              {isSubmitting ? 'Starting...' : 'Start Game'}
-            </Button>
-          </div>
-        </form>
-        <div>
-          <h3 className="font-semibold mb-2 text-purple-100">Added Players:</h3>
-          <ul className="list-disc pl-5 text-purple-100">
             {players.map((player, idx) => (
-              <li key={idx}>{player}</li>
+              <div
+                key={idx}
+                className="flex items-center gap-3 bg-purple-950/60 rounded-lg px-3 py-2 shadow-sm border border-purple-900/40"
+              >
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-800 text-purple-200 font-bold text-lg uppercase">
+                  {player.slice(0, 2)}
+                </div>
+                <span className="text-purple-100 font-medium text-lg">{player}</span>
+              </div>
             ))}
-          </ul>
+          </div>
+        </CardContent>
+      </Card>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="fixed bottom-0 left-0 w-full bg-gradient-to-br from-purple-950 via-purple-900 to-gray-900 border-t border-purple-900/60 px-4 py-3 flex items-end gap-2 z-50"
+        style={{ boxShadow: '0 -2px 16px 0 rgba(80,0,120,0.12)' }}
+      >
+        <div className="flex flex-col w-full">
+          {createErrors.hostName && (
+            <Alert variant="destructive" className="mb-2">
+              <AlertDescription>{createErrors.hostName.message}</AlertDescription>
+            </Alert>
+          )}
+          <Input
+            type="text"
+            id="hostName"
+            placeholder="Add player..."
+            {...register('hostName')}
+            className={`text-white tracking-widest bg-purple-950/80 border-gray-700 focus-visible:ring-purple-500 h-14 px-5 py-3 rounded-xl ${createErrors.hostName ? 'border-red-500' : ''}`}
+            autoComplete="off"
+            disabled={isSubmitting}
+          />
         </div>
-      </CardContent>
-    </Card>
+        <div className="flex flex-row gap-2 items-center">
+          <Button
+            type="submit"
+            size="icon"
+            className="bg-gradient-to-r from-purple-600 to-purple-500 text-white h-14 w-14 rounded-xl"
+            disabled={isSubmitting}
+            aria-label="Add Player"
+          >
+            <Plus size={28} />
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            size="icon"
+            className="bg-green-600 text-white h-14 w-14 rounded-xl"
+            onClick={handleStartGame}
+            disabled={players.length === 0 || isSubmitting}
+            aria-label="Start Game"
+          >
+            <Play size={28} />
+          </Button>
+        </div>
+      </form>
+    </>
   );
 }
 
