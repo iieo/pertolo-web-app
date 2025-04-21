@@ -37,19 +37,21 @@ function GameModeCard({
     }
 
 
-    return (<Card
-        className="w-full cursor-pointer transition-transform hover:scale-[1.02] bg-gradient-to-r from-purple-700/80 to-purple-600/80 shadow-lg border border-purple-900/40"
-        onClick={setGameMode}
-    >
-        <CardHeader className="pb-2">
-            <CardTitle className="text-lg font-bold text-purple-100">
-                {mode.name}
-            </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0">
-            <span className="text-purple-200 text-sm">{mode.description}</span>
-        </CardContent>
-    </Card>);
+    return (
+        <Card
+            className="w-full cursor-pointer transition-transform bg-gradient-to-br from-purple-800/90 to-purple-900/90  border border-purple-400/30 shadow-xl hover:scale-105 hover:border-purple-300/60 hover:shadow-2xl p-4"
+            onClick={setGameMode}
+        >
+            <CardHeader className="pb-2">
+                <CardTitle className="text-2xl font-extrabold text-purple-200 drop-shadow mb-1">
+                    {mode.name}
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+                <span className="text-purple-100/90 text-base">{mode.description}</span>
+            </CardContent>
+        </Card>
+    );
 }
 
 export default GameModeCard;

@@ -43,40 +43,31 @@ export default async function GameModeScreen({ params }: { params: Promise<{ id:
   const modes = await getGameModes();
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-950 via-purple-900 to-gray-900 px-4">
-      <div className="mb-10 text-center">
-        <h1 className="text-4xl font-extrabold tracking-tight text-purple-300 drop-shadow-lg mb-2">
-          Select Game Mode
+    <main className="flex flex-col justify-between min-h-screen bg-gradient-to-br from-purple-950 via-purple-900 to-gray-900 px-4">
+      <div className="mt-12 mb-8 text-center">
+        <h1 className="text-5xl font-extrabold tracking-tight text-purple-300 drop-shadow-lg mb-2">
+          Game Modes
         </h1>
-        <p className="text-lg text-purple-100/80 font-medium">
+        <p className="text-xl text-purple-100/80 font-medium flex items-center justify-center gap-2">
           Choose a mode for your game
         </p>
       </div>
-      <Card className="w-full max-w-xl bg-gradient-to-br from-purple-800/80 to-purple-900/80 border-none shadow-2xl">
-        <CardHeader>
-          <CardTitle className="text-center text-2xl text-purple-100">
-            Game Modes
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ul className="flex flex-col gap-4">
-            {modes.map((mode, idx) => (
-              <li key={mode.id}>
-                <GameModeCard
-                  mode={mode}
-                  game={gameData.data}
-                />
-                {idx < modes.length - 1 && (
-                  <div className="flex justify-center my-2">
-                    <Separator className="w-2/3 bg-purple-900/60" />
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        </CardContent>
-      </Card>
-      <footer className="mt-16 text-xs text-purple-200/60 text-center">
+      <ul className="flex flex-col gap-4 w-full max-w-xl">
+        {modes.map((mode, idx) => (
+          <li key={mode.id}>
+            <GameModeCard
+              mode={mode}
+              game={gameData.data}
+            />
+            {idx < modes.length - 1 && (
+              <div className="flex justify-center my-2">
+                <Separator className="w-2/3 bg-purple-900/60" />
+              </div>
+            )}
+          </li>
+        ))}
+      </ul>
+      <footer className="my-4 text-xs text-purple-200/60 text-center">
         &copy; {new Date().getFullYear()} Pertolo. Have fun and drink responsibly!
       </footer>
     </main>

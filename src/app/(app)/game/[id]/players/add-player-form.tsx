@@ -64,7 +64,7 @@ function AddPlayerForm({ gameId, gameSettings }: { gameId: string, gameSettings:
   return (
     <div className="w-full flex flex-col justify-center items-center h-full">
       <div className="h-full flex flex-col justify-center items-center px-4 py-8 max-w-lg w-full">
-        <Card className="w-full bg-gradient-to-br from-purple-800/80 to-purple-900/80 border-none shadow-2xl">
+        <Card className="w-full bg-gradient-to-br from-purple-800/90 to-purple-900/90 border-none shadow-2xl">
           <CardHeader>
             <CardTitle className="text-center text-2xl text-purple-100">Added Players</CardTitle>
           </CardHeader>
