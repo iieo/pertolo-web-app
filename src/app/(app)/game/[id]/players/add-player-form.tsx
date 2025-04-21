@@ -28,13 +28,13 @@ function AddPlayerForm({ gameId }: { gameId: string }) {
   async function onSubmit(data: AddPlayerFormData) {
     const name = data.hostName.trim();
 
-    const maybePlayer = await dbAddPlayer(gameId, name);
-    if (maybePlayer.success) {
-      console.log('Player added successfully:', maybePlayer.data);
-      router.refresh();
-    } else {
-      console.error('Error adding player:', maybePlayer.error);
-    }
+    // const maybePlayer = await dbAddPlayer(gameId, name);
+    // if (maybePlayer.success) {
+    //   console.log('Player added successfully:', maybePlayer.data);
+    //   router.refresh();
+    // } else {
+    //   console.error('Error adding player:', maybePlayer.error);
+    // }
 
     reset();
   }

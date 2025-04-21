@@ -1,9 +1,9 @@
 'use server';
 
-import { eq } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import { generateGameCode } from '@/util/code';
 import { db } from '@/db';
-import { Game, GameSettings, gamesTable, playersTable } from '@/db/schema';
+import { GameModel, GameSettings, gamesTable, TaskModel, tasksTable } from '@/db/schema';
 import { Result } from '@/util/types';
 
 export async function createGame(): Promise<Result<{ gameCode: string }>> {
@@ -62,7 +62,7 @@ export async function dbUpdateGameSettings({
 }: {
   gameId: string;
   gameSettings: GameSettings;
-}): Promise<Result<Game>> {
+}): Promise<Result<GameModel>> {
   const game = (
     await db.update(gamesTable).set({ gameSettings }).where(eq(gamesTable.id, gameId)).returning()
   )[0];
@@ -74,7 +74,7 @@ export async function dbUpdateGameSettings({
   return { success: true, data: game };
 }
 
-export async function dbGetGameByCode(code: string): Promise<Result<Game>> {
+export async function dbGetGameByCode(code: string): Promise<Result<GameModel>> {
   const game = (
     await db.select().from(gamesTable).where(eq(gamesTable.gameCode, code)).limit(1)
   )[0];
@@ -84,4 +84,21 @@ export async function dbGetGameByCode(code: string): Promise<Result<Game>> {
   }
 
   return { success: true, data: game };
+}
+
+export async function dbGetRandomTasks(
+  gameMode: string,
+  count: number,
+): Promise<Result<TaskModel[]>> {
+  const tasks = await db
+    .select()
+    .from(tasksTable)
+    .orderBy(sql`RANDOM()`)
+    .limit(count);
+
+  if (tasks.length === 0) {
+    return { success: false, error: 'No tasks found' };
+  }
+
+  return { success: true, data: tasks };
 }

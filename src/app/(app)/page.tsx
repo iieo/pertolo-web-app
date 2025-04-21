@@ -118,7 +118,7 @@ export default function HomePage() {
         </div>
 
         {/* Join Game Card */}
-        <Card className="flex-1 bg-gradient-to-br from-gray-800/80 to-gray-900/80 border-none shadow-2xl">
+        <Card className="flex-1 bg-gradient-to-br from-purple-800/80 to-purple-900/80 border-none shadow-2xl">
           <CardHeader>
             <CardTitle className="text-center text-2xl text-purple-100">
               Join Existing Game
@@ -140,7 +140,7 @@ export default function HomePage() {
                   minLength={6}
                   autoComplete="off"
                   placeholder="ABC123"
-                  className={`uppercase tracking-widest text-lg bg-gray-900/80 border-gray-700 focus-visible:ring-purple-500 ${joinErrors.gameCode ? 'border-red-500' : ''
+                  className={`uppercase text-white tracking-widest text-lg bg-purple-950/80 border-gray-700 focus-visible:ring-purple-500 ${joinErrors.gameCode ? 'border-red-500' : ''
                     }`}
                   disabled={isJoining}
                   {...registerJoin('gameCode', {
@@ -164,7 +164,7 @@ export default function HomePage() {
               )}
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-green-600 to-green-500 text-lg"
+                className="w-full bg-gradient-to-r from-purple-600 to-purple-500 text-lg"
                 disabled={isJoining}
                 size="lg"
               >

@@ -87,24 +87,8 @@ export const gamesTable = pgTable('games', {
     .$onUpdate(() => new Date()),
 });
 
-export const playersTable = pgTable('players', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  gameId: uuid('game_id')
-    .notNull()
-    .references(() => gamesTable.id, { onDelete: 'cascade' }),
-  name: varchar('name', { length: 50 }).notNull(),
-  isHost: boolean('is_host').default(false).notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at')
-    .defaultNow()
-    .notNull()
-    .$onUpdate(() => new Date()),
-});
-
 // Define relation types for potential use with drizzle queries
-export type Game = typeof gamesTable.$inferSelect;
-export type NewGame = typeof gamesTable.$inferInsert;
-export type Player = typeof playersTable.$inferSelect;
-export type NewPlayer = typeof playersTable.$inferInsert;
-export type GameMode = typeof gameModesTable.$inferSelect;
-export type Task = typeof tasksTable.$inferSelect;
+export type GameModel = typeof gamesTable.$inferSelect;
+export type InsertGameModel = typeof gamesTable.$inferInsert;
+export type GameModeModel = typeof gameModesTable.$inferSelect;
+export type TaskModel = typeof tasksTable.$inferSelect;
