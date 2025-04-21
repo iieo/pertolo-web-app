@@ -7,6 +7,11 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { GameSettings } from '@/db/schema';
 import { dbUpdateGameSettings } from '../actions';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const AddPlayerFormSchema = z.object({
   hostName: z
@@ -57,41 +62,53 @@ function AddPlayerForm({ gameId, gameSettings }: { gameId: string, gameSettings:
   }
 
   return (
-    <div>
-      <form onSubmit={handleSubmit(onSubmit)} className="mb-4">
+    <Card className="bg-gradient-to-br from-purple-800/80 to-purple-900/80 border-none shadow-2xl">
+      <CardHeader>
+        <CardTitle className="text-center text-2xl text-purple-100">Add Players</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)} className="mb-4 flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="hostName" className="text-purple-200">Player Name</Label>
+            <Input
+              type="text"
+              id="hostName"
+              {...register('hostName')}
+              className={`uppercase text-white tracking-widest text-lg bg-purple-950/80 border-gray-700 focus-visible:ring-purple-500 ${createErrors.hostName ? 'border-red-500' : ''}`}
+              autoComplete="off"
+              disabled={isSubmitting}
+            />
+            {createErrors.hostName && (
+              <Alert variant="destructive">
+                <AlertDescription>{createErrors.hostName.message}</AlertDescription>
+              </Alert>
+            )}
+          </div>
+          <div className="flex gap-2 mt-2">
+            <Button type="submit" className="bg-gradient-to-r from-purple-600 to-purple-500 text-lg" disabled={isSubmitting}>
+              Add Player
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              className="bg-green-600 text-white text-lg"
+              onClick={handleStartGame}
+              disabled={players.length === 0 || isSubmitting}
+            >
+              {isSubmitting ? 'Starting...' : 'Start Game'}
+            </Button>
+          </div>
+        </form>
         <div>
-          <label htmlFor="hostName">Player Name:</label>
-          <input
-            type="text"
-            id="hostName"
-            {...register('hostName')}
-            className={`border ${createErrors.hostName ? 'border-red-500' : 'border-gray-300'} rounded p-2`}
-          />
-          {createErrors.hostName && <p className="text-red-500">{createErrors.hostName.message}</p>}
+          <h3 className="font-semibold mb-2 text-purple-100">Added Players:</h3>
+          <ul className="list-disc pl-5 text-purple-100">
+            {players.map((player, idx) => (
+              <li key={idx}>{player}</li>
+            ))}
+          </ul>
         </div>
-        <div className="flex gap-2 mt-2">
-          <button type="submit" className="bg-blue-500 text-white p-2 rounded">
-            Add Player
-          </button>
-          <button
-            type="button"
-            className="bg-green-600 text-white p-2 rounded"
-            onClick={handleStartGame}
-            disabled={players.length === 0 || isSubmitting}
-          >
-            {isSubmitting ? 'Starting...' : 'Start Game'}
-          </button>
-        </div>
-      </form>
-      <div>
-        <h3 className="font-semibold mb-2">Added Players:</h3>
-        <ul className="list-disc pl-5">
-          {players.map((player, idx) => (
-            <li key={idx}>{player}</li>
-          ))}
-        </ul>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 
