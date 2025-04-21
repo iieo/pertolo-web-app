@@ -68,7 +68,7 @@ function AddPlayerForm({ gameId, gameSettings }: { gameId: string, gameSettings:
             <CardTitle className="text-center text-2xl text-purple-100">Hinzugefügte Spieler</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-2 gap-2 min-h-[96px]">
+            <div className="grid grid-cols-2 gap-2">
               {players.length === 0 && (
                 <div className="col-span-2 text-purple-300/60 italic text-sm text-center">Noch keine Spieler hinzugefügt.</div>
               )}
@@ -78,7 +78,7 @@ function AddPlayerForm({ gameId, gameSettings }: { gameId: string, gameSettings:
                   className="flex items-center gap-3 bg-purple-950/60 rounded-lg px-3 py-2 shadow-sm border border-purple-900/40"
                 >
                   <div className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-800 text-purple-200 font-bold text-lg uppercase">
-                    {player.slice(0, 2)}
+                    {player[0]}
                   </div>
                   <span className="text-purple-100 font-medium text-lg flex-1">{player}</span>
                   <Button

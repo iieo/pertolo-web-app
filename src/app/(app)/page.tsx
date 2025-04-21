@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Gamepad } from 'lucide-react';
 
 const JoinGameFormSchema = z.object({
   gameCode: z
@@ -75,15 +76,15 @@ export default function HomePage() {
           Pertolo
         </h1>
         <p className="text-xl text-purple-100/80 font-medium">
-          The ultimate party drinking game!
+          Das ultimative Party-Trinkspiel!
         </p>
       </div>
       <div className="flex flex-col md:flex-row gap-8 w-full max-w-2xl">
         {/* Create Game Card */}
-        <Card className="flex-1 bg-gradient-to-br from-purple-800/80 to-purple-900/80 border-none shadow-2xl">
+        <Card className="flex-1 bg-gradient-to-br from-purple-800/80 to-purple-900/80 border-none shadow-2xl flex flex-col justify-between">
           <CardHeader>
             <CardTitle className="text-center text-2xl text-purple-100">
-              Create New Game
+              Neues Spiel erstellen
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -106,7 +107,7 @@ export default function HomePage() {
                 disabled={isCreating}
                 size="lg"
               >
-                {isCreating ? 'Creating...' : 'Create Game'}
+                {isCreating ? 'Bitte warten...' : 'Spiel erstellen'}
               </Button>
             </form>
           </CardContent>
@@ -121,7 +122,7 @@ export default function HomePage() {
         <Card className="flex-1 bg-gradient-to-br from-purple-800/80 to-purple-900/80 border-none shadow-2xl">
           <CardHeader>
             <CardTitle className="text-center text-2xl text-purple-100">
-              Join Existing Game
+              Existierendem Spiel beitreten
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -168,7 +169,7 @@ export default function HomePage() {
                 disabled={isJoining}
                 size="lg"
               >
-                {isJoining ? 'Joining...' : 'Join Game'}
+                {isJoining ? 'Beitreten...' : 'Spiel beitreten'}
               </Button>
             </form>
           </CardContent>
