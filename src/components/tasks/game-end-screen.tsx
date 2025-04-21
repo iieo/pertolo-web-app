@@ -5,7 +5,7 @@ function GameEndScreen() {
     const { game } = useGame();
     return (
         <div
-            className={`flex flex-col items-center justify-center min-h-screen w-full p-4 text-center bg-gradient-to-br  from-pink-900 via-fuchsia-900 to-indigo-900`}
+            className={`flex flex-col items-center justify-center min-h-screen w-full p-4 text-center bg-gradient-to-br  from-pink-900 via-fuchsia-900 to-indigo-900 select-none`}
             onClick={() => redirect(`/game/${game.gameCode}/mode`)}
         >
             <h2 className="text-5xl font-extrabold tracking-tight text-purple-300 drop-shadow-lg mb-2">
