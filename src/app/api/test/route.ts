@@ -15,7 +15,7 @@ function getIp(req: NextRequest): string | undefined {
   if (forwarded) {
     return forwarded.split(',')[0]?.trim();
   }
-  // @ts-ignore
+  // @ts-expect-error ip is not a standard property
   return req.ip || undefined;
 }
 
