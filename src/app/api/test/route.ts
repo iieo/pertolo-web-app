@@ -25,15 +25,18 @@ export async function GET(req: NextRequest) {
 
   if (ip && ip !== '::1' && ip !== '127.0.0.1') {
     try {
-      const res = await fetch(
-        `https://ip-api.com/json/${ip}?fields=status,country,regionName,city,message`,
-        { next: { revalidate: 60 } },
-      );
+      const res = await fetch(`https://ipinfo.io/${ip}`, {
+        headers: {
+          Accept: 'application/json',
+          Authorization: 'Bearer 2d21f6f0704249',
+        },
+        next: { revalidate: 60 },
+      });
       const data = await res.json();
-      if (data.status === 'success') {
+      if (data) {
         location = {
           country: data.country,
-          region: data.regionName,
+          region: data.region,
           city: data.city,
         };
       }
