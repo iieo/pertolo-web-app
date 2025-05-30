@@ -1,12 +1,7 @@
 import { getGameModes } from './actions';
 import { dbGetGameByCode } from '@/app/(app)/actions';
 
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import GameModeCard from './game-mode-card';
@@ -21,9 +16,7 @@ export default async function GameModeScreen({ params }: { params: Promise<{ id:
       <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-950 via-purple-900 to-gray-900 px-4">
         <Card className="bg-gradient-to-br from-red-900/80 to-gray-900/80 border-none shadow-2xl">
           <CardHeader>
-            <CardTitle className="text-center text-2xl text-red-200">
-              Game not found
-            </CardTitle>
+            <CardTitle className="text-center text-2xl text-red-200">Game not found</CardTitle>
           </CardHeader>
           <CardContent>
             <Alert variant="destructive">
@@ -52,10 +45,7 @@ export default async function GameModeScreen({ params }: { params: Promise<{ id:
       <ul className="flex flex-col gap-4 w-full max-w-xl">
         {modes.map((mode, idx) => (
           <li key={mode.id}>
-            <GameModeCard
-              mode={mode}
-              game={gameData.data}
-            />
+            <GameModeCard mode={mode} game={gameData.data} />
             {idx < modes.length - 1 && (
               <div className="flex justify-center my-2">
                 <Separator className="w-2/3 bg-purple-900/60" />

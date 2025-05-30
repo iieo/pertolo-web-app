@@ -1,8 +1,7 @@
-import GenericTaskViewer from "@/components/tasks/generic-task-view";
-import { dbGetGameByCode } from "../../actions";
-import { dbGetRandomTasks } from "./actions";
-import { GameProvider } from "./game-provider";
-
+import GenericTaskViewer from '@/components/tasks/generic-task-view';
+import { dbGetGameByCode } from '../../actions';
+import { dbGetRandomTasks } from './actions';
+import { GameProvider } from './game-provider';
 
 export default async function GameScreen({ params }: { params: Promise<{ id: string }> }) {
   const loadedParams = await params;
@@ -24,7 +23,9 @@ export default async function GameScreen({ params }: { params: Promise<{ id: str
   }
   const tasks = tasksData.data;
 
-  return <GameProvider game={gameData.data} tasks={tasks}>
-    <GenericTaskViewer />
-  </GameProvider>
+  return (
+    <GameProvider game={gameData.data} tasks={tasks}>
+      <GenericTaskViewer />
+    </GameProvider>
+  );
 }

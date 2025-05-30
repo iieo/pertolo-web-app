@@ -18,9 +18,7 @@ export default function Error({
             Something went wrong
           </h1>
           <div className="p-4 mb-6">
-            <p className="text-red-100 text-center">
-              {errorMessage}
-            </p>
+            <p className="text-red-100 text-center">{errorMessage}</p>
           </div>
           <button
             className="w-full py-2 px-4 rounded-lg bg-red-700 hover:bg-red-800 text-white font-bold transition-colors"

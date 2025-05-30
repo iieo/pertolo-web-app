@@ -48,12 +48,8 @@
           "name": "game_mode_tasks_game_mode_id_game_modes_id_fk",
           "tableFrom": "game_mode_tasks",
           "tableTo": "game_modes",
-          "columnsFrom": [
-            "game_mode_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["game_mode_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -61,12 +57,8 @@
           "name": "game_mode_tasks_task_id_tasks_id_fk",
           "tableFrom": "game_mode_tasks",
           "tableTo": "tasks",
-          "columnsFrom": [
-            "task_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["task_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -119,9 +111,7 @@
         "game_modes_name_unique": {
           "name": "game_modes_name_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
+          "columns": ["name"]
         }
       }
     },
@@ -175,12 +165,8 @@
           "name": "games_current_mode_id_game_modes_id_fk",
           "tableFrom": "games",
           "tableTo": "game_modes",
-          "columnsFrom": [
-            "current_mode_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["current_mode_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -188,12 +174,8 @@
           "name": "games_current_task_id_tasks_id_fk",
           "tableFrom": "games",
           "tableTo": "tasks",
-          "columnsFrom": [
-            "current_task_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["current_task_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -203,9 +185,7 @@
         "games_game_code_unique": {
           "name": "games_game_code_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "game_code"
-          ]
+          "columns": ["game_code"]
         }
       }
     },
@@ -260,12 +240,8 @@
           "name": "players_game_id_games_id_fk",
           "tableFrom": "players",
           "tableTo": "games",
-          "columnsFrom": [
-            "game_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["game_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }

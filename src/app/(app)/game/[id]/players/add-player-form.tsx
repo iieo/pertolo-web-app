@@ -21,7 +21,7 @@ const AddPlayerFormSchema = z.object({
 });
 type AddPlayerFormData = z.infer<typeof AddPlayerFormSchema>;
 
-function AddPlayerForm({ gameId, gameSettings }: { gameId: string, gameSettings: GameSettings }) {
+function AddPlayerForm({ gameId, gameSettings }: { gameId: string; gameSettings: GameSettings }) {
   const router = useRouter();
   const [players, setPlayers] = useState<string[]>(gameSettings.players || []);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -50,8 +50,8 @@ function AddPlayerForm({ gameId, gameSettings }: { gameId: string, gameSettings:
       gameSettings: {
         ...gameSettings,
         players,
-      }
-    })
+      },
+    });
     setIsSubmitting(false);
     if (result?.success) {
       router.push(`/game/${result.data.gameCode}/mode`);
@@ -65,12 +65,16 @@ function AddPlayerForm({ gameId, gameSettings }: { gameId: string, gameSettings:
       <div className="h-full flex flex-col justify-center items-center px-4 py-8 max-w-lg w-full">
         <Card className="w-full bg-gradient-to-br from-purple-800/90 to-purple-900/90 border-none shadow-2xl">
           <CardHeader>
-            <CardTitle className="text-center text-2xl text-purple-100">Hinzugefügte Spieler</CardTitle>
+            <CardTitle className="text-center text-2xl text-purple-100">
+              Hinzugefügte Spieler
+            </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-2">
               {players.length === 0 && (
-                <div className="col-span-2 text-purple-300/60 italic text-sm text-center">Noch keine Spieler hinzugefügt.</div>
+                <div className="col-span-2 text-purple-300/60 italic text-sm text-center">
+                  Noch keine Spieler hinzugefügt.
+                </div>
               )}
               {players.map((player, idx) => (
                 <div
@@ -87,7 +91,7 @@ function AddPlayerForm({ gameId, gameSettings }: { gameId: string, gameSettings:
                     variant="ghost"
                     className="text-purple-300 hover:text-red-500"
                     aria-label="Remove Player"
-                    onClick={() => setPlayers(players => players.filter((_, i) => i !== idx))}
+                    onClick={() => setPlayers((players) => players.filter((_, i) => i !== idx))}
                   >
                     <X size={20} />
                   </Button>
@@ -100,7 +104,7 @@ function AddPlayerForm({ gameId, gameSettings }: { gameId: string, gameSettings:
       <div className="w-full bg-gradient-to-br from-purple-950 via-purple-900 to-gray-900 border-t border-purple-900/60 flex items-end justify-center ">
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className='gap-2 max-w-lg w-full flex items-end justify-center px-4 py-3'
+          className="gap-2 max-w-lg w-full flex items-end justify-center px-4 py-3"
           style={{ boxShadow: '0 -2px 16px 0 rgba(80,0,120,0.12)' }}
         >
           <div className="flex flex-col w-full">
@@ -141,7 +145,8 @@ function AddPlayerForm({ gameId, gameSettings }: { gameId: string, gameSettings:
               <Play size={28} />
             </Button>
           </div>
-        </form></div>
+        </form>
+      </div>
     </div>
   );
 }

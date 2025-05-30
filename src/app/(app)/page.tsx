@@ -7,12 +7,7 @@ import { useState } from 'react';
 import { createGame, joinGame } from './actions';
 import { redirect } from 'next/navigation';
 
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-} from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -74,9 +69,7 @@ export default function HomePage() {
         <h1 className="text-5xl font-extrabold tracking-tight text-purple-300 drop-shadow-lg mb-2">
           Pertolo
         </h1>
-        <p className="text-xl text-purple-100/80 font-medium">
-          Das ultimative Party-Trinkspiel!
-        </p>
+        <p className="text-xl text-purple-100/80 font-medium">Das ultimative Party-Trinkspiel!</p>
       </div>
       <div className="flex flex-col md:flex-row gap-8 w-full max-w-2xl">
         {/* Create Game Card */}
@@ -93,7 +86,7 @@ export default function HomePage() {
               </Alert>
             )}
             <form
-              onSubmit={e => {
+              onSubmit={(e) => {
                 e.preventDefault();
                 onCreateSubmit();
               }}
@@ -125,10 +118,7 @@ export default function HomePage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <form
-              onSubmit={handleJoinSubmit(onJoinSubmit)}
-              className="flex flex-col gap-4"
-            >
+            <form onSubmit={handleJoinSubmit(onJoinSubmit)} className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">
                 <Label htmlFor="gameCode" className="text-purple-200">
                   Game Code
@@ -140,8 +130,9 @@ export default function HomePage() {
                   minLength={6}
                   autoComplete="off"
                   placeholder="ABC123"
-                  className={`uppercase text-white tracking-widest text-lg bg-purple-950/80 border-gray-700 focus-visible:ring-purple-500 ${joinErrors.gameCode ? 'border-red-500' : ''
-                    }`}
+                  className={`uppercase text-white tracking-widest text-lg bg-purple-950/80 border-gray-700 focus-visible:ring-purple-500 ${
+                    joinErrors.gameCode ? 'border-red-500' : ''
+                  }`}
                   disabled={isJoining}
                   {...registerJoin('gameCode', {
                     onChange: (e) => {
@@ -152,9 +143,7 @@ export default function HomePage() {
                   })}
                 />
                 {joinErrors.gameCode && (
-                  <span className="text-red-400 text-xs mt-1">
-                    {joinErrors.gameCode.message}
-                  </span>
+                  <span className="text-red-400 text-xs mt-1">{joinErrors.gameCode.message}</span>
                 )}
               </div>
               {joinError && (
