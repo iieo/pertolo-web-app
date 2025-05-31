@@ -34,7 +34,7 @@ export const RevealPhase = () => {
               <div className="text-[#fb8500]">
                 <EyeNoneIcon className="w-16 h-16 mx-auto mb-4" />
                 <h4 className="text-3xl font-bold mb-2">IMPOSTER</h4>
-                <p className="text-lg font-medium">You don't know the word</p>
+                <p className="text-lg font-medium">You don&lsquo;t know the word</p>
               </div>
             ) : (
               <div className="text-white">

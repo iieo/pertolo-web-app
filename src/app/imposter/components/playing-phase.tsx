@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { PersonIcon, EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons'
+import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons'
 import { useGame } from '../game-provider'
 
 export const PlayingPhase = () => {
