@@ -1,4 +1,5 @@
-import { useGame } from '@/app/(app)/game/[id]/game-provider';
+
+import { useGame } from '@/app/drink/game/[id]/game-provider';
 import { DefaultTask } from '@/types/task';
 import { cw } from '@/util/tailwind';
 

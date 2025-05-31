@@ -1,4 +1,5 @@
-import { dbGetGameByCode } from '@/app/(app)/actions';
+
+import { dbGetGameByCode } from '@/app/drink/actions';
 import AddPlayerForm from './add-player-form';
 import GameCodeCopy from './GameCodeCopy';
 

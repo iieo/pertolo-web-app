@@ -1,10 +1,11 @@
 import { getGameModes } from './actions';
-import { dbGetGameByCode } from '@/app/(app)/actions';
+
 
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import GameModeCard from './game-mode-card';
+import { dbGetGameByCode } from '@/app/drink/actions';
 
 export default async function GameModeScreen({ params }: { params: Promise<{ id: string }> }) {
   const loadedParams = await params;

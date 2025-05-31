@@ -77,6 +77,16 @@ export const gamesTable = pgTable('games', {
     .$onUpdate(() => new Date()),
 });
 
+export const impostorWordsTable = pgTable('impostor_words', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  word: varchar('word', { length: 100 }).notNull().unique(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
 // Define relation types for potential use with drizzle queries
 export type GameModel = typeof gamesTable.$inferSelect;
 export type InsertGameModel = typeof gamesTable.$inferInsert;
