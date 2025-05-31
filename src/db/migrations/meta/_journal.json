@@ -43,6 +43,13 @@
       "when": 1748724652262,
       "tag": "0005_bright_thing",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1748725070509,
+      "tag": "0006_secret_makkari",
+      "breakpoints": true
     }
   ]
 }

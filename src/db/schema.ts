@@ -80,6 +80,20 @@ export const gamesTable = pgTable('games', {
 export const impostorWordsTable = pgTable('impostor_words', {
   id: uuid('id').primaryKey().defaultRandom(),
   word: varchar('word', { length: 100 }).notNull().unique(),
+  categoryId: uuid('category_id')
+    .notNull()
+    .references(() => imposterCategoriesTable.id),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export const imposterCategoriesTable = pgTable('impostor_categories', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: varchar('name', { length: 100 }).notNull().unique(),
+  description: text('description'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
     .defaultNow()
