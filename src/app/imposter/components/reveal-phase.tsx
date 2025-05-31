@@ -12,8 +12,8 @@ export const RevealPhase = () => {
   const isImposter = gameState.imposters.has(gameState.currentPlayerIndex)
 
   return (
-    <div className="min-h-screen bg-[#111] p-6 flex items-center justify-center">
-      <div className="max-w-md w-full mx-auto space-y-8 bg-[#111] rounded-3xl shadow-xl border border-[#222] p-4 sm:p-8">
+    <div className="fixed inset-0 bg-[#111] flex flex-col items-center justify-center overflow-hidden">
+      <div className="max-w-md w-full mx-auto flex-1 flex flex-col space-y-6 bg-[#111] rounded-3xl shadow-xl border border-[#222] p-4 sm:p-8 justify-center items-center min-h-0 h-full">
         <div className="text-center">
           <h2 className="text-3xl font-bold mb-2 text-white drop-shadow-lg">Player Reveal</h2>
           <div className="bg-[#181818] rounded-full px-4 py-2 inline-block border border-[#222]">
