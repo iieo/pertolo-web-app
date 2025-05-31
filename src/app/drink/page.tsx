@@ -64,7 +64,7 @@ export default function HomePage() {
   };
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-purple-950 via-purple-900 to-gray-900 px-4">
+    <main className="fixed inset-0 overflow-hidden flex flex-col items-center justify-center bg-gradient-to-br from-purple-950 via-purple-900 to-gray-900 px-4">
       <div className="mb-12 text-center">
         <h1 className="text-5xl font-extrabold tracking-tight text-purple-300 drop-shadow-lg mb-2">
           Pertolo

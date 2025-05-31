@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="w-[100dvw] h-[100dvh] overflow-hidden">
+    <html lang="en">
       <Head>
         <meta name="theme-color" content="black" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />

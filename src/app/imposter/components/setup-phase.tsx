@@ -10,17 +10,17 @@ import { PersonIcon, GearIcon, PlayIcon, CrossCircledIcon, PlusIcon } from '@rad
 import { useGame } from '../game-provider'
 
 export const SetupPhase = () => {
-  const { 
-    gameState, 
-    setGameState, 
-    categories, 
-    loading, 
-    error, 
-    addPlayer, 
-    removePlayer, 
-    startGame 
+  const {
+    gameState,
+    setGameState,
+    categories,
+    loading,
+    error,
+    addPlayer,
+    removePlayer,
+    startGame
   } = useGame()
-  
+
   const [playerInput, setPlayerInput] = useState('')
 
   const handleAddPlayer = () => {
@@ -29,8 +29,8 @@ export const SetupPhase = () => {
   }
 
   return (
-    <div className="fixed inset-0 bg-black flex flex-col items-center justify-center overflow-hidden">
-      <div className="max-w-2xl w-full mx-auto flex-1 flex flex-col space-y-6 bg-[#111] rounded-3xl shadow-xl border border-[#222] p-4 sm:p-8 justify-center items-center min-h-0 h-full">
+    <div className="min-h-screen bg-black flex flex-col items-center justify-center py-8">
+      <div className="max-w-2xl w-full mx-auto flex flex-col space-y-6 bg-[#111] rounded-3xl shadow-xl border border-[#222] p-4 sm:p-8">
         <div className="text-center mb-8">
           <h1 className="text-5xl font-extrabold text-white mb-2 tracking-tight">Imposter Game</h1>
           <p className="text-lg text-[#888] font-medium">Find the secret agents among your friends</p>

@@ -9,8 +9,8 @@ export const PlayingPhase = () => {
   const { gameState, finishGame } = useGame()
 
   return (
-    <div className="fixed inset-0 bg-black flex flex-col items-center justify-center overflow-hidden">
-      <div className="max-w-md w-full mx-auto flex-1 flex flex-col space-y-6 bg-[#111] rounded-3xl shadow-xl border border-[#222] p-4 sm:p-8 justify-center items-center min-h-0 h-full">
+    <div className="min-h-screen bg-black flex flex-col items-center justify-center py-8">
+      <div className="max-w-md w-full mx-auto flex flex-col space-y-6 bg-[#111] rounded-3xl shadow-xl border border-[#222] p-4 sm:p-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">Game in Progress</h1>
         </div>
