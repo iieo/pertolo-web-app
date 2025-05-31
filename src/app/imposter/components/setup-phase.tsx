@@ -1,0 +1,153 @@
+'use client'
+
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card } from '@/components/ui/card'
+import { Label } from '@/components/ui/label'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { PersonIcon, GearIcon, PlayIcon, CrossCircledIcon, PlusIcon } from '@radix-ui/react-icons'
+import { useGame } from '../game-provider'
+
+export const SetupPhase = () => {
+  const { 
+    gameState, 
+    setGameState, 
+    categories, 
+    loading, 
+    error, 
+    addPlayer, 
+    removePlayer, 
+    startGame 
+  } = useGame()
+  
+  const [playerInput, setPlayerInput] = useState('')
+
+  const handleAddPlayer = () => {
+    addPlayer(playerInput)
+    setPlayerInput('')
+  }
+
+  return (
+    <div className="min-h-screen h-screen bg-black p-0 flex flex-col items-center justify-center overflow-hidden">
+      <div className="max-w-2xl w-full mx-auto space-y-8 bg-[#111] rounded-3xl shadow-xl border border-[#222] p-4 sm:p-8 flex flex-col justify-center items-center h-[90vh]">
+        <div className="text-center mb-8">
+          <h1 className="text-5xl font-extrabold text-white mb-2 tracking-tight">Imposter Game</h1>
+          <p className="text-lg text-[#888] font-medium">Find the secret agents among your friends</p>
+        </div>
+
+        {error && (
+          <Alert variant="destructive" className="border-2 border-[#fb8500] bg-[#ffb703]/30 animate-pulse">
+            <AlertDescription className="text-lg font-medium text-[#fb8500]">
+              {error}
+            </AlertDescription>
+          </Alert>
+        )}
+
+        <Card className="p-8 bg-[#181818] border border-[#222] rounded-2xl shadow-md w-full">
+          <div className="flex items-center gap-2 mb-4">
+            <PersonIcon className="w-6 h-6 text-[#fb8500]" />
+            <h2 className="text-2xl font-bold text-white">Add Players</h2>
+          </div>
+          <div className="flex gap-2 mb-4">
+            <Input
+              placeholder="Enter player name"
+              value={playerInput}
+              onChange={(e) => setPlayerInput(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && handleAddPlayer()}
+              className="text-lg border border-[#333] bg-black text-white placeholder-[#888] focus:border-[#fb8500] rounded-lg"
+            />
+            <Button
+              onClick={handleAddPlayer}
+              className="bg-[#fb8500] hover:bg-[#ffb703] text-black font-bold px-6 rounded-lg shadow"
+              size="lg"
+            >
+              <PlusIcon className="w-4 h-4 mr-2" />
+              Add
+            </Button>
+          </div>
+
+          <div className="flex flex-wrap gap-2 mt-2">
+            {gameState.players.map((player, index) => (
+              <div
+                key={index}
+                className="flex items-center px-3 py-1 rounded-full border border-[#333] text-xs font-semibold bg-[#222] text-white whitespace-nowrap"
+                style={{ minWidth: 0, maxWidth: '100%' }}
+              >
+                <span className="truncate">{index + 1}. {player}</span>
+                <button
+                  type="button"
+                  aria-label="Remove"
+                  onClick={() => removePlayer(index)}
+                  className="ml-1 p-0.5 rounded hover:bg-[#fb8500]/60 transition"
+                >
+                  <CrossCircledIcon className="w-4 h-4 text-[#fb8500]" />
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 p-3 bg-[#111] rounded-lg text-center border border-[#222]">
+            <p className="text-lg font-semibold text-[#fb8500]">
+              Players: {gameState.players.length} {gameState.players.length < 3 && '(need at least 3)'}
+            </p>
+          </div>
+        </Card>
+
+        <Card className="p-8 bg-[#181818] border border-[#222] rounded-2xl shadow-md w-full">
+          <div className="flex items-center gap-2 mb-4">
+            <GearIcon className="w-6 h-6 text-[#fb8500]" />
+            <h2 className="text-2xl font-bold text-white">Game Settings</h2>
+          </div>
+
+          <div className="space-y-6">
+            <div>
+              <Label className="text-lg font-semibold text-white mb-2 block">Category</Label>
+              <select
+                className="w-full p-3 border border-[#333] rounded-lg text-lg focus:border-[#fb8500] bg-black text-white transition-all focus:ring-2 focus:ring-[#fb8500]/60"
+                value={gameState.selectedCategoryId || ''}
+                onChange={(e) => setGameState(prev => ({ ...prev, selectedCategoryId: e.target.value }))}
+              >
+                <option value="">Choose your adventure...</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <Label className="text-lg font-semibold text-white mb-2 block">Number of Imposters</Label>
+              <div className="flex gap-2">
+                {[1, 2, 3].map((num) => (
+                  <Button
+                    key={num}
+                    type="button"
+                    onClick={() => setGameState(prev => ({ ...prev, imposterCount: num }))}
+                    className={`flex-1 text-lg font-bold border rounded-lg transition-all duration-150 ${gameState.imposterCount === num
+                      ? 'bg-[#fb8500] border-[#fb8500] text-black shadow-lg scale-105'
+                      : 'bg-[#222] border-[#333] text-white hover:bg-[#fb8500]/20 hover:scale-105'
+                      }`}
+                  >
+                    {num}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        <Button
+          onClick={startGame}
+          disabled={loading || gameState.players.length < 3 || !gameState.selectedCategoryId}
+          className="w-full text-xl font-bold py-4 bg-[#fb8500] hover:bg-[#ffb703] text-black shadow-lg rounded-lg transition-all disabled:opacity-50"
+          size="lg"
+        >
+          <PlayIcon className="w-5 h-5 mr-2" />
+          {loading ? 'Starting Game...' : 'Start Game'}
+        </Button>
+      </div>
+    </div>
+  )
+}
