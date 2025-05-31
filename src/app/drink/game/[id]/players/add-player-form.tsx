@@ -54,7 +54,7 @@ function AddPlayerForm({ gameId, gameSettings }: { gameId: string; gameSettings:
     });
     setIsSubmitting(false);
     if (result?.success) {
-      router.push(`/game/${result.data.gameCode}/mode`);
+      router.push(`/drink/game/${result.data.gameCode}/mode`);
     } else {
       alert('Failed to start game. Please try again.');
     }
