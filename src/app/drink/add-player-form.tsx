@@ -4,14 +4,12 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { GameSettings } from '@/db/schema';
-import { dbUpdateGameSettings } from '../actions';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Plus, Play, X } from 'lucide-react';
+import { useDrinkGame } from './game-provider';
 
 const AddPlayerFormSchema = z.object({
   hostName: z
@@ -21,10 +19,9 @@ const AddPlayerFormSchema = z.object({
 });
 type AddPlayerFormData = z.infer<typeof AddPlayerFormSchema>;
 
-function AddPlayerForm({ gameId, gameSettings }: { gameId: string; gameSettings: GameSettings }) {
+function AddPlayerForm() {
   const router = useRouter();
-  const [players, setPlayers] = useState<string[]>(gameSettings.players || []);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { players, setPlayers } = useDrinkGame();
 
   const {
     register,
@@ -44,20 +41,9 @@ function AddPlayerForm({ gameId, gameSettings }: { gameId: string; gameSettings:
 
   async function handleStartGame() {
     if (players.length === 0) return;
-    setIsSubmitting(true);
-    const result = await dbUpdateGameSettings({
-      gameId,
-      gameSettings: {
-        ...gameSettings,
-        players,
-      },
-    });
-    setIsSubmitting(false);
-    if (result?.success) {
-      router.push(`/drink/game/${result.data.gameCode}/mode`);
-    } else {
-      alert('Failed to start game. Please try again.');
-    }
+    setPlayers((prev) => [...new Set(prev)]);
+
+    router.push(`/drink//mode`);
   }
 
   return (
@@ -120,7 +106,6 @@ function AddPlayerForm({ gameId, gameSettings }: { gameId: string; gameSettings:
               {...register('hostName')}
               className={`text-white placeholder-white tracking-widest bg-purple-950/80 border-purple-400 focus-visible:ring-purple-500 h-14 px-5 py-3 rounded-xl ${createErrors.hostName ? 'border-red-500' : ''}`}
               autoComplete="off"
-              disabled={isSubmitting}
             />
           </div>
           <div className="flex flex-row gap-2 items-center">
@@ -128,7 +113,6 @@ function AddPlayerForm({ gameId, gameSettings }: { gameId: string; gameSettings:
               type="submit"
               size="icon"
               className="bg-gradient-to-r from-purple-600 to-purple-500 text-white h-14 w-14 rounded-xl"
-              disabled={isSubmitting}
               aria-label="Add Player"
             >
               <Plus size={28} />
@@ -139,7 +123,7 @@ function AddPlayerForm({ gameId, gameSettings }: { gameId: string; gameSettings:
               size="icon"
               className="bg-green-600 text-white h-14 w-14 rounded-xl"
               onClick={handleStartGame}
-              disabled={players.length === 0 || isSubmitting}
+              disabled={players.length === 0}
               aria-label="Start Game"
             >
               <Play size={28} />

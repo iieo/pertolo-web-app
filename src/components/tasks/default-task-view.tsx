@@ -1,15 +1,15 @@
 
-import { useGame } from '@/app/drink/game/[id]/game-provider';
+import { useDrinkGame } from '@/app/drink/game-provider';
 import { DefaultTask } from '@/types/task';
 import { cw } from '@/util/tailwind';
 
 function DefaultTaskView({ task }: { task: DefaultTask }) {
-  const { replacePlayerNames, showNextTask, gradient } = useGame();
+  const { replacePlayerNames, showNextTask, gradient } = useDrinkGame();
 
   return (
     <div
       className={cw(
-        'flex flex-col items-center justify-center min-h-screen w-full p-4 text-center bg-gradient-to-br select-none',
+        'flex flex-col items-center justify-center h-[calc(100dvh-2rem)] w-full p-4 text-center bg-gradient-to-br select-none',
         gradient,
       )}
       onClick={showNextTask}

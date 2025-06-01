@@ -1,27 +1,26 @@
 'use client';
-import { GameModel, GameSettings, TaskModel } from '@/db/schema';
+import { DrinkCategoryModel, DrinkTaskModel } from '@/db/schema';
 import { replaceNames } from '@/util/tasks';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 type GameContextType = {
-  settings: GameSettings;
-  game: GameModel;
-  currentTask: TaskModel | null;
-  tasks: TaskModel[];
-  gradient: string | undefined;
+  players: string[];
+  setPlayers: React.Dispatch<React.SetStateAction<string[]>>;
+  category: DrinkCategoryModel | null;
+  setCategory: React.Dispatch<React.SetStateAction<DrinkCategoryModel | null>>;
+  tasks: DrinkTaskModel[];
+  setTasks: React.Dispatch<React.SetStateAction<DrinkTaskModel[]>>;
   showNextTask: () => void;
+  currentTask: DrinkTaskModel | null;
+  gradient: string | undefined;
   replacePlayerNames: (content: string) => string;
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
 export const GameProvider = ({
   children,
-  game,
-  tasks,
 }: {
   children: ReactNode;
-  game: GameModel;
-  tasks: TaskModel[];
 }) => {
   const getRandomGradient = React.useCallback(() => {
     const gradients = [
@@ -33,6 +32,9 @@ export const GameProvider = ({
     ];
     return gradients[Math.floor(Math.random() * gradients.length)];
   }, []);
+  const [players, setPlayers] = useState<string[]>([]);
+  const [category, setCategory] = useState<DrinkCategoryModel | null>(null);
+  const [tasks, setTasks] = useState<DrinkTaskModel[]>([]);
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
   const [gradient, setGradient] = useState<string | undefined>(undefined);
 
@@ -40,9 +42,12 @@ export const GameProvider = ({
     setGradient(getRandomGradient());
   }, [getRandomGradient]);
 
+  const currentTask = currentTaskIndex < tasks.length ? tasks[currentTaskIndex] ?? null : null;
+
+
   const replacePlayerNames = React.useCallback(
-    (content: string) => replaceNames(content, game.gameSettings.players),
-    [game.gameSettings.players],
+    (content: string) => replaceNames(content, players),
+    [players],
   );
 
   const showNextTask = React.useCallback(() => {
@@ -50,18 +55,19 @@ export const GameProvider = ({
     setGradient(getRandomGradient());
   }, [getRandomGradient]);
 
-  const currentTask = tasks[currentTaskIndex] ?? null;
-
   return (
     <GameContext.Provider
       value={{
-        game,
-        settings: game.gameSettings,
-        replacePlayerNames,
         gradient,
+        players,
+        setPlayers,
+        category,
+        setCategory,
         tasks,
+        setTasks,
         currentTask,
         showNextTask,
+        replacePlayerNames
       }}
     >
       {children}
@@ -69,7 +75,7 @@ export const GameProvider = ({
   );
 };
 
-export const useGame = () => {
+export const useDrinkGame = () => {
   const context = useContext(GameContext);
   if (context === undefined) {
     throw new Error('useGame must be used within a GameProvider');

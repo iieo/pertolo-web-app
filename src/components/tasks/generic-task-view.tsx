@@ -4,10 +4,10 @@ import ChallengeTaskView from './challenge-task-view';
 import FactTaskView from './fact-task-view';
 
 import GameEndScreen from './game-end-screen';
-import { useGame } from '@/app/drink/game/[id]/game-provider';
+import { useDrinkGame } from '@/app/drink/game-provider';
 
 function GenericTaskViewer() {
-  const { currentTask } = useGame();
+  const { currentTask } = useDrinkGame();
 
   if (currentTask === null) {
     return <GameEndScreen />;

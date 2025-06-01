@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import Footer from '@/components/footer';
+import { GameProvider } from './game-provider';
 
 export const metadata: Metadata = {
     title: 'Pertolo',
-    description: 'Play games with your friends!',
+    description: 'The best drinking game!',
 };
 
 export default function Layout({
@@ -12,9 +12,8 @@ export default function Layout({
     children: React.ReactNode;
 }>) {
     return (
-        <div>
+        <GameProvider>
             {children}
-            <Footer className='text-white fixed bottom-0 left-0 w-full bg-purple-950' />
-        </div>
+        </GameProvider>
     );
 }
