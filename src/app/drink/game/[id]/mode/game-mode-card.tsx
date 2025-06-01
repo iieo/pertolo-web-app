@@ -17,7 +17,7 @@ function GameModeCard({ game, mode }: { game: GameModel; mode: GameModeModel }) 
       },
     });
     if (result) {
-      redirect(`/game/${game.gameCode}`);
+      redirect(`/drink/game/${game.gameCode}`);
     } else {
       // Could show an error alert here if this were a client component
       console.error('Failed to set game mode');

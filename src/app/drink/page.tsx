@@ -44,7 +44,7 @@ export default function HomePage() {
     setCreateError(null);
     const result = await createGame();
     if (result.success) {
-      redirect(`/game/${result.data.gameCode}/players`);
+      redirect(`/drink/game/${result.data.gameCode}/players`);
     } else {
       setCreateError(result.error);
     }
@@ -56,7 +56,7 @@ export default function HomePage() {
     setJoinError(null);
     const result = await joinGame(data.gameCode);
     if (result.success) {
-      redirect(`/game/${data.gameCode}`);
+      redirect(`/drink/game/${data.gameCode}`);
     } else {
       setJoinError(result.error);
     }
@@ -130,9 +130,8 @@ export default function HomePage() {
                   minLength={6}
                   autoComplete="off"
                   placeholder="ABC123"
-                  className={`uppercase text-white tracking-widest text-lg bg-purple-950/80 border-gray-700 focus-visible:ring-purple-500 ${
-                    joinErrors.gameCode ? 'border-red-500' : ''
-                  }`}
+                  className={`uppercase text-white tracking-widest text-lg bg-purple-950/80 border-gray-700 focus-visible:ring-purple-500 ${joinErrors.gameCode ? 'border-red-500' : ''
+                    }`}
                   disabled={isJoining}
                   {...registerJoin('gameCode', {
                     onChange: (e) => {
