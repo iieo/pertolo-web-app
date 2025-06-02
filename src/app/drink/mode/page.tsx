@@ -1,9 +1,7 @@
 import { getGameModes } from './actions';
 
 
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 import GameModeCard from './game-mode-card';
 
 export default async function GameModeScreen() {

@@ -29,7 +29,7 @@ export default function GamePage() {
 
                 setTasks(tasksResult.data);
                 setError(null);
-            } catch (err) {
+            } catch {
                 setError('Fehler beim Laden der Aufgaben');
             } finally {
                 setLoading(false);
