@@ -1,27 +1,7 @@
 import { TaskContent } from '@/types/task';
-import { pgTable, uuid, varchar, text, timestamp, pgEnum, json } from 'drizzle-orm/pg-core';
+import { pgTable, uuid, varchar, text, timestamp, json } from 'drizzle-orm/pg-core';
 
-export const taskTypeEnum = pgEnum('task_type', [
-  'question',
-  'challenge',
-  'rule',
-  'vote',
-  'group_task',
-  'individual_truth',
-  'individual_dare',
-]);
-export const taskTargetEnum = pgEnum('task_target', [
-  'individual',
-  'team',
-  'all_players',
-  'specific_player',
-  'gender_based',
-  'random_player',
-  'previous_player',
-  'next_player',
-]);
-
-export const gameModesTable = pgTable('game_modes', {
+export const drinkCategoryTable = pgTable('drink_categories', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: varchar('name', { length: 100 }).notNull().unique(),
   description: text('description'),
@@ -32,7 +12,7 @@ export const gameModesTable = pgTable('game_modes', {
     .$onUpdate(() => new Date()),
 });
 
-export const tasksTable = pgTable('tasks', {
+export const drinkTaskTable = pgTable('drink_tasks', {
   id: uuid('id').primaryKey().defaultRandom(),
   content: json('content').$type<TaskContent>().notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -42,34 +22,14 @@ export const tasksTable = pgTable('tasks', {
     .$onUpdate(() => new Date()),
 });
 
-export const gameModeTasksTable = pgTable('game_mode_tasks', {
+export const DrinkTaskCategoryMapping = pgTable('drink_task_category_mapping', {
   id: uuid('id').primaryKey().defaultRandom(),
   gameModeId: uuid('game_mode_id')
     .notNull()
-    .references(() => gameModesTable.id, { onDelete: 'cascade' }),
+    .references(() => drinkCategoryTable.id, { onDelete: 'cascade' }),
   taskId: uuid('task_id')
     .notNull()
-    .references(() => tasksTable.id, { onDelete: 'cascade' }),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at')
-    .defaultNow()
-    .notNull()
-    .$onUpdate(() => new Date()),
-});
-
-export type GameSettings = {
-  players: string[];
-  currentGameModeId: string | null;
-  currentTaskId: string | null;
-};
-
-export const gamesTable = pgTable('games', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  gameCode: varchar('game_code', { length: 4 }).unique().notNull(),
-  gameSettings: json('game_settings')
-    .$type<GameSettings>()
-    .notNull()
-    .default({ players: [], currentGameModeId: null, currentTaskId: null }),
+    .references(() => drinkTaskTable.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
     .defaultNow()
@@ -101,8 +61,5 @@ export const imposterCategoriesTable = pgTable('impostor_categories', {
     .$onUpdate(() => new Date()),
 });
 
-// Define relation types for potential use with drizzle queries
-export type GameModel = typeof gamesTable.$inferSelect;
-export type InsertGameModel = typeof gamesTable.$inferInsert;
-export type GameModeModel = typeof gameModesTable.$inferSelect;
-export type TaskModel = typeof tasksTable.$inferSelect;
+export type DrinkCategoryModel = typeof drinkCategoryTable.$inferSelect;
+export type DrinkTaskModel = typeof drinkTaskTable.$inferSelect;

@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
-import Footer from '@/components/footer';
 
 export const metadata: Metadata = {
     title: 'Pertolo',
-    description: 'Play games with your friends!',
+    description: 'Find the imposter!',
 };
 
 export default function Layout({
@@ -14,7 +13,6 @@ export default function Layout({
     return (
         <div>
             {children}
-            <Footer className='text-white' />
         </div>
     );
 }

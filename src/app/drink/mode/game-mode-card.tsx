@@ -1,27 +1,16 @@
 'use client';
 
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { GameModel, GameModeModel } from '@/db/schema';
+import { DrinkCategoryModel } from '@/db/schema';
 import { redirect } from 'next/navigation';
-import { dbUpdateGameSettings } from '../actions';
+import { useDrinkGame } from '../game-provider';
 
-function GameModeCard({ game, mode }: { game: GameModel; mode: GameModeModel }) {
+
+function GameModeCard({ mode }: { mode: DrinkCategoryModel }) {
+  const { setCategory } = useDrinkGame();
   async function setGameMode() {
-    const settings = game.gameSettings;
-
-    const result = await dbUpdateGameSettings({
-      gameId: game.id,
-      gameSettings: {
-        ...settings,
-        currentGameModeId: mode.id,
-      },
-    });
-    if (result) {
-      redirect(`/drink/game/${game.gameCode}`);
-    } else {
-      // Could show an error alert here if this were a client component
-      console.error('Failed to set game mode');
-    }
+    setCategory(mode);
+    redirect(`/drink/game`);
   }
 
   return (
