@@ -43,7 +43,7 @@ function AddPlayerForm() {
     if (players.length === 0) return;
     setPlayers((prev) => [...new Set(prev)]);
 
-    router.push(`/drink//mode`);
+    router.push(`/drink/mode`);
   }
 
   return (
