@@ -102,19 +102,31 @@ export const SetupPhase = () => {
 
           <div className="space-y-6">
             <div>
-              <Label className="text-lg font-semibold text-white mb-2 block">Category</Label>
-              <select
-                className="w-full p-3 border border-[#333] rounded-lg text-lg focus:border-[#fb8500] bg-black text-white transition-all focus:ring-2 focus:ring-[#fb8500]/60"
-                value={gameState.selectedCategoryId || ''}
-                onChange={(e) => setGameState(prev => ({ ...prev, selectedCategoryId: e.target.value }))}
-              >
-                <option value="">Choose your adventure...</option>
+              <Label className="text-lg font-semibold text-white mb-4 block">Category</Label>
+              <div className="grid grid-cols-2 gap-3">
                 {categories.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
+                  <Card
+                    key={category.id}
+                    className={`cursor-pointer transition-all duration-200 border-2 ${gameState.selectedCategoryId === category.id
+                      ? 'border-[#fb8500] bg-[#fb8500]/20 shadow-lg'
+                      : 'border-[#333] bg-[#222] hover:border-[#fb8500]/50 hover:bg-[#fb8500]/10'
+                      }`}
+                    onClick={() => setGameState(prev => ({ ...prev, selectedCategoryId: category.id }))}
+                  >
+                    <div className="p-4">
+                      <h3 className="text-white font-semibold text-base leading-tight">
+                        {category.name}
+                      </h3>
+                      {category.description && (
+                        <p className="text-[#888] text-sm mt-1 leading-tight">
+                          {category.description}
+                        </p>
+                      )}
+                    </div>
+                  </Card>
                 ))}
-              </select>
+              </div>
+
             </div>
 
             <div>
