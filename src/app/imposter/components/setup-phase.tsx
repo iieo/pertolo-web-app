@@ -67,23 +67,31 @@ export const SetupPhase = () => {
             </Button>
           </div>
 
-          <div className="flex flex-wrap gap-2 mt-2">
+          <div className="grid grid-cols-2 gap-3 mt-4">
             {gameState.players.map((player, index) => (
-              <div
+              <Card
                 key={index}
-                className="flex items-center px-3 py-1 rounded-full border border-[#333] text-xs font-semibold bg-[#222] text-white whitespace-nowrap"
-                style={{ minWidth: 0, maxWidth: '100%' }}
+                className="border border-[#333] bg-[#222] hover:border-[#fb8500]/50 transition-all duration-200"
               >
-                <span className="truncate">{index + 1}. {player}</span>
-                <button
-                  type="button"
-                  aria-label="Remove"
-                  onClick={() => removePlayer(index)}
-                  className="ml-1 p-0.5 rounded hover:bg-[#fb8500]/60 transition"
-                >
-                  <CrossCircledIcon className="w-4 h-4 text-[#fb8500]" />
-                </button>
-              </div>
+                <div className="flex items-center justify-between p-3">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="flex items-center justify-center w-6 h-6 rounded-full bg-[#fb8500] text-black text-xs font-bold">
+                      {index + 1}
+                    </div>
+                    <span className="text-white font-medium truncate text-sm">
+                      {player}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    aria-label="Remove player"
+                    onClick={() => removePlayer(index)}
+                    className="flex-shrink-0 p-1 rounded-full hover:bg-[#fb8500]/20 transition-colors duration-200 group"
+                  >
+                    <CrossCircledIcon className="w-4 h-4 text-[#888] group-hover:text-[#fb8500] transition-colors" />
+                  </button>
+                </div>
+              </Card>
             ))}
           </div>
 
