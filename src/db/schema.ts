@@ -39,7 +39,7 @@ export const DrinkTaskCategoryMapping = pgTable('drink_task_category_mapping', {
 
 export const impostorWordsTable = pgTable('impostor_words', {
   id: uuid('id').primaryKey().defaultRandom(),
-  word: varchar('word', { length: 100 }).notNull().unique(),
+  word: varchar('word', { length: 100 }).notNull(),
   categoryId: uuid('category_id')
     .notNull()
     .references(() => imposterCategoriesTable.id),

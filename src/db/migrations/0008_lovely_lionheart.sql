@@ -1,0 +1,1 @@
+ALTER TABLE "impostor_words" DROP CONSTRAINT "impostor_words_word_unique";

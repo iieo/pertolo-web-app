@@ -14,7 +14,8 @@
     "db:generate": "pnpm drizzle-kit generate --config=./src/db/drizzle.config.ts",
     "db:migrate": "pnpm drizzle-kit migrate --config=./src/db/drizzle.config.ts",
     "db:studio": "pnpm drizzle-kit studio --config=src/db/drizzle.config.ts",
-    "db:introspect": "dotenv -e .env -- drizzle-kit studio --config=src/db/drizzle.config.ts"
+    "db:introspect": "dotenv -e .env -- drizzle-kit studio --config=src/db/drizzle.config.ts",
+    "seed:imposter": "dotenv -e .env -- tsx ./src/db/seed/import-imposter-words.ts"
   },
   "packageManager": "pnpm@9.6.0",
   "dependencies": {
