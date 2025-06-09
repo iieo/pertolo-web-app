@@ -17,12 +17,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="bg-black">
       <Head>
         <meta name="theme-color" content="black" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </Head>
-      <body className={inter.className}>{children}
+      <body className={`${inter.className} bg-black`}>{children}
         <Footer className='h-[2rem]' />
       </body>
     </html>
