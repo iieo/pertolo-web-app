@@ -1,5 +1,5 @@
 export type WordResponse = {
-  word: string;
+  words: string[];
 };
 
 export type ErrorResponse = {

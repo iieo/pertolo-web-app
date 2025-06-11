@@ -17,20 +17,48 @@
   "paths": {
     "/random-word": {
       "get": {
-        "summary": "Get a random word",
-        "description": "Returns a random word from the impostor words database",
-        "operationId": "getRandomWord",
+        "summary": "Get random words",
+        "description": "Returns an array of random words from the impostor words database",
+        "operationId": "getRandomWords",
         "tags": ["Words"],
+        "parameters": [
+          {
+            "name": "count",
+            "in": "query",
+            "description": "Number of words to return (1-100)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 1
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Successfully retrieved a random word",
+            "description": "Successfully retrieved random words",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WordResponse"
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "example": ["elephant", "guitar", "ocean"]
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid count parameter",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 },
                 "example": {
-                  "word": "elephant"
+                  "error": "Count must be between 1 and 100"
                 }
               }
             }
@@ -56,12 +84,15 @@
     "schemas": {
       "WordResponse": {
         "type": "object",
-        "required": ["word"],
+        "required": ["words"],
         "properties": {
-          "word": {
-            "type": "string",
-            "description": "A random word from the database",
-            "example": "elephant"
+          "words": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "An array of random words from the database",
+            "example": ["elephant", "guitar", "ocean"]
           }
         }
       },
