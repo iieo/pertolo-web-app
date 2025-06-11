@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { FactTask } from '@/types/task';
 import { cw } from '@/util/tailwind';
-import { useDrinkGame } from '@/app/drink/game-provider';
+import { useDrinkGame } from '@/app/(app)/drink/game-provider';
 
 function FactTaskView({ task }: { task: FactTask }) {
   const { replacePlayerNames, showNextTask, gradient } = useDrinkGame();

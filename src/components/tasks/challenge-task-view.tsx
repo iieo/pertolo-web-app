@@ -1,5 +1,5 @@
 
-import { useDrinkGame } from '@/app/drink/game-provider';
+import { useDrinkGame } from '@/app/(app)/drink/game-provider';
 import { ChallengeTask } from '@/types/task';
 import { cw } from '@/util/tailwind';
 
