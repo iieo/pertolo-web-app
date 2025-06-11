@@ -1,0 +1,87 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Pertolo API",
+    "version": "0.1.0",
+    "description": "API documentation for the Pertolo application",
+    "contact": {
+      "name": "API Support"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "Local development server"
+    }
+  ],
+  "paths": {
+    "/random-word": {
+      "get": {
+        "summary": "Get a random word",
+        "description": "Returns a random word from the impostor words database",
+        "operationId": "getRandomWord",
+        "tags": ["Words"],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved a random word",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WordResponse"
+                },
+                "example": {
+                  "word": "elephant"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                },
+                "example": {
+                  "error": "No words found"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "WordResponse": {
+        "type": "object",
+        "required": ["word"],
+        "properties": {
+          "word": {
+            "type": "string",
+            "description": "A random word from the database",
+            "example": "elephant"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error message describing what went wrong",
+            "example": "No words found"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Words",
+      "description": "Operations related to word retrieval"
+    }
+  ]
+}
