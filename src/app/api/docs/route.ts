@@ -1,9 +1,6 @@
-import { NextRequest } from 'next/server';
 import swaggerSpec from './swagger.json';
 
-const swaggerUiAssetPath = '/node_modules/swagger-ui-dist';
-
-const generateSwaggerHTML = (spec: any) => {
+const generateSwaggerHTML = (spec: object) => {
   return `
 <!DOCTYPE html>
 <html>
@@ -54,7 +51,7 @@ const generateSwaggerHTML = (spec: any) => {
 </html>`;
 };
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const html = generateSwaggerHTML(swaggerSpec);
 
   return new Response(html, {

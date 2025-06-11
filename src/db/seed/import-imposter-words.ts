@@ -1,6 +1,5 @@
 import { db } from '@/db';
 import { imposterCategoriesTable, impostorWordsTable } from '@/db/schema';
-import { eq } from 'drizzle-orm';
 
 const words = [
   'Tresor',
