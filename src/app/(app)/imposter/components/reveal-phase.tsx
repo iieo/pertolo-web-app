@@ -75,7 +75,9 @@ export const RevealPhase = () => {
 
   const handleNextPlayer = () => {
     setIsCardRevealed(false)
-    nextPlayer()
+    setTimeout(() => {
+      nextPlayer()
+    }, 1000);
   }
 
   return (
