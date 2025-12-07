@@ -1,7 +1,8 @@
 import { db } from '@/db';
-import { drinkCategoryTable, DrinkTaskCategoryMapping, drinkTaskTable } from '@/db/schema';
+import { drinkCategoryTable, drinkTaskTable } from '@/db/schema';
 import { DefaultTask } from '@/types/task';
 import { exit } from 'process';
+
 const defaultTasks: DefaultTask[] = [
   {
     type: 'default',
@@ -22,22 +23,11 @@ async function importData() {
     return;
   }
 
-  const taskRows = await db
-    .insert(drinkTaskTable)
-    .values(
-      defaultTasks.map((content) => {
-        return {
-          content: content,
-        };
-      }),
-    )
-    .returning();
-
-  await db.insert(DrinkTaskCategoryMapping).values(
-    taskRows.map((taskRow) => {
+  await db.insert(drinkTaskTable).values(
+    defaultTasks.map((content) => {
       return {
-        gameModeId: gameModeRow.id,
-        taskId: taskRow.id,
+        content: content,
+        categoryId: gameModeRow.id,
       };
     }),
   );

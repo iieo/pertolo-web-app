@@ -2,7 +2,7 @@
 
 import { eq, sql } from 'drizzle-orm';
 import { db } from '@/db';
-import { DrinkTaskModel, drinkTaskTable, DrinkTaskCategoryMapping } from '@/db/schema';
+import { DrinkTaskModel, drinkTaskTable } from '@/db/schema';
 import { Result } from '@/util/types';
 
 export async function dbGetRandomTasksByCategory(
@@ -13,12 +13,12 @@ export async function dbGetRandomTasksByCategory(
     .select({
       id: drinkTaskTable.id,
       content: drinkTaskTable.content,
+      categoryId: drinkTaskTable.categoryId,
       createdAt: drinkTaskTable.createdAt,
       updatedAt: drinkTaskTable.updatedAt,
     })
     .from(drinkTaskTable)
-    .innerJoin(DrinkTaskCategoryMapping, eq(drinkTaskTable.id, DrinkTaskCategoryMapping.taskId))
-    .where(eq(DrinkTaskCategoryMapping.gameModeId, categoryId))
+    .where(eq(drinkTaskTable.categoryId, categoryId))
     .orderBy(sql`RANDOM()`)
     .limit(count);
 

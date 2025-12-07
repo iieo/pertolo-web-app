@@ -15,21 +15,9 @@ export const drinkCategoryTable = pgTable('drink_categories', {
 export const drinkTaskTable = pgTable('drink_tasks', {
   id: uuid('id').primaryKey().defaultRandom(),
   content: json('content').$type<TaskContent>().notNull(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at')
-    .defaultNow()
-    .notNull()
-    .$onUpdate(() => new Date()),
-});
-
-export const DrinkTaskCategoryMapping = pgTable('drink_task_category_mapping', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  gameModeId: uuid('game_mode_id')
+  categoryId: uuid('category_id')
     .notNull()
     .references(() => drinkCategoryTable.id, { onDelete: 'cascade' }),
-  taskId: uuid('task_id')
-    .notNull()
-    .references(() => drinkTaskTable.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')
     .defaultNow()
