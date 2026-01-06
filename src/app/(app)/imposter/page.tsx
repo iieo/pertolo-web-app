@@ -12,7 +12,7 @@ const ImposterGameContent = () => {
     case 'setup':
       return <SetupPhase />
     case 'reveal':
-      return <RevealPhase />
+      return <RevealPhase key={gameState.currentPlayerIndex} />
     case 'playing':
       return <PlayingPhase />
     default:

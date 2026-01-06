@@ -129,7 +129,8 @@ export const GameProvider = ({ children }: GameProviderProps) => {
         phase: 'reveal',
         imposters: imposterIndices,
         selectedWord: word.word,
-        currentPlayerIndex: 0
+        currentPlayerIndex: 0,
+        selectedCategoryId: categoryId
       }))
     } catch (err) {
       setError('Failed to start game')
