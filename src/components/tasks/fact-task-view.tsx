@@ -45,7 +45,8 @@ function FactTaskView({ task }: { task: FactTask }) {
               btnClass += 'opacity-60 bg-purple-800/50 border-purple-600 text-purple-200';
             }
           } else {
-            btnClass += 'bg-purple-800/80 border-purple-400 text-purple-100 hover:bg-purple-700/90 hover:border-purple-300 cursor-pointer';
+            btnClass +=
+              'bg-purple-800/80 border-purple-400 text-purple-100 hover:bg-purple-700/90 hover:border-purple-300 cursor-pointer';
           }
           return (
             <button
@@ -59,16 +60,8 @@ function FactTaskView({ task }: { task: FactTask }) {
           );
         })}
       </div>
-      {!selected && (
-        <div className="mt-8 text-sm text-purple-200/60">
-          Wähle eine Antwort
-        </div>
-      )}
-      {selected && (
-        <div className="mt-8 text-sm text-purple-200/60">
-          Weiter in 2 Sekunden...
-        </div>
-      )}
+      {!selected && <div className="mt-8 text-sm text-purple-200/60">Wähle eine Antwort</div>}
+      {selected && <div className="mt-8 text-sm text-purple-200/60">Weiter in 2 Sekunden...</div>}
     </div>
   );
 }

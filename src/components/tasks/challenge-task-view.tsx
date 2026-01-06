@@ -1,4 +1,3 @@
-
 import { useDrinkGame } from '@/app/(app)/drink/game-provider';
 import { ChallengeTask } from '@/types/task';
 import { cw } from '@/util/tailwind';
@@ -20,9 +19,7 @@ function ChallengeTaskView({ task }: { task: ChallengeTask }) {
       <p className="mt-4 text-xl text-purple-100/80 font-medium">
         {replacePlayerNames(task.challenge)}
       </p>
-      <div className="mt-8 text-sm text-purple-200/60">
-        Tippe zum Fortfahren
-      </div>
+      <div className="mt-8 text-sm text-purple-200/60">Tippe zum Fortfahren</div>
     </div>
   );
 }

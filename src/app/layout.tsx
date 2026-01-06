@@ -22,8 +22,9 @@ export default function RootLayout({
         <meta name="theme-color" content="black" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </Head>
-      <body className={`${inter.className} bg-black`}>{children}
-        <Footer className='h-[2rem]' />
+      <body className={`${inter.className} bg-black`}>
+        {children}
+        <Footer className="h-[2rem]" />
       </body>
     </html>
   );

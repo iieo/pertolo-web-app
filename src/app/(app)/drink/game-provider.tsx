@@ -17,11 +17,7 @@ type GameContextType = {
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
-export const GameProvider = ({
-  children,
-}: {
-  children: ReactNode;
-}) => {
+export const GameProvider = ({ children }: { children: ReactNode }) => {
   const getRandomGradient = React.useCallback(() => {
     const gradients = [
       'from-purple-950 via-purple-900 to-gray-900',
@@ -42,8 +38,7 @@ export const GameProvider = ({
     setGradient(getRandomGradient());
   }, [getRandomGradient]);
 
-  const currentTask = currentTaskIndex < tasks.length ? tasks[currentTaskIndex] ?? null : null;
-
+  const currentTask = currentTaskIndex < tasks.length ? (tasks[currentTaskIndex] ?? null) : null;
 
   const replacePlayerNames = React.useCallback(
     (content: string) => replaceNames(content, players),
@@ -67,7 +62,7 @@ export const GameProvider = ({
         setTasks,
         currentTask,
         showNextTask,
-        replacePlayerNames
+        replacePlayerNames,
       }}
     >
       {children}
