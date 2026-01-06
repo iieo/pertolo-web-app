@@ -14,4 +14,5 @@ export type GameState = {
   imposterCount: number
   currentPlayerIndex: number
   selectedWord: string | null
+  showCategoryToImposter?: boolean
 }

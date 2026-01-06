@@ -41,6 +41,7 @@ export const GameProvider = ({ children }: GameProviderProps) => {
     imposterCount: 1,
     currentPlayerIndex: 0,
     selectedWord: null,
+    showCategoryToImposter: false,
   })
 
   const [categories, setCategories] = useState<Category[]>([])
@@ -77,8 +78,8 @@ export const GameProvider = ({ children }: GameProviderProps) => {
   }
 
   const startGame = async () => {
-    if (gameState.players.length < 3 || !gameState.selectedCategoryId) {
-      setError('Need at least 3 players and a category selected')
+    if (gameState.players.length < 3) {
+      setError('Need at least 3 players')
       return
     }
 
@@ -91,8 +92,25 @@ export const GameProvider = ({ children }: GameProviderProps) => {
     setError(null)
 
     try {
+      let categoryId = gameState.selectedCategoryId
+      
+      // If no category selected (Random Mode), pick one now
+      if (!categoryId) {
+        if (categories.length === 0) {
+          setError('No categories available')
+          return
+        }
+        const randomCat = categories[Math.floor(Math.random() * categories.length)]
+        if (!randomCat) {
+          setError('Failed to select random category')
+          setLoading(false)
+          return
+        }
+        categoryId = randomCat.id
+      }
+
       // Get random word
-      const word = await dbGetRandomWord(gameState.selectedCategoryId)
+      const word = await dbGetRandomWord(categoryId)
 
       if (!word) {
         setError('No words found for this category')
@@ -144,6 +162,7 @@ export const GameProvider = ({ children }: GameProviderProps) => {
       imposterCount: prev.imposterCount,
       currentPlayerIndex: 0,
       selectedWord: null,
+      showCategoryToImposter: prev.showCategoryToImposter,
     }))
     setError(null)
   }

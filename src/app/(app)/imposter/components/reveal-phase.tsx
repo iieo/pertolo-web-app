@@ -2,12 +2,11 @@
 
 import { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { EyeNoneIcon, EyeOpenIcon } from '@radix-ui/react-icons'
 import { useGame } from '../game-provider'
 
 export const RevealPhase = () => {
-  const { gameState, nextPlayer } = useGame()
+  const { gameState, nextPlayer, categories } = useGame()
   const [isCardRevealed, setIsCardRevealed] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const [dragStartY, setDragStartY] = useState(0)
@@ -15,6 +14,7 @@ export const RevealPhase = () => {
 
   const currentPlayer = gameState.players[gameState.currentPlayerIndex]
   const isImposter = gameState.imposters.has(gameState.currentPlayerIndex)
+  const selectedCategory = categories.find(c => c.id === gameState.selectedCategoryId)
 
   const handleCardClick = () => {
     if (!isDragging) {
@@ -81,104 +81,105 @@ export const RevealPhase = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#111] flex flex-col items-center justify-center py-8">
-      <div className="max-w-md w-full mx-auto flex flex-col space-y-6 bg-[#111] rounded-3xl shadow-xl border border-[#222] p-4 sm:p-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold mb-2 text-white drop-shadow-lg">Player Reveal</h2>
-          <div className="bg-[#181818] rounded-full px-4 py-2 inline-block border border-[#222]">
-            <p className="text-lg font-semibold text-[#fb8500]">
-              Player {gameState.currentPlayerIndex + 1} of {gameState.players.length}
+    <div className="min-h-[100dvh] w-full bg-black flex flex-col items-center justify-center p-4 sm:p-6 md:max-w-3xl md:mx-auto">
+      <div className="w-full flex-1 flex flex-col items-center justify-center space-y-8">
+        
+        <div className="text-center space-y-4 w-full">
+           <div className="bg-[#111] border border-[#222] rounded-full px-6 py-2 inline-block shadow-sm">
+            <p className="text-sm font-bold text-[#fb8500] uppercase tracking-widest">
+              Player {gameState.currentPlayerIndex + 1} / {gameState.players.length}
             </p>
           </div>
+          <h2 className="text-4xl sm:text-5xl font-extrabold text-white truncate px-2 leading-tight">
+            {currentPlayer}
+          </h2>
+          <p className="text-[#888] font-medium">It&apos;s your turn to see the secret word.</p>
         </div>
 
-        <Card className="p-8 text-center bg-black border border-[#222] rounded-2xl shadow-md">
-          <h3 className="text-3xl font-bold mb-6 text-white">{currentPlayer}</h3>
-
-          {/* Fixed container to prevent layout shifts */}
-          <div className="relative mb-6 h-64 overflow-hidden">
-            {/* Hidden content behind the card */}
-            <div className={`absolute inset-0 p-8 rounded-2xl border-2 transition-all duration-500 ${isImposter
-              ? 'bg-[#181818] border-[#fb8500]'
-              : 'bg-[#181818] border-[#222]'
-              } ${isCardRevealed ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
-              {isImposter ? (
-                <div className="text-[#fb8500] flex flex-col items-center justify-center h-full">
-                  <EyeNoneIcon className="w-16 h-16 mx-auto mb-4" />
-                  <h4 className="text-3xl font-bold mb-2">IMPOSTER</h4>
-                  <p className="text-lg font-medium">You don&lsquo;t know the word</p>
+        {/* Reveal Area */}
+        <div className="w-full max-w-sm aspect-[3/4] max-h-[50vh] relative perspective-1000">
+          {/* Hidden Content (Result) */}
+          <div className={`absolute inset-0 rounded-3xl border-2 transition-all duration-500 flex flex-col items-center justify-center p-6 text-center shadow-2xl ${isImposter
+            ? 'bg-[#111] border-[#fb8500]'
+            : 'bg-[#111] border-[#333]'
+            } ${isCardRevealed ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
+            
+            {isImposter ? (
+              <div className="space-y-6 animate-in fade-in zoom-in duration-500 w-full">
+                <div className="w-24 h-24 rounded-full bg-[#fb8500]/10 flex items-center justify-center mx-auto">
+                  <EyeNoneIcon className="w-12 h-12 text-[#fb8500]" />
                 </div>
-              ) : (
-                <div className="text-white flex flex-col items-center justify-center h-full">
-                  <EyeOpenIcon className="w-16 h-16 mx-auto mb-4" />
-                  <h4 className="text-xl font-medium mb-2">Your secret word is:</h4>
-                  <p className="text-4xl font-bold text-[#fb8500]">
+                <div>
+                  <h4 className="text-4xl font-black text-white mb-2 tracking-tight">IMPOSTER</h4>
+                  
+                  {gameState.showCategoryToImposter && selectedCategory ? (
+                    <div className="mt-6 p-4 bg-[#1a1a1a] rounded-2xl border border-[#333]">
+                       <p className="text-[#888] text-xs font-bold uppercase tracking-widest mb-2">The Category is</p>
+                       <p className="text-[#fb8500] text-xl font-bold leading-tight">{selectedCategory.name}</p>
+                    </div>
+                  ) : (
+                    <p className="text-[#888] font-medium text-lg leading-snug">Blend in. Don&apos;t let them know you don&apos;t know.</p>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-6 animate-in fade-in zoom-in duration-500">
+                 <div className="w-24 h-24 rounded-full bg-[#333] flex items-center justify-center mx-auto">
+                  <EyeOpenIcon className="w-12 h-12 text-white" />
+                </div>
+                <div>
+                  <h4 className="text-xl font-medium text-[#888] mb-1">Your secret word</h4>
+                  <p className="text-4xl sm:text-5xl font-black text-[#fb8500] break-words leading-tight">
                     {gameState.selectedWord}
                   </p>
                 </div>
-              )}
-            </div>
-
-            {/* Draggable/Clickable card overlay - contained within fixed height container */}
-            <div
-              ref={cardRef}
-              className="absolute inset-0 p-8 rounded-2xl border-2 bg-gradient-to-br from-[#fb8500] to-[#ffb703] border-[#fb8500] cursor-pointer select-none transition-all duration-500"
-              style={{
-                transform: isCardRevealed ? 'translateY(-100%)' : 'translateY(0)',
-                opacity: isCardRevealed ? 0 : 1,
-                pointerEvents: isCardRevealed ? 'none' : 'auto',
-                boxShadow: !isCardRevealed ? '0 10px 25px rgba(251, 133, 0, 0.3)' : 'none'
-              }}
-              onClick={handleCardClick}
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
-              onMouseDown={handleMouseDown}
-              onMouseMove={handleMouseMove}
-              onMouseUp={handleMouseUp}
-            >
-              <div className="flex flex-col items-center justify-center h-full text-black">
-                <h4 className="text-2xl font-bold mb-2">Tap or Swipe Up</h4>
-                <p className="text-lg font-medium">to reveal your role</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Instructions that appear after card reveal - fixed height to prevent layout shift */}
-          <div className="h-20 mb-6">
-            {isCardRevealed && (
-              <div className="bg-[#181818] border border-[#222] rounded-lg p-4 opacity-0" style={{ animation: 'fadeIn 0.5s ease-in-out 0.3s forwards' }}>
-                <p className="text-lg font-medium text-[#fb8500]">
-                  Remember your role and pass to the next player
-                </p>
               </div>
             )}
           </div>
 
+          {/* Cover Card */}
+          <div
+            ref={cardRef}
+            className="absolute inset-0 rounded-3xl border-2 bg-gradient-to-br from-[#fb8500] to-[#ffb703] border-[#fb8500] cursor-pointer select-none transition-all duration-700 ease-out flex flex-col items-center justify-center p-6 text-center shadow-[0_20px_50px_-12px_rgba(251,133,0,0.5)] z-10 hover:scale-[1.02] active:scale-[0.98]"
+            style={{
+              transform: isCardRevealed ? 'translateY(-120%) rotate(-5deg)' : 'translateY(0) rotate(0)',
+              opacity: isCardRevealed ? 0 : 1,
+              pointerEvents: isCardRevealed ? 'none' : 'auto',
+            }}
+            onClick={handleCardClick}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+          >
+            <div className="space-y-2">
+              <h4 className="text-3xl font-black text-black tracking-tight">TAP TO REVEAL</h4>
+              <p className="text-black/70 font-bold uppercase tracking-wider text-sm">or swipe up</p>
+            </div>
+            <div className="absolute bottom-8 animate-bounce">
+               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-black"><path d="m18 15-6-6-6 6"/></svg>
+            </div>
+          </div>
+        </div>
 
-        </Card>
-
-        <Button
-          onClick={handleNextPlayer}
-          className="w-full text-xl font-bold py-4 bg-[#fb8500] hover:bg-[#ffb703] text-black shadow-lg rounded-lg transition-all"
-          size="lg"
-        >
-          {gameState.currentPlayerIndex < gameState.players.length - 1 ? 'Next Player' : 'Start Game'}
-        </Button>
+        {/* Action Area */}
+        <div className="w-full max-w-sm space-y-4 h-24">
+           {isCardRevealed && (
+              <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 fill-mode-forwards">
+                <Button
+                  onClick={handleNextPlayer}
+                  className="w-full text-xl font-bold py-7 bg-[#fb8500] hover:bg-[#ffb703] text-black shadow-lg rounded-2xl transition-all active:scale-[0.98]"
+                  size="lg"
+                >
+                  {gameState.currentPlayerIndex < gameState.players.length - 1 ? 'Next Player' : 'Start Game'}
+                </Button>
+                <p className="text-center text-[#666] text-sm mt-3 font-medium">Pass device to the next player</p>
+              </div>
+            )}
+        </div>
       </div>
-
-      <style jsx>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-      `}</style>
     </div>
   )
 }
