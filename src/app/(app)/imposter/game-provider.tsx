@@ -11,8 +11,7 @@ type GameContextType = {
   loading: boolean;
   error: string | null;
   setError: (error: string | null) => void;
-  addPlayer: (playerName: string) => void;
-  removePlayer: (index: number) => void;
+  setPlayerCount: (count: number) => void;
   startGame: () => Promise<void>;
   nextPlayer: () => void;
   finishGame: () => void;
@@ -35,7 +34,7 @@ type GameProviderProps = {
 export const GameProvider = ({ children }: GameProviderProps) => {
   const [gameState, setGameState] = useState<GameState>({
     phase: 'setup',
-    players: [],
+    players: ['Player 1', 'Player 2', 'Player 3'],
     imposters: new Set(),
     selectedCategoryId: null,
     imposterCount: 1,
@@ -61,19 +60,17 @@ export const GameProvider = ({ children }: GameProviderProps) => {
     loadCategories();
   }, []);
 
-  const addPlayer = (playerName: string) => {
-    if (playerName.trim() && !gameState.players.includes(playerName.trim())) {
-      setGameState((prev) => ({
-        ...prev,
-        players: [...prev.players, playerName.trim()],
-      }));
-    }
-  };
-
-  const removePlayer = (index: number) => {
+  const setPlayerCount = (count: number) => {
+    if (count < 3) return;
+    
+    // Create array of "Player 1", "Player 2", etc.
+    const newPlayers = Array.from({ length: count }, (_, i) => `Player ${i + 1}`);
+    
     setGameState((prev) => ({
       ...prev,
-      players: prev.players.filter((_, i) => i !== index),
+      players: newPlayers,
+      // Reset imposters count if it exceeds new player count
+      imposterCount: prev.imposterCount >= count ? Math.max(1, Math.floor(count / 2) - 1) : prev.imposterCount
     }));
   };
 
@@ -177,8 +174,7 @@ export const GameProvider = ({ children }: GameProviderProps) => {
         loading,
         error,
         setError,
-        addPlayer,
-        removePlayer,
+        setPlayerCount,
         startGame,
         nextPlayer,
         finishGame,

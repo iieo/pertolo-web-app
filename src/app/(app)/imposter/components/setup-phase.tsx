@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -18,7 +17,7 @@ import {
   PersonIcon,
   GearIcon,
   PlayIcon,
-  CrossCircledIcon,
+  MinusIcon,
   PlusIcon,
   GridIcon,
   ShuffleIcon,
@@ -32,23 +31,28 @@ export const SetupPhase = () => {
     categories,
     loading,
     error,
-    addPlayer,
-    removePlayer,
+    setPlayerCount,
     startGame,
   } = useGame();
 
-  const [playerInput, setPlayerInput] = useState('');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const handleAddPlayer = () => {
-    addPlayer(playerInput);
-    setPlayerInput('');
-  };
 
   const selectedCategory = categories.find((c) => c.id === gameState.selectedCategoryId);
 
   const handleRandomCategory = () => {
     setGameState((prev) => ({ ...prev, selectedCategoryId: null }));
+  };
+
+  const handleIncrementPlayers = () => {
+    if (gameState.players.length < 20) {
+      setPlayerCount(gameState.players.length + 1);
+    }
+  };
+
+  const handleDecrementPlayers = () => {
+    if (gameState.players.length > 3) {
+      setPlayerCount(gameState.players.length - 1);
+    }
   };
 
   return (
@@ -79,55 +83,36 @@ export const SetupPhase = () => {
             <h2 className="text-xl font-bold text-white uppercase tracking-wider">Players</h2>
           </div>
 
-          <div className="bg-[#111] rounded-2xl p-4 border border-[#222] shadow-sm">
-            <div className="flex gap-2 mb-4">
-              <Input
-                placeholder="Enter player name"
-                value={playerInput}
-                onChange={(e) => setPlayerInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleAddPlayer()}
-                className="text-lg border-transparent bg-[#222] text-white placeholder-[#666] focus:border-[#fb8500] focus:ring-0 rounded-xl h-12"
-              />
-              <Button
-                onClick={handleAddPlayer}
-                className="bg-[#fb8500] hover:bg-[#ffb703] text-black font-bold w-12 h-12 rounded-xl shadow shrink-0 p-0 flex items-center justify-center"
-              >
-                <PlusIcon className="w-6 h-6" />
-              </Button>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {gameState.players.map((player, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between p-3 bg-[#1a1a1a] rounded-xl border border-[#333]"
+          <div className="bg-[#111] rounded-2xl p-6 border border-[#222] shadow-sm">
+            <div className="flex items-center justify-between">
+              <span className="text-white font-medium text-lg">Number of Players</span>
+              <div className="flex items-center gap-4">
+                <Button
+                  onClick={handleDecrementPlayers}
+                  disabled={gameState.players.length <= 3}
+                  className="bg-[#222] hover:bg-[#333] text-white w-12 h-12 rounded-xl p-0 flex items-center justify-center disabled:opacity-50"
                 >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="flex items-center justify-center w-7 h-7 rounded-full bg-[#333] text-[#fb8500] text-sm font-bold">
-                      {index + 1}
-                    </div>
-                    <span className="text-white font-medium truncate text-base">{player}</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => removePlayer(index)}
-                    className="p-2 -mr-2 text-[#666] hover:text-[#fb8500] transition-colors"
-                  >
-                    <CrossCircledIcon className="w-5 h-5" />
-                  </button>
-                </div>
-              ))}
-              {gameState.players.length === 0 && (
-                <div className="col-span-1 sm:col-span-2 text-center py-8 text-[#444] border-2 border-dashed border-[#222] rounded-xl">
-                  Add at least 3 players
-                </div>
-              )}
-            </div>
+                  <MinusIcon className="w-6 h-6" />
+                </Button>
+                
+                <span className="text-3xl font-black text-[#fb8500] tabular-nums min-w-[2ch] text-center">
+                  {gameState.players.length}
+                </span>
 
-            <div className="mt-3 text-right">
-              <span className="text-xs font-medium text-[#666] uppercase tracking-wider">
-                Total: <span className="text-[#fb8500]">{gameState.players.length}</span>
-              </span>
+                <Button
+                  onClick={handleIncrementPlayers}
+                  disabled={gameState.players.length >= 20}
+                  className="bg-[#fb8500] hover:bg-[#ffb703] text-black w-12 h-12 rounded-xl p-0 flex items-center justify-center disabled:opacity-50"
+                >
+                  <PlusIcon className="w-6 h-6" />
+                </Button>
+              </div>
+            </div>
+            
+            <div className="mt-4 pt-4 border-t border-[#222] text-center">
+               <p className="text-[#666] text-sm">
+                 Assign numbers 1-{gameState.players.length} to your group.
+               </p>
             </div>
           </div>
         </div>
