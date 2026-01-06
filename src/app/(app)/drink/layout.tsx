@@ -2,18 +2,14 @@ import type { Metadata } from 'next';
 import { GameProvider } from './game-provider';
 
 export const metadata: Metadata = {
-    title: 'Pertolo',
-    description: 'The best drinking game!',
+  title: 'Pertolo',
+  description: 'The best drinking game!',
 };
 
 export default function Layout({
-    children,
+  children,
 }: Readonly<{
-    children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-    return (
-        <GameProvider>
-            {children}
-        </GameProvider>
-    );
+  return <GameProvider>{children}</GameProvider>;
 }

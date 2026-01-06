@@ -1,18 +1,14 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Pertolo',
-    description: 'Find the imposter!',
+  title: 'Pertolo',
+  description: 'Find the imposter!',
 };
 
 export default function Layout({
-    children,
+  children,
 }: Readonly<{
-    children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-    return (
-        <div>
-            {children}
-        </div>
-    );
+  return <div>{children}</div>;
 }

@@ -1,11 +1,9 @@
 import { getGameModes } from './actions';
 
-
 import { Separator } from '@/components/ui/separator';
 import GameModeCard from './game-mode-card';
 
 export default async function GameModeScreen() {
-
   const modes = await getGameModes();
 
   return (

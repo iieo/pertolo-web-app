@@ -1,10 +1,9 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
 export default function Home() {
   return (
     // Changed: 'fixed inset-0' removed. Added 'py-24' for scroll spacing.
     <main className="min-h-screen bg-black flex flex-col items-center justify-center py-24 px-4">
-
       <div className="flex flex-col items-center gap-10 w-full max-w-6xl">
         {/* Header Section */}
         <div className="flex flex-col items-center gap-4">
@@ -18,7 +17,6 @@ export default function Home() {
 
         {/* Navigation / Cards */}
         <nav className="flex flex-col md:flex-row flex-wrap justify-center gap-6 w-full">
-
           <Link
             href="/imposter"
             className="group relative w-full md:w-60 h-36 flex flex-col justify-center px-8 py-6 rounded-2xl bg-gradient-to-tr from-[#222] via-[#111] to-[#333] border-2 border-white/10 hover:border-white/30 hover:scale-105 transition-all duration-200 overflow-hidden"
@@ -32,7 +30,9 @@ export default function Home() {
               </span>
             </div>
             {/* Arrow Icon */}
-            <span className="absolute top-4 right-4 text-white/40 opacity-60 group-hover:opacity-100 group-hover:text-black transition">→</span>
+            <span className="absolute top-4 right-4 text-white/40 opacity-60 group-hover:opacity-100 group-hover:text-black transition">
+              →
+            </span>
 
             {/* Hover Gradient Overlay */}
             <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-white via-gray-200 to-gray-400" />
@@ -50,7 +50,9 @@ export default function Home() {
                 The ultimate party game
               </span>
             </div>
-            <span className="absolute top-4 right-4 text-white/40 opacity-60 group-hover:opacity-100 group-hover:text-black transition">→</span>
+            <span className="absolute top-4 right-4 text-white/40 opacity-60 group-hover:opacity-100 group-hover:text-black transition">
+              →
+            </span>
             <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-white via-gray-200 to-gray-400" />
           </Link>
 
@@ -66,12 +68,13 @@ export default function Home() {
                 Train rhythm skills
               </span>
             </div>
-            <span className="absolute top-4 right-4 text-white/40 opacity-60 group-hover:opacity-100 group-hover:text-black transition">→</span>
+            <span className="absolute top-4 right-4 text-white/40 opacity-60 group-hover:opacity-100 group-hover:text-black transition">
+              →
+            </span>
             <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-white via-gray-200 to-gray-400" />
           </Link>
-
         </nav>
       </div>
     </main>
-  )
+  );
 }

@@ -5,7 +5,6 @@ import { DrinkCategoryModel } from '@/db/schema';
 import { redirect } from 'next/navigation';
 import { useDrinkGame } from '../game-provider';
 
-
 function GameModeCard({ mode }: { mode: DrinkCategoryModel }) {
   const { setCategory } = useDrinkGame();
   async function setGameMode() {

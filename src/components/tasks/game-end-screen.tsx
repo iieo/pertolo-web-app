@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 
 function GameEndScreen() {
   const router = useRouter();
-  
+
   const handleRestart = () => {
     router.push('/');
   };

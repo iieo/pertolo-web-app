@@ -1,4 +1,3 @@
-
 import AddPlayerForm from './add-player-form';
 
 export default async function PlayersScreen() {
