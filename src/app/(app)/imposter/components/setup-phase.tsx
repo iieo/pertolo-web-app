@@ -94,7 +94,7 @@ export const SetupPhase = () => {
                 >
                   <MinusIcon className="w-6 h-6" />
                 </Button>
-                
+
                 <span className="text-3xl font-black text-[#fb8500] tabular-nums min-w-[2ch] text-center">
                   {gameState.players.length}
                 </span>
@@ -107,12 +107,6 @@ export const SetupPhase = () => {
                   <PlusIcon className="w-6 h-6" />
                 </Button>
               </div>
-            </div>
-            
-            <div className="mt-4 pt-4 border-t border-[#222] text-center">
-               <p className="text-[#666] text-sm">
-                 Assign numbers 1-{gameState.players.length} to your group.
-               </p>
             </div>
           </div>
         </div>
@@ -190,11 +184,10 @@ export const SetupPhase = () => {
                         {categories.map((category) => (
                           <div
                             key={category.id}
-                            className={`cursor-pointer transition-all duration-200 rounded-xl p-4 border-2 flex flex-col justify-center min-h-[5rem] ${
-                              gameState.selectedCategoryId === category.id
-                                ? 'border-[#fb8500] bg-[#fb8500]/10'
-                                : 'border-[#333] bg-[#1a1a1a] hover:border-[#555]'
-                            }`}
+                            className={`cursor-pointer transition-all duration-200 rounded-xl p-4 border-2 flex flex-col justify-center min-h-[5rem] ${gameState.selectedCategoryId === category.id
+                              ? 'border-[#fb8500] bg-[#fb8500]/10'
+                              : 'border-[#333] bg-[#1a1a1a] hover:border-[#555]'
+                              }`}
                             onClick={() => {
                               setGameState((prev) => ({
                                 ...prev,
@@ -234,11 +227,10 @@ export const SetupPhase = () => {
                       key={num}
                       type="button"
                       onClick={() => setGameState((prev) => ({ ...prev, imposterCount: num }))}
-                      className={`flex-1 h-12 text-lg font-bold rounded-xl transition-all duration-200 ${
-                        gameState.imposterCount === num
-                          ? 'bg-[#fb8500] text-black shadow-lg'
-                          : 'bg-[#1a1a1a] text-white hover:bg-[#222] border border-[#333]'
-                      }`}
+                      className={`flex-1 h-12 text-lg font-bold rounded-xl transition-all duration-200 ${gameState.imposterCount === num
+                        ? 'bg-[#fb8500] text-black shadow-lg'
+                        : 'bg-[#1a1a1a] text-white hover:bg-[#222] border border-[#333]'
+                        }`}
                     >
                       {num}
                     </button>
