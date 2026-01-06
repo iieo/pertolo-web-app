@@ -1,12 +1,17 @@
 'use client';
 
-import { GameProvider, useGame } from './game-provider';
-import { SetupPhase } from './components/setup-phase';
-import { RevealPhase } from './components/reveal-phase';
-import { PlayingPhase } from './components/playing-phase';
+import { useEffect } from 'react'
+import { GameProvider, useGame } from './game-provider'
+import { SetupPhase } from './components/setup-phase'
+import { RevealPhase } from './components/reveal-phase'
+import { PlayingPhase } from './components/playing-phase'
 
 const ImposterGameContent = () => {
-  const { gameState } = useGame();
+  const { gameState } = useGame()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [gameState.phase])
 
   switch (gameState.phase) {
     case 'setup':
