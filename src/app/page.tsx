@@ -1,77 +1,92 @@
 import Link from 'next/link';
+import { Gamepad2, Beer, Music, ChevronRight } from 'lucide-react';
 
 export default function Home() {
   return (
-    // Changed: 'fixed inset-0' removed. Added 'py-24' for scroll spacing.
-    <main className="min-h-screen bg-black flex flex-col items-center justify-center py-24 px-4">
-      <div className="flex flex-col items-center gap-10 w-full max-w-6xl">
+    <main className="relative min-h-screen bg-gray-950 flex flex-col items-center py-20 px-4 overflow-hidden font-sans">
+      {/* Dynamic Background Elements */}
+      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-5 mix-blend-overlay pointer-events-none" />
+
+      {/* Glowing Orbs */}
+      <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-indigo-600/20 blur-[150px] rounded-full pointer-events-none animate-pulse duration-10000" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-fuchsia-600/20 blur-[150px] rounded-full pointer-events-none animate-pulse duration-10000 delay-500" />
+      <div className="absolute top-[40%] left-[50%] translate-x-[-50%] w-[800px] h-[400px] bg-cyan-500/10 blur-[150px] rounded-full pointer-events-none" />
+
+      <div className="z-10 flex flex-col items-center gap-16 w-full max-w-6xl mt-12">
         {/* Header Section */}
-        <div className="flex flex-col items-center gap-4">
-          <h1 className="text-5xl md:text-6xl font-extrabold text-white tracking-widest text-center drop-shadow-[0_2px_16px_rgba(255,255,255,0.15)]">
+        <div className="flex flex-col items-center gap-6 text-center animate-in fade-in slide-in-from-top-12 duration-1000">
+          <h1 className="text-6xl md:text-8xl font-black text-transparent bg-clip-text bg-linear-to-br from-white via-white to-white/40 tracking-tight drop-shadow-2xl">
             Pertolo
           </h1>
-          <p className="text-lg md:text-xl text-[#bbb] text-center max-w-md font-mono tracking-wide">
+
+          <p className="text-xl md:text-2xl text-white/50 max-w-2xl font-medium leading-relaxed">
             Choose your game and start the fun. Minimal, fast, and made for friends.
           </p>
         </div>
 
         {/* Navigation / Cards */}
-        <nav className="flex flex-col md:flex-row flex-wrap justify-center gap-6 w-full">
+        <nav className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full px-4 md:px-0">
+          {/* Imposter Card */}
           <Link
             href="/imposter"
-            className="group relative w-full md:w-60 h-36 flex flex-col justify-center px-8 py-6 rounded-2xl bg-gradient-to-tr from-[#222] via-[#111] to-[#333] border-2 border-white/10 hover:border-white/30 hover:scale-105 transition-all duration-200 overflow-hidden"
+            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(220,38,38,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-100"
           >
-            <div className="relative z-10">
-              <span className="block text-2xl font-bold text-white tracking-widest font-mono group-hover:text-black transition-colors">
-                IMPOSTER
-              </span>
-              <span className="block mt-2 text-[#bbb] text-xs font-mono uppercase tracking-wider group-hover:text-black/70 transition-colors">
-                Find the secret agents
-              </span>
-            </div>
-            {/* Arrow Icon */}
-            <span className="absolute top-4 right-4 text-white/40 opacity-60 group-hover:opacity-100 group-hover:text-black transition">
-              →
-            </span>
+            <div className="absolute inset-0 bg-linear-to-br from-red-500/0 via-red-500/0 to-red-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/20 blur-[50px] -translate-y-1/2 translate-x-1/2 group-hover:bg-red-500/40 transition-colors duration-500" />
 
-            {/* Hover Gradient Overlay */}
-            <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-white via-gray-200 to-gray-400" />
+            <div className="relative z-10 flex items-center justify-between">
+              <div className="w-14 h-14 rounded-2xl bg-red-500/20 flex items-center justify-center border border-red-500/30 text-red-400 group-hover:scale-110 group-hover:bg-red-500 group-hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(220,38,38,0.2)]">
+                <Gamepad2 size={28} strokeWidth={2.5} />
+              </div>
+              <ChevronRight className="text-white/20 group-hover:text-red-400 group-hover:translate-x-1 transition-all duration-300" size={28} />
+            </div>
+
+            <div className="relative z-10 mt-auto">
+              <h2 className="text-3xl font-extrabold text-white mb-2 tracking-tight">IMPOSTER</h2>
+              <p className="text-white/50 font-medium text-sm">Find the secret agents</p>
+            </div>
           </Link>
 
+          {/* Drink Card */}
           <Link
             href="/drink"
-            className="group relative w-full md:w-60 h-36 flex flex-col justify-center px-8 py-6 rounded-2xl bg-gradient-to-tr from-[#333] via-[#111] to-[#222] border-2 border-white/10 hover:border-white/30 hover:scale-105 transition-all duration-200 overflow-hidden"
+            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(217,70,239,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200"
           >
-            <div className="relative z-10">
-              <span className="block text-2xl font-bold text-white tracking-widest font-mono group-hover:text-black transition-colors">
-                DRINK
-              </span>
-              <span className="block mt-2 text-[#bbb] text-xs font-mono uppercase tracking-wider group-hover:text-black/70 transition-colors">
-                The ultimate party game
-              </span>
+            <div className="absolute inset-0 bg-linear-to-br from-fuchsia-500/0 via-fuchsia-500/0 to-fuchsia-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-fuchsia-500/20 blur-[50px] -translate-y-1/2 translate-x-1/2 group-hover:bg-fuchsia-500/40 transition-colors duration-500" />
+
+            <div className="relative z-10 flex items-center justify-between">
+              <div className="w-14 h-14 rounded-2xl bg-fuchsia-500/20 flex items-center justify-center border border-fuchsia-500/30 text-fuchsia-400 group-hover:scale-110 group-hover:bg-fuchsia-500 group-hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(217,70,239,0.2)]">
+                <Beer size={28} strokeWidth={2.5} />
+              </div>
+              <ChevronRight className="text-white/20 group-hover:text-fuchsia-400 group-hover:translate-x-1 transition-all duration-300" size={28} />
             </div>
-            <span className="absolute top-4 right-4 text-white/40 opacity-60 group-hover:opacity-100 group-hover:text-black transition">
-              →
-            </span>
-            <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-white via-gray-200 to-gray-400" />
+
+            <div className="relative z-10 mt-auto">
+              <h2 className="text-3xl font-extrabold text-white mb-2 tracking-tight">DRINK</h2>
+              <p className="text-white/50 font-medium text-sm">The ultimate party game</p>
+            </div>
           </Link>
 
+          {/* Trainer Card */}
           <Link
             href="/bco-trainer"
-            className="group relative w-full md:w-60 h-36 flex flex-col justify-center px-8 py-6 rounded-2xl bg-gradient-to-tr from-[#333] via-[#111] to-[#222] border-2 border-white/10 hover:border-white/30 hover:scale-105 transition-all duration-200 overflow-hidden"
+            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(6,182,212,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300"
           >
-            <div className="relative z-10">
-              <span className="block text-2xl font-bold text-white tracking-widest font-mono group-hover:text-black transition-colors">
-                TRAINER
-              </span>
-              <span className="block mt-2 text-[#bbb] text-xs font-mono uppercase tracking-wider group-hover:text-black/70 transition-colors">
-                Train rhythm skills
-              </span>
+            <div className="absolute inset-0 bg-linear-to-br from-cyan-500/0 via-cyan-500/0 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/20 blur-[50px] -translate-y-1/2 translate-x-1/2 group-hover:bg-cyan-500/40 transition-colors duration-500" />
+
+            <div className="relative z-10 flex items-center justify-between">
+              <div className="w-14 h-14 rounded-2xl bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30 text-cyan-400 group-hover:scale-110 group-hover:bg-cyan-500 group-hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
+                <Music size={28} strokeWidth={2.5} />
+              </div>
+              <ChevronRight className="text-white/20 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all duration-300" size={28} />
             </div>
-            <span className="absolute top-4 right-4 text-white/40 opacity-60 group-hover:opacity-100 group-hover:text-black transition">
-              →
-            </span>
-            <span className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-br from-white via-gray-200 to-gray-400" />
+
+            <div className="relative z-10 mt-auto">
+              <h2 className="text-3xl font-extrabold text-white mb-2 tracking-tight">TRAINER</h2>
+              <p className="text-white/50 font-medium text-sm">Train rhythm skills</p>
+            </div>
           </Link>
         </nav>
       </div>

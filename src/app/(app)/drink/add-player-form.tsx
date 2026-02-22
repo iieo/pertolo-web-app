@@ -32,6 +32,8 @@ function AddPlayerForm() {
   const {
     register,
     handleSubmit,
+    setError,
+    setFocus,
     formState: { errors: createErrors },
     reset,
   } = useForm<AddPlayerFormData>({
@@ -41,8 +43,19 @@ function AddPlayerForm() {
   async function onSubmit(data: AddPlayerFormData) {
     const name = data.hostName.trim();
     if (!name) return;
+
+    if (players.some((p) => p.toLowerCase() === name.toLowerCase())) {
+      setError('hostName', {
+        type: 'manual',
+        message: 'Dieser Spieler ist bereits dabei',
+      });
+      setTimeout(() => setFocus('hostName'), 0);
+      return;
+    }
+
     setPlayers((prev) => [...prev, name]);
     reset();
+    setTimeout(() => setFocus('hostName'), 0);
   }
 
   async function handleStartGame() {
@@ -61,7 +74,7 @@ function AddPlayerForm() {
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/20 blur-[100px] rounded-full pointer-events-none -z-10" />
 
           <CardHeader className="pt-8 pb-6">
-            <CardTitle className="text-center text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-200 to-fuchsia-200 pb-1">
+            <CardTitle className="text-center text-3xl font-black text-transparent bg-clip-text bg-linear-to-r from-purple-200 to-fuchsia-200 pb-1">
               Mitspieler
             </CardTitle>
             <p className="text-center text-purple-200/70 text-sm font-medium">
@@ -83,7 +96,7 @@ function AddPlayerForm() {
                   style={{ animationDelay: `${idx * 50}ms`, animationFillMode: 'both' }}
                 >
                   <div className="flex items-center gap-4">
-                    <div className="flex items-center justify-center w-10 h-10 rounded-full shadow-inner bg-gradient-to-br from-purple-500 to-fuchsia-600 text-white font-extrabold text-xl uppercase ring-2 ring-white/20 group-hover:ring-white/40 transition-all shadow-[0_0_15px_rgba(236,72,153,0.3)]">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-linear-to-br from-purple-500 to-fuchsia-600 text-white font-extrabold text-xl uppercase ring-2 ring-white/20 group-hover:ring-white/40 transition-all shadow-[0_0_15px_rgba(236,72,153,0.3)]">
                       {player[0]}
                     </div>
                     <span className="text-white font-bold tracking-wide text-xl">{player}</span>
@@ -105,7 +118,7 @@ function AddPlayerForm() {
         </Card>
       </div>
 
-      <div className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-gray-950 via-gray-900/95 to-transparent pt-12 pb-6 px-4 flex justify-center backdrop-blur-sm z-10">
+      <div className="fixed bottom-0 left-0 w-full bg-linear-to-t from-gray-950 via-gray-900/95 to-transparent pt-12 pb-6 px-4 flex justify-center backdrop-blur-sm z-10">
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="gap-3 max-w-lg w-full flex items-end justify-center animate-in slide-in-from-bottom duration-700 shadow-2xl"
@@ -121,7 +134,8 @@ function AddPlayerForm() {
               id="hostName"
               placeholder="Name..."
               {...register('hostName')}
-              className={`text-white text-lg font-medium placeholder-white/40 bg-white/10 hover:bg-white/15 border-white/20 focus-visible:ring-2 focus-visible:ring-fuchsia-500 focus-visible:border-transparent transition-all h-16 px-6 rounded-2xl shadow-inner ${createErrors.hostName ? 'border-red-500/80 focus-visible:ring-red-500' : ''}`}
+              autoFocus
+              className={`text-white text-lg font-medium placeholder-white/40 bg-white/10 hover:bg-white/15 border-white/20 focus-visible:ring-2 focus-visible:ring-fuchsia-500 focus-visible:border-transparent transition-all h-16 px-6 rounded-2xl ${createErrors.hostName ? 'border-red-500/80 focus-visible:ring-red-500' : ''}`}
               autoComplete="off"
             />
           </div>
@@ -139,8 +153,8 @@ function AddPlayerForm() {
               variant="secondary"
               size="icon"
               className={`shrink-0 h-16 w-16 rounded-2xl transition-all shadow-lg active:scale-95 group ${players.length === 0
-                  ? 'bg-white/5 text-white/20 border border-white/10'
-                  : 'bg-gradient-to-br from-green-400 to-emerald-600 text-white shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:shadow-[0_0_30px_rgba(16,185,129,0.6)] border-none'
+                ? 'bg-white/5 text-white/20 border border-white/10'
+                : 'bg-linear-to-br from-green-400 to-emerald-600 text-white shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:shadow-[0_0_30px_rgba(16,185,129,0.6)] border-none'
                 }`}
               onClick={handleStartGame}
               disabled={players.length === 0}
