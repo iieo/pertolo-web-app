@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { FactTask } from '@/types/task';
 import { cw } from '@/util/tailwind';
 import { useDrinkGame } from '@/app/(app)/drink/game-provider';
+import { Check, X } from 'lucide-react';
 
 function FactTaskView({ task }: { task: FactTask }) {
   const { replacePlayerNames, showNextTask, gradient } = useDrinkGame();
@@ -13,56 +14,94 @@ function FactTaskView({ task }: { task: FactTask }) {
   const handleAnswerClick = (answer: string) => {
     if (selected === null) {
       setSelected(answer);
-      // Auto-advance after showing the result for 2 seconds
       setTimeout(() => {
         showNextTask();
-      }, 2000);
+      }, 2500);
     }
   };
 
   return (
     <div
       className={cw(
-        'flex flex-col items-center justify-center h-[calc(100dvh-2rem)] w-full p-4 text-center bg-gradient-to-br select-none',
+        'relative flex flex-col items-center justify-center min-h-[calc(100dvh-2rem)] w-full px-4 py-8 text-center select-none overflow-hidden transition-colors duration-1000',
         gradient,
       )}
     >
-      <h2 className="text-5xl font-extrabold tracking-tight text-purple-300 drop-shadow-lg mb-2">
-        Quiz
-      </h2>
-      <p className="mt-4 text-xl text-purple-100/80 font-medium mb-8">
-        {replacePlayerNames(task.fact)}
-      </p>
-      <div className="flex flex-col gap-3 w-full max-w-md">
-        {shuffledAnswers.map((answer, idx) => {
-          let btnClass = 'py-4 px-6 rounded-xl border-2 transition-all font-medium text-lg ';
-          if (selected) {
-            if (answer === task.correctAnswer) {
-              btnClass += 'bg-green-600/90 border-green-400 text-white shadow-lg';
-            } else if (answer === selected) {
-              btnClass += 'bg-red-600/90 border-red-400 text-white shadow-lg';
+      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-5 mix-blend-overlay pointer-events-none" />
+
+      <div className="z-10 flex flex-col items-center w-full max-w-2xl animate-in fade-in zoom-in-95 duration-500">
+        <div className="inline-block px-4 py-1.5 rounded-full bg-blue-500/20 border border-blue-500/30 backdrop-blur-md mb-8 shadow-[0_0_30px_rgba(59,130,246,0.3)]">
+          <h2 className="text-sm font-black uppercase tracking-[0.2em] text-blue-200">
+            Quiz
+          </h2>
+        </div>
+
+        <p className="text-2xl md:text-4xl font-black text-white drop-shadow-2xl leading-tight mb-12 px-4">
+          {replacePlayerNames(task.fact)}
+        </p>
+
+        <div className="flex flex-col gap-4 w-full">
+          {shuffledAnswers.map((answer, idx) => {
+            const isSelected = selected === answer;
+            const isCorrect = answer === task.correctAnswer;
+            const showResult = selected !== null;
+
+            let btnClass = 'relative overflow-hidden py-5 px-6 rounded-2xl border-2 transition-all duration-300 font-bold text-lg md:text-xl w-full flex items-center justify-between group ';
+
+            if (showResult) {
+              if (isCorrect) {
+                btnClass += 'bg-gradient-to-r from-green-500 to-emerald-600 border-green-400 text-white shadow-[0_0_30px_rgba(16,185,129,0.4)] scale-[1.02] z-10';
+              } else if (isSelected) {
+                btnClass += 'bg-gradient-to-r from-red-500 to-rose-600 border-red-400 text-white shadow-[0_0_30px_rgba(239,68,68,0.4)] scale-100 z-10';
+              } else {
+                btnClass += 'bg-white/5 border-white/10 text-white/40 scale-95 opacity-50 blur-[1px]';
+              }
             } else {
-              btnClass += 'opacity-60 bg-purple-800/50 border-purple-600 text-purple-200';
+              btnClass += 'bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/40 hover:scale-[1.02] cursor-pointer shadow-lg active:scale-95';
             }
-          } else {
-            btnClass +=
-              'bg-purple-800/80 border-purple-400 text-purple-100 hover:bg-purple-700/90 hover:border-purple-300 cursor-pointer';
-          }
-          return (
-            <button
-              key={idx}
-              className={btnClass}
-              onClick={() => handleAnswerClick(answer)}
-              disabled={!!selected}
-            >
-              {replacePlayerNames(answer)}
-            </button>
-          );
-        })}
+
+            return (
+              <button
+                key={idx}
+                className={btnClass}
+                onClick={() => handleAnswerClick(answer)}
+                disabled={showResult}
+                style={!showResult ? { animationDelay: `${idx * 150}ms`, animationFillMode: 'both' } : undefined}
+              >
+                {!showResult && (
+                  <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors" />
+                )}
+                <span className="relative z-10 text-left w-full pr-8">
+                  {replacePlayerNames(answer)}
+                </span>
+
+                {showResult && (
+                  <div className="absolute right-6 z-10 animate-in zoom-in duration-300">
+                    {isCorrect ? (
+                      <div className="bg-white/20 rounded-full p-1"><Check className="w-6 h-6 text-white" /></div>
+                    ) : isSelected ? (
+                      <div className="bg-white/20 rounded-full p-1"><X className="w-6 h-6 text-white" /></div>
+                    ) : null}
+                  </div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="h-10 mt-8 flex items-center justify-center">
+          {!selected ? (
+            <div className="text-sm font-medium tracking-widest uppercase text-white/50 animate-pulse">
+              Wähle eine Antwort
+            </div>
+          ) : (
+            <div className="text-sm font-medium tracking-widest uppercase text-white/70 animate-in fade-in duration-500">
+              {selected === task.correctAnswer ? '✨ Richtig!' : '❌ Falsch!'} &middot; Weiter in 2 Sekunden...
+            </div>
+          )}
+        </div>
       </div>
-      {!selected && <div className="mt-8 text-sm text-purple-200/60">Wähle eine Antwort</div>}
-      {selected && <div className="mt-8 text-sm text-purple-200/60">Weiter in 2 Sekunden...</div>}
-    </div>
+    </div >
   );
 }
 

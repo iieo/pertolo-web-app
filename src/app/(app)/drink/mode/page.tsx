@@ -7,30 +7,37 @@ export default async function GameModeScreen() {
   const modes = await getGameModes();
 
   return (
-    <main className="flex flex-col justify-between h-[calc(100dvh-2rem)] w-[100dvw] bg-gradient-to-br from-purple-950 via-purple-900 to-gray-900 px-4 items-center">
-      <div className="mt-12 mb-8 text-center">
-        <h1 className="text-5xl font-extrabold tracking-tight text-purple-300 drop-shadow-lg mb-2">
-          Game Modes
-        </h1>
-        <p className="text-xl text-purple-100/80 font-medium flex items-center justify-center gap-2 w-full">
-          Wähle deinen Spielmodus
-        </p>
+    <main className="relative flex flex-col justify-between min-h-[calc(100dvh-2rem)] w-[100dvw] bg-gray-950 overflow-hidden px-4 items-center">
+      <div className="absolute inset-0 bg-[url('/noise.png')] opacity-5 mix-blend-overlay pointer-events-none" />
+      <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] bg-fuchsia-600/20 blur-[120px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[600px] h-[600px] bg-blue-600/20 blur-[120px] rounded-full pointer-events-none" />
+
+      <div className="z-10 w-full max-w-xl flex flex-col flex-1 pb-10">
+        <div className="mt-14 mb-10 text-center animate-in fade-in slide-in-from-top-8 duration-700">
+          <h1 className="text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-purple-200 to-fuchsia-200 drop-shadow-xl mb-3">
+            Game Mode
+          </h1>
+          <p className="text-lg text-fuchsia-200/60 font-medium">
+            Wähle deinen Spielmodus
+          </p>
+        </div>
+
+        <ul className="flex flex-col gap-5 w-full">
+          {modes.map((mode, idx) => (
+            <li
+              key={mode.id}
+              className="animate-in fade-in slide-in-from-bottom"
+              style={{ animationDuration: '700ms', animationDelay: `${idx * 100}ms`, animationFillMode: 'both' }}
+            >
+              <GameModeCard mode={mode} />
+            </li>
+          ))}
+        </ul>
+
+        <footer className="mt-auto pt-10 text-xs text-purple-200/40 text-center font-medium uppercase tracking-widest animate-in fade-in duration-1000 delay-500">
+          &copy; {new Date().getFullYear()} Pertolo &middot; Drink responsibly
+        </footer>
       </div>
-      <ul className="flex flex-col gap-4 w-full max-w-xl">
-        {modes.map((mode, idx) => (
-          <li key={mode.id}>
-            <GameModeCard mode={mode} />
-            {idx < modes.length - 1 && (
-              <div className="flex justify-center my-2">
-                <Separator className="w-2/3 bg-purple-900/60" />
-              </div>
-            )}
-          </li>
-        ))}
-      </ul>
-      <footer className="my-4 text-xs text-purple-200/60 text-center">
-        &copy; {new Date().getFullYear()} Pertolo. Have fun and drink responsibly!
-      </footer>
     </main>
   );
 }
