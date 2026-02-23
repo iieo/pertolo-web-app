@@ -38,24 +38,24 @@ export function WordPhase() {
           {/* Decorative badge */}
           <div className="px-4 py-1.5 rounded-full bg-violet-500/20 border border-violet-500/40">
             <span className="text-violet-300 text-xs font-bold tracking-widest uppercase">
-              The Word Is
+              Dein Wort
             </span>
           </div>
 
           {/* Word */}
           <div className="text-center px-4">
-            <h2 className="text-white font-black leading-none tracking-tight"
-              style={{ fontSize: 'clamp(2.8rem, 14vw, 5.5rem)' }}>
+            <h2 className="text-white font-black leading-none tracking-tight drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]"
+              style={{ fontSize: 'clamp(3.5rem, 16vw, 6.5rem)' }}>
               {currentWord.word}
             </h2>
-            <p className="text-violet-400 text-base font-medium mt-2 tracking-wider">
-              /{currentWord.pronunciation}/
+            <p className="text-violet-400 text-lg font-medium mt-3 tracking-wider">
+              [{currentWord.pronunciation}]
             </p>
           </div>
 
           {/* Instruction hint */}
           <p className="text-white/40 text-sm text-center max-w-xs leading-relaxed px-4">
-            Read the word out loud to the group, then secretly tap below.
+            Lies das Wort laut vor und drücke dann heimlich unten drauf.
           </p>
         </div>
 
@@ -65,10 +65,10 @@ export function WordPhase() {
             onClick={revealSecret}
             className="w-full py-6 rounded-2xl bg-violet-600 hover:bg-violet-500 active:scale-[0.98] transition-all font-black text-white text-xl tracking-wide shadow-[0_0_40px_-4px_rgba(139,92,246,0.6)] border border-violet-500/50"
           >
-            Tap to Reveal
+            Aufdecken
           </button>
           <p className="text-center text-white/25 text-xs mt-3 tracking-wide">
-            Only look at the result yourself!
+            Sieh dir das Ergebnis heimlich an!
           </p>
         </div>
       </div>
@@ -78,30 +78,27 @@ export function WordPhase() {
         <DialogContent className="bg-[#0e0e14] border border-white/10 text-white rounded-3xl max-w-sm mx-4 p-6">
           <DialogHeader>
             <DialogTitle className="text-white text-2xl font-black text-center">
-              How to Play
+              Spielregeln
             </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4 mt-2">
             <RuleStep number="1" color="violet">
-              The current player holds the phone. Read the word on screen out
-              loud to the group.
+              Der aktuelle Spieler hält das Handy. Lies das angezeigte Wort laut für die Gruppe vor.
             </RuleStep>
             <RuleStep number="2" color="violet">
-              Tap <strong>"Tap to Reveal"</strong> and secretly read your
-              result. The group must NOT see it.
+              Tippe auf <strong>"Aufdecken"</strong> und lies dein Ergebnis heimlich. Die Gruppe darf es NICHT sehen.
             </RuleStep>
             <RuleStep number="3" color="green">
-              If you get <span className="text-emerald-400 font-bold">TRUTH</span>
-              , read the real definition confidently.
+              Wenn du <span className="text-emerald-400 font-bold">WAHRHEIT</span> erhältst,
+              lies die echte Bedeutung selbstbewusst vor.
             </RuleStep>
             <RuleStep number="4" color="red">
-              If you get <span className="text-rose-400 font-bold">BLUFF</span>
-              , invent a convincing fake definition on the spot!
+              Wenn du <span className="text-rose-400 font-bold">BLUFF</span> erhältst,
+              erfinde spontan eine überzeugende, falsche Definition!
             </RuleStep>
             <RuleStep number="5" color="violet">
-              The group votes: real or bluff? If they guess wrong, the player
-              wins the round!
+              Die Gruppe stimmt ab: Wahr oder Bluff? Wenn sie falsch raten, gewinnt der Spieler die Runde!
             </RuleStep>
           </div>
 
@@ -109,7 +106,7 @@ export function WordPhase() {
             onClick={() => setRulesOpen(false)}
             className="w-full mt-4 bg-violet-600 hover:bg-violet-500 text-white font-bold text-base py-5 rounded-xl"
           >
-            Got it!
+            Verstanden!
           </Button>
         </DialogContent>
       </Dialog>
