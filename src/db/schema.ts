@@ -51,3 +51,17 @@ export const imposterCategoriesTable = pgTable('impostor_categories', {
 
 export type DrinkCategoryModel = typeof drinkCategoryTable.$inferSelect;
 export type DrinkTaskModel = typeof drinkTaskTable.$inferSelect;
+
+export const bluffWordsTable = pgTable('bluff_words', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  word: varchar('word', { length: 100 }).notNull(),
+  pronunciation: varchar('pronunciation', { length: 100 }).notNull(),
+  definition: text('definition').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export type BluffWordModel = typeof bluffWordsTable.$inferSelect;

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Gamepad2, Beer, Music, ChevronRight } from 'lucide-react';
+import { Gamepad2, Beer, Music, BookOpen, ChevronRight } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -25,7 +25,7 @@ export default function Home() {
         </div>
 
         {/* Navigation / Cards */}
-        <nav className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full px-4 md:px-0">
+        <nav className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 w-full px-4 md:px-0">
           {/* Imposter Card */}
           <Link
             href="/imposter"
@@ -86,6 +86,26 @@ export default function Home() {
             <div className="relative z-10 mt-auto">
               <h2 className="text-3xl font-extrabold text-white mb-2 tracking-tight">TRAINER</h2>
               <p className="text-white/50 font-medium text-sm">Train rhythm skills</p>
+            </div>
+          </Link>
+          {/* Bluff Card */}
+          <Link
+            href="/bluff"
+            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(139,92,246,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-[400ms]"
+          >
+            <div className="absolute inset-0 bg-linear-to-br from-violet-500/0 via-violet-500/0 to-violet-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-violet-500/20 blur-[50px] -translate-y-1/2 translate-x-1/2 group-hover:bg-violet-500/40 transition-colors duration-500" />
+
+            <div className="relative z-10 flex items-center justify-between">
+              <div className="w-14 h-14 rounded-2xl bg-violet-500/20 flex items-center justify-center border border-violet-500/30 text-violet-400 group-hover:scale-110 group-hover:bg-violet-500 group-hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(139,92,246,0.2)]">
+                <BookOpen size={28} strokeWidth={2.5} />
+              </div>
+              <ChevronRight className="text-white/20 group-hover:text-violet-400 group-hover:translate-x-1 transition-all duration-300" size={28} />
+            </div>
+
+            <div className="relative z-10 mt-auto">
+              <h2 className="text-3xl font-extrabold text-white mb-2 tracking-tight">BLUFF</h2>
+              <p className="text-white/50 font-medium text-sm">Truth or made-up definition?</p>
             </div>
           </Link>
         </nav>
