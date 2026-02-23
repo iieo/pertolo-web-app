@@ -68,7 +68,9 @@ export default function GamePage() {
 
         <div className="z-10 flex flex-col items-center gap-4 animate-in fade-in zoom-in slide-in-from-bottom-8 duration-500 backdrop-blur-xl bg-white/5 border border-white/10 p-8 rounded-3xl shadow-2xl">
           <div className="text-3xl text-red-400 font-extrabold">{error}</div>
-          <div className="text-purple-200/80 text-lg font-medium">Bitte wähle eine andere Kategorie</div>
+          <div className="text-purple-200/80 text-lg font-medium">
+            Bitte wähle eine andere Kategorie
+          </div>
           <button
             onClick={() => router.push('/drink/mode')}
             className="mt-4 px-6 py-3 bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl transition-all shadow-lg active:scale-95 text-white font-bold"

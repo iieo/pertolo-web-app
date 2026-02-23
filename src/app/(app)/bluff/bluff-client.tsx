@@ -8,24 +8,24 @@ import { WordPhase } from './components/word-phase';
 import { Word } from './types';
 
 function BluffGameContent() {
-    const { phase } = useBluffGame();
+  const { phase } = useBluffGame();
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, [phase]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [phase]);
 
-    switch (phase) {
-        case 'word':
-            return <WordPhase />;
-        case 'secret':
-            return <SecretPhase />;
-    }
+  switch (phase) {
+    case 'word':
+      return <WordPhase />;
+    case 'secret':
+      return <SecretPhase />;
+  }
 }
 
 export function BluffClient({ words }: { words: Word[] }) {
-    return (
-        <GameProvider words={words}>
-            <BluffGameContent />
-        </GameProvider>
-    );
+  return (
+    <GameProvider words={words}>
+      <BluffGameContent />
+    </GameProvider>
+  );
 }

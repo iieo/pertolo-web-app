@@ -39,6 +39,7 @@ Requires `DATABASE_URL` in `.env`. Copy `.env.example` to get started.
 ### State management pattern
 
 Each game uses a **React Context + Provider** co-located with its route:
+
 - `game-provider.tsx` holds all game state and exports a `useXxxGame()` hook
 - `actions.ts` files are Next.js Server Actions (`'use server'`) that call the database directly — no API layer for most game data
 - Phase-based game flow managed in context state (e.g. `setup → reveal → playing`)

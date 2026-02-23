@@ -38,7 +38,10 @@ export default function Home() {
               <div className="w-14 h-14 rounded-2xl bg-red-500/20 flex items-center justify-center border border-red-500/30 text-red-400 group-hover:scale-110 group-hover:bg-red-500 group-hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(220,38,38,0.2)]">
                 <Gamepad2 size={28} strokeWidth={2.5} />
               </div>
-              <ChevronRight className="text-white/20 group-hover:text-red-400 group-hover:translate-x-1 transition-all duration-300" size={28} />
+              <ChevronRight
+                className="text-white/20 group-hover:text-red-400 group-hover:translate-x-1 transition-all duration-300"
+                size={28}
+              />
             </div>
 
             <div className="relative z-10 mt-auto">
@@ -59,7 +62,10 @@ export default function Home() {
               <div className="w-14 h-14 rounded-2xl bg-fuchsia-500/20 flex items-center justify-center border border-fuchsia-500/30 text-fuchsia-400 group-hover:scale-110 group-hover:bg-fuchsia-500 group-hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(217,70,239,0.2)]">
                 <Beer size={28} strokeWidth={2.5} />
               </div>
-              <ChevronRight className="text-white/20 group-hover:text-fuchsia-400 group-hover:translate-x-1 transition-all duration-300" size={28} />
+              <ChevronRight
+                className="text-white/20 group-hover:text-fuchsia-400 group-hover:translate-x-1 transition-all duration-300"
+                size={28}
+              />
             </div>
 
             <div className="relative z-10 mt-auto">
@@ -80,7 +86,10 @@ export default function Home() {
               <div className="w-14 h-14 rounded-2xl bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30 text-cyan-400 group-hover:scale-110 group-hover:bg-cyan-500 group-hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
                 <Music size={28} strokeWidth={2.5} />
               </div>
-              <ChevronRight className="text-white/20 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all duration-300" size={28} />
+              <ChevronRight
+                className="text-white/20 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all duration-300"
+                size={28}
+              />
             </div>
 
             <div className="relative z-10 mt-auto">
@@ -100,7 +109,10 @@ export default function Home() {
               <div className="w-14 h-14 rounded-2xl bg-violet-500/20 flex items-center justify-center border border-violet-500/30 text-violet-400 group-hover:scale-110 group-hover:bg-violet-500 group-hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(139,92,246,0.2)]">
                 <BookOpen size={28} strokeWidth={2.5} />
               </div>
-              <ChevronRight className="text-white/20 group-hover:text-violet-400 group-hover:translate-x-1 transition-all duration-300" size={28} />
+              <ChevronRight
+                className="text-white/20 group-hover:text-violet-400 group-hover:translate-x-1 transition-all duration-300"
+                size={28}
+              />
             </div>
 
             <div className="relative z-10 mt-auto">

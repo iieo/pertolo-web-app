@@ -125,8 +125,13 @@ function AddPlayerForm() {
         >
           <div className="flex flex-col w-full relative">
             {createErrors.hostName && (
-              <Alert variant="destructive" className="absolute -top-16 w-full animate-in fade-in slide-in-from-bottom-2 bg-red-500/10 border-red-500/50 text-red-100 py-2 backdrop-blur-md">
-                <AlertDescription className="text-center font-medium">{createErrors.hostName.message}</AlertDescription>
+              <Alert
+                variant="destructive"
+                className="absolute -top-16 w-full animate-in fade-in slide-in-from-bottom-2 bg-red-500/10 border-red-500/50 text-red-100 py-2 backdrop-blur-md"
+              >
+                <AlertDescription className="text-center font-medium">
+                  {createErrors.hostName.message}
+                </AlertDescription>
               </Alert>
             )}
             <Input
@@ -152,10 +157,11 @@ function AddPlayerForm() {
               type="button"
               variant="secondary"
               size="icon"
-              className={`shrink-0 h-16 w-16 rounded-2xl transition-all shadow-lg active:scale-95 group ${players.length === 0
-                ? 'bg-white/5 text-white/20 border border-white/10'
-                : 'bg-linear-to-br from-green-400 to-emerald-600 text-white shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:shadow-[0_0_30px_rgba(16,185,129,0.6)] border-none'
-                }`}
+              className={`shrink-0 h-16 w-16 rounded-2xl transition-all shadow-lg active:scale-95 group ${
+                players.length === 0
+                  ? 'bg-white/5 text-white/20 border border-white/10'
+                  : 'bg-linear-to-br from-green-400 to-emerald-600 text-white shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:shadow-[0_0_30px_rgba(16,185,129,0.6)] border-none'
+              }`}
               onClick={handleStartGame}
               disabled={players.length === 0}
               aria-label="Start Game"

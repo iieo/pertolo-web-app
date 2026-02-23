@@ -3,12 +3,7 @@
 import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 import { useBluffGame } from '../game-provider';
 
@@ -44,8 +39,10 @@ export function WordPhase() {
 
           {/* Word */}
           <div className="text-center px-4">
-            <h2 className="text-white font-black leading-none tracking-tight drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]"
-              style={{ fontSize: 'clamp(3.5rem, 16vw, 6.5rem)' }}>
+            <h2
+              className="text-white font-black leading-none tracking-tight drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]"
+              style={{ fontSize: 'clamp(3.5rem, 16vw, 6.5rem)' }}
+            >
               {currentWord.word}
             </h2>
             <p className="text-violet-400 text-lg font-medium mt-3 tracking-wider">
@@ -87,18 +84,20 @@ export function WordPhase() {
               Der aktuelle Spieler hält das Handy. Lies das angezeigte Wort laut für die Gruppe vor.
             </RuleStep>
             <RuleStep number="2" color="violet">
-              Tippe auf <strong>"Aufdecken"</strong> und lies dein Ergebnis heimlich. Die Gruppe darf es NICHT sehen.
+              Tippe auf <strong>"Aufdecken"</strong> und lies dein Ergebnis heimlich. Die Gruppe
+              darf es NICHT sehen.
             </RuleStep>
             <RuleStep number="3" color="green">
-              Wenn du <span className="text-emerald-400 font-bold">WAHRHEIT</span> erhältst,
-              lies die echte Bedeutung selbstbewusst vor.
+              Wenn du <span className="text-emerald-400 font-bold">WAHRHEIT</span> erhältst, lies
+              die echte Bedeutung selbstbewusst vor.
             </RuleStep>
             <RuleStep number="4" color="red">
-              Wenn du <span className="text-rose-400 font-bold">BLUFF</span> erhältst,
-              erfinde spontan eine überzeugende, falsche Definition!
+              Wenn du <span className="text-rose-400 font-bold">BLUFF</span> erhältst, erfinde
+              spontan eine überzeugende, falsche Definition!
             </RuleStep>
             <RuleStep number="5" color="violet">
-              Die Gruppe stimmt ab: Wahr oder Bluff? Wenn sie falsch raten, gewinnt der Spieler die Runde!
+              Die Gruppe stimmt ab: Wahr oder Bluff? Wenn sie falsch raten, gewinnt der Spieler die
+              Runde!
             </RuleStep>
           </div>
 

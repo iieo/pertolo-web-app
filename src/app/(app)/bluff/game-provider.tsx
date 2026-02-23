@@ -31,7 +31,7 @@ function pickRandomIndex(exclude: Set<number>, total: number): number {
   return idx;
 }
 
-export const GameProvider = ({ children, words }: { children: React.ReactNode, words: Word[] }) => {
+export const GameProvider = ({ children, words }: { children: React.ReactNode; words: Word[] }) => {
   const [WORDS] = useState(words);
   const [usedIndices, setUsedIndices] = useState<Set<number>>(new Set());
   const [currentIndex, setCurrentIndex] = useState<number>(() =>

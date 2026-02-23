@@ -11,18 +11,17 @@ export function SecretPhase() {
     <div className="min-h-[100dvh] w-full bg-black flex flex-col md:max-w-lg md:mx-auto">
       {/* Dynamic background */}
       <div
-        className={`fixed inset-0 pointer-events-none transition-colors duration-500 ${isTruth
+        className={`fixed inset-0 pointer-events-none transition-colors duration-500 ${
+          isTruth
             ? 'bg-gradient-to-br from-emerald-950 via-black to-teal-950'
             : 'bg-gradient-to-br from-rose-950 via-black to-red-950'
-          }`}
+        }`}
       />
 
       <div className="relative flex flex-col flex-1 p-5">
         {/* Top word label */}
         <div className="pt-2 pb-4 text-center">
-          <p className="text-white/30 text-xs font-bold tracking-[0.2em] uppercase">
-            Das Wort war
-          </p>
+          <p className="text-white/30 text-xs font-bold tracking-[0.2em] uppercase">Das Wort war</p>
           <p className="text-white text-3xl font-black tracking-tight drop-shadow-md mt-1">
             {currentWord.word}
           </p>
@@ -30,21 +29,24 @@ export function SecretPhase() {
 
         {/* Main secret card */}
         <div
-          className={`flex-1 flex flex-col items-center justify-center rounded-3xl border p-7 gap-5 ${isTruth
+          className={`flex-1 flex flex-col items-center justify-center rounded-3xl border p-7 gap-5 ${
+            isTruth
               ? 'bg-emerald-500/10 border-emerald-500/30'
               : 'bg-rose-500/10 border-rose-500/30'
-            }`}
+          }`}
         >
           {/* TRUTH / BLUFF banner */}
           <div
-            className={`px-6 py-2 rounded-2xl border-2 ${isTruth
+            className={`px-6 py-2 rounded-2xl border-2 ${
+              isTruth
                 ? 'bg-emerald-500/20 border-emerald-400/60'
                 : 'bg-rose-500/20 border-rose-400/60'
-              }`}
+            }`}
           >
             <span
-              className={`font-black tracking-widest ${isTruth ? 'text-emerald-300' : 'text-rose-300'
-                }`}
+              className={`font-black tracking-widest ${
+                isTruth ? 'text-emerald-300' : 'text-rose-300'
+              }`}
               style={{ fontSize: 'clamp(2rem, 10vw, 3.5rem)' }}
             >
               {isTruth ? 'WAHRHEIT' : 'BLUFF!'}
@@ -90,10 +92,11 @@ export function SecretPhase() {
         <div className="pt-5 pb-6">
           <button
             onClick={nextWord}
-            className={`w-full py-6 rounded-2xl font-black text-white text-xl tracking-wide active:scale-[0.98] transition-all border ${isTruth
+            className={`w-full py-6 rounded-2xl font-black text-white text-xl tracking-wide active:scale-[0.98] transition-all border ${
+              isTruth
                 ? 'bg-emerald-600 hover:bg-emerald-500 shadow-[0_0_40px_-4px_rgba(16,185,129,0.5)] border-emerald-500/50'
                 : 'bg-rose-600 hover:bg-rose-500 shadow-[0_0_40px_-4px_rgba(244,63,94,0.5)] border-rose-500/50'
-              }`}
+            }`}
           >
             Nächstes Wort →
           </button>

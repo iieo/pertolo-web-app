@@ -17,9 +17,7 @@ export default async function GameModeScreen() {
           <h1 className="text-5xl font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-purple-200 to-fuchsia-200 drop-shadow-xl mb-3">
             Game Mode
           </h1>
-          <p className="text-lg text-fuchsia-200/60 font-medium">
-            Wähle deinen Spielmodus
-          </p>
+          <p className="text-lg text-fuchsia-200/60 font-medium">Wähle deinen Spielmodus</p>
         </div>
 
         <ul className="flex flex-col gap-5 w-full">
@@ -27,7 +25,11 @@ export default async function GameModeScreen() {
             <li
               key={mode.id}
               className="animate-in fade-in slide-in-from-bottom"
-              style={{ animationDuration: '700ms', animationDelay: `${idx * 100}ms`, animationFillMode: 'both' }}
+              style={{
+                animationDuration: '700ms',
+                animationDelay: `${idx * 100}ms`,
+                animationFillMode: 'both',
+              }}
             >
               <GameModeCard mode={mode} />
             </li>

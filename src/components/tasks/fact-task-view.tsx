@@ -31,9 +31,7 @@ function FactTaskView({ task }: { task: FactTask }) {
 
       <div className="z-10 flex flex-col items-center w-full max-w-2xl animate-in fade-in zoom-in-95 duration-500">
         <div className="inline-block px-4 py-1.5 rounded-full bg-blue-500/20 border border-blue-500/30 backdrop-blur-md mb-8 shadow-[0_0_30px_rgba(59,130,246,0.3)]">
-          <h2 className="text-sm font-black uppercase tracking-[0.2em] text-blue-200">
-            Quiz
-          </h2>
+          <h2 className="text-sm font-black uppercase tracking-[0.2em] text-blue-200">Quiz</h2>
         </div>
 
         <p className="text-2xl md:text-4xl font-black text-white drop-shadow-2xl leading-tight mb-12 px-4">
@@ -46,18 +44,23 @@ function FactTaskView({ task }: { task: FactTask }) {
             const isCorrect = answer === task.correctAnswer;
             const showResult = selected !== null;
 
-            let btnClass = 'relative overflow-hidden py-5 px-6 rounded-2xl border-2 transition-all duration-300 font-bold text-lg md:text-xl w-full flex items-center justify-between group ';
+            let btnClass =
+              'relative overflow-hidden py-5 px-6 rounded-2xl border-2 transition-all duration-300 font-bold text-lg md:text-xl w-full flex items-center justify-between group ';
 
             if (showResult) {
               if (isCorrect) {
-                btnClass += 'bg-gradient-to-r from-green-500 to-emerald-600 border-green-400 text-white shadow-[0_0_30px_rgba(16,185,129,0.4)] scale-[1.02] z-10';
+                btnClass +=
+                  'bg-gradient-to-r from-green-500 to-emerald-600 border-green-400 text-white shadow-[0_0_30px_rgba(16,185,129,0.4)] scale-[1.02] z-10';
               } else if (isSelected) {
-                btnClass += 'bg-gradient-to-r from-red-500 to-rose-600 border-red-400 text-white shadow-[0_0_30px_rgba(239,68,68,0.4)] scale-100 z-10';
+                btnClass +=
+                  'bg-gradient-to-r from-red-500 to-rose-600 border-red-400 text-white shadow-[0_0_30px_rgba(239,68,68,0.4)] scale-100 z-10';
               } else {
-                btnClass += 'bg-white/5 border-white/10 text-white/40 scale-95 opacity-50 blur-[1px]';
+                btnClass +=
+                  'bg-white/5 border-white/10 text-white/40 scale-95 opacity-50 blur-[1px]';
               }
             } else {
-              btnClass += 'bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/40 hover:scale-[1.02] cursor-pointer shadow-lg active:scale-95';
+              btnClass +=
+                'bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/40 hover:scale-[1.02] cursor-pointer shadow-lg active:scale-95';
             }
 
             return (
@@ -66,7 +69,11 @@ function FactTaskView({ task }: { task: FactTask }) {
                 className={btnClass}
                 onClick={() => handleAnswerClick(answer)}
                 disabled={showResult}
-                style={!showResult ? { animationDelay: `${idx * 150}ms`, animationFillMode: 'both' } : undefined}
+                style={
+                  !showResult
+                    ? { animationDelay: `${idx * 150}ms`, animationFillMode: 'both' }
+                    : undefined
+                }
               >
                 {!showResult && (
                   <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors" />
@@ -78,9 +85,13 @@ function FactTaskView({ task }: { task: FactTask }) {
                 {showResult && (
                   <div className="absolute right-6 z-10 animate-in zoom-in duration-300">
                     {isCorrect ? (
-                      <div className="bg-white/20 rounded-full p-1"><Check className="w-6 h-6 text-white" /></div>
+                      <div className="bg-white/20 rounded-full p-1">
+                        <Check className="w-6 h-6 text-white" />
+                      </div>
                     ) : isSelected ? (
-                      <div className="bg-white/20 rounded-full p-1"><X className="w-6 h-6 text-white" /></div>
+                      <div className="bg-white/20 rounded-full p-1">
+                        <X className="w-6 h-6 text-white" />
+                      </div>
                     ) : null}
                   </div>
                 )}
@@ -96,12 +107,13 @@ function FactTaskView({ task }: { task: FactTask }) {
             </div>
           ) : (
             <div className="text-sm font-medium tracking-widest uppercase text-white/70 animate-in fade-in duration-500">
-              {selected === task.correctAnswer ? '✨ Richtig!' : '❌ Falsch!'} &middot; Weiter in 2 Sekunden...
+              {selected === task.correctAnswer ? '✨ Richtig!' : '❌ Falsch!'} &middot; Weiter in 2
+              Sekunden...
             </div>
           )}
         </div>
       </div>
-    </div >
+    </div>
   );
 }
 
