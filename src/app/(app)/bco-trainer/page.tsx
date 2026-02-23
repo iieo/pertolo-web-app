@@ -56,10 +56,20 @@ export default function BCOTrainerPage() {
 
     try {
       if (!audioContextRef.current) {
-        audioContextRef.current = new (
+        const AudioContextClass =
           window.AudioContext ||
-          (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
-        )();
+          (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+        const ctx = new AudioContextClass();
+        audioContextRef.current = ctx;
+
+        // Unlock audio context for mobile browsers (iOS Safari)
+        const oscillator = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        gainNode.gain.value = 0;
+        oscillator.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        oscillator.start(0);
+        oscillator.stop(ctx.currentTime + 0.1);
       }
 
       await audioContextRef.current.resume();
@@ -104,7 +114,7 @@ export default function BCOTrainerPage() {
   };
 
   return (
-    <main className="flex flex-col items-center min-h-dvh bg-gradient-to-b from-slate-50 to-slate-100 p-4 md:p-8 gap-4 md:gap-6">
+    <main className="flex flex-col items-center min-h-dvh bg-linear-to-b from-slate-50 to-slate-100 p-4 md:p-8 gap-4 md:gap-6">
       <Header />
 
       <SheetMusicCard

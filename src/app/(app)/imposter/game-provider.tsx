@@ -62,15 +62,16 @@ export const GameProvider = ({ children }: GameProviderProps) => {
 
   const setPlayerCount = (count: number) => {
     if (count < 3) return;
-    
+
     // Create array of "Player 1", "Player 2", etc.
     const newPlayers = Array.from({ length: count }, (_, i) => `Player ${i + 1}`);
-    
+
     setGameState((prev) => ({
       ...prev,
       players: newPlayers,
       // Reset imposters count if it exceeds new player count
-      imposterCount: prev.imposterCount >= count ? Math.max(1, Math.floor(count / 2) - 1) : prev.imposterCount
+      imposterCount:
+        prev.imposterCount >= count ? Math.max(1, Math.floor(count / 2) - 1) : prev.imposterCount,
     }));
   };
 

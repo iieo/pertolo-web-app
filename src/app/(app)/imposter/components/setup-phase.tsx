@@ -25,15 +25,8 @@ import {
 import { useGame } from '../game-provider';
 
 export const SetupPhase = () => {
-  const {
-    gameState,
-    setGameState,
-    categories,
-    loading,
-    error,
-    setPlayerCount,
-    startGame,
-  } = useGame();
+  const { gameState, setGameState, categories, loading, error, setPlayerCount, startGame } =
+    useGame();
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -184,10 +177,11 @@ export const SetupPhase = () => {
                         {categories.map((category) => (
                           <div
                             key={category.id}
-                            className={`cursor-pointer transition-all duration-200 rounded-xl p-4 border-2 flex flex-col justify-center min-h-[5rem] ${gameState.selectedCategoryId === category.id
-                              ? 'border-[#fb8500] bg-[#fb8500]/10'
-                              : 'border-[#333] bg-[#1a1a1a] hover:border-[#555]'
-                              }`}
+                            className={`cursor-pointer transition-all duration-200 rounded-xl p-4 border-2 flex flex-col justify-center min-h-[5rem] ${
+                              gameState.selectedCategoryId === category.id
+                                ? 'border-[#fb8500] bg-[#fb8500]/10'
+                                : 'border-[#333] bg-[#1a1a1a] hover:border-[#555]'
+                            }`}
                             onClick={() => {
                               setGameState((prev) => ({
                                 ...prev,
@@ -227,10 +221,11 @@ export const SetupPhase = () => {
                       key={num}
                       type="button"
                       onClick={() => setGameState((prev) => ({ ...prev, imposterCount: num }))}
-                      className={`flex-1 h-12 text-lg font-bold rounded-xl transition-all duration-200 ${gameState.imposterCount === num
-                        ? 'bg-[#fb8500] text-black shadow-lg'
-                        : 'bg-[#1a1a1a] text-white hover:bg-[#222] border border-[#333]'
-                        }`}
+                      className={`flex-1 h-12 text-lg font-bold rounded-xl transition-all duration-200 ${
+                        gameState.imposterCount === num
+                          ? 'bg-[#fb8500] text-black shadow-lg'
+                          : 'bg-[#1a1a1a] text-white hover:bg-[#222] border border-[#333]'
+                      }`}
                     >
                       {num}
                     </button>

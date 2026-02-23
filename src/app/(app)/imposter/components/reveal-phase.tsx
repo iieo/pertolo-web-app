@@ -40,7 +40,7 @@ export const RevealPhase = () => {
         if (e.currentTarget.hasPointerCapture(e.pointerId)) {
           e.currentTarget.releasePointerCapture(e.pointerId);
         }
-      } catch (err) { }
+      } catch (err) {}
     }
   };
 
@@ -82,8 +82,9 @@ export const RevealPhase = () => {
         <div className="w-full max-w-sm aspect-[3/4] max-h-[50vh] relative perspective-1000">
           {/* Hidden Content (Result) */}
           <div
-            className={`absolute inset-0 rounded-3xl border-2 transition-all duration-500 flex flex-col items-center justify-center p-6 text-center shadow-2xl ${isImposter ? 'bg-[#111] border-[#fb8500]' : 'bg-[#111] border-[#333]'
-              } ${isCardRevealed ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+            className={`absolute inset-0 rounded-3xl border-2 transition-all duration-500 flex flex-col items-center justify-center p-6 text-center shadow-2xl ${
+              isImposter ? 'bg-[#111] border-[#fb8500]' : 'bg-[#111] border-[#333]'
+            } ${isCardRevealed ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
           >
             {isImposter ? (
               <div className="space-y-6 animate-in fade-in zoom-in duration-500 w-full">
@@ -93,31 +94,23 @@ export const RevealPhase = () => {
                 <div>
                   <h4 className="text-4xl font-black text-white mb-2 tracking-tight">IMPOSTER</h4>
 
-                                    {gameState.showCategoryToImposter && selectedCategory ? (
+                  {gameState.showCategoryToImposter && selectedCategory ? (
+                    <div className="mt-8 space-y-1 animate-in fade-in slide-in-from-top-2 duration-700 delay-300 fill-mode-both">
+                      <div className="h-px w-12 bg-white/10 mx-auto mb-6" />
 
-                                      <div className="mt-8 space-y-1 animate-in fade-in slide-in-from-top-2 duration-700 delay-300 fill-mode-both">
+                      <p className="text-[#666] text-[10px] font-black uppercase tracking-[0.2em]">
+                        The Category
+                      </p>
 
-                                         <div className="h-px w-12 bg-white/10 mx-auto mb-6" />
-
-                                         <p className="text-[#666] text-[10px] font-black uppercase tracking-[0.2em]">The Category</p>
-
-                                         <p className="text-white text-2xl font-black tracking-tight uppercase">
-
-                                           {selectedCategory.name}
-
-                                         </p>
-
-                                      </div>
-
-                                    ) : (
-
-                                      <p className="text-[#888] font-medium text-lg leading-snug mt-4">
-
-                                        Blend in. Don&apos;t let them know you don&apos;t know.
-
-                                      </p>
-
-                                    )}
+                      <p className="text-white text-2xl font-black tracking-tight uppercase">
+                        {selectedCategory.name}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="text-[#888] font-medium text-lg leading-snug mt-4">
+                      Blend in. Don&apos;t let them know you don&apos;t know.
+                    </p>
+                  )}
                 </div>
               </div>
             ) : (
