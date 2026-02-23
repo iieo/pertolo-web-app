@@ -40,8 +40,14 @@ export function WordPhase() {
           {/* Word */}
           <div className="text-center px-4">
             <h2
-              className="text-white font-black leading-none tracking-tight drop-shadow-[0_0_20px_rgba(255,255,255,0.4)]"
-              style={{ fontSize: 'clamp(3.5rem, 16vw, 6.5rem)' }}
+              className="text-white font-black tracking-tight drop-shadow-[0_0_20px_rgba(255,255,255,0.4)] wrap-break-word w-full"
+              style={{
+                fontSize:
+                  currentWord.word.length > 12
+                    ? 'clamp(2.5rem, 10vw, 4.5rem)'
+                    : 'clamp(3.5rem, 14vw, 6.5rem)',
+                lineHeight: 1.1,
+              }}
             >
               {currentWord.word}
             </h2>

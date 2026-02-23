@@ -22,7 +22,16 @@ export function SecretPhase() {
         {/* Top word label */}
         <div className="pt-2 pb-4 text-center">
           <p className="text-white/30 text-xs font-bold tracking-[0.2em] uppercase">Das Wort war</p>
-          <p className="text-white text-3xl font-black tracking-tight drop-shadow-md mt-1">
+          <p
+            className="text-white font-black tracking-tight drop-shadow-md mt-1 wrap-break-word w-full"
+            style={{
+              fontSize:
+                currentWord.word.length > 12
+                  ? 'clamp(1.5rem, 8vw, 2rem)'
+                  : 'clamp(1.875rem, 10vw, 3rem)',
+              lineHeight: 1.1,
+            }}
+          >
             {currentWord.word}
           </p>
         </div>
