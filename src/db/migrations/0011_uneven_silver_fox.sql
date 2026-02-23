@@ -1,0 +1,1 @@
+ALTER TABLE "bluff_words" ADD CONSTRAINT "bluff_words_word_unique" UNIQUE("word");

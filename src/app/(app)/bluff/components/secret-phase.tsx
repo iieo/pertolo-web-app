@@ -8,13 +8,13 @@ export function SecretPhase() {
   const isTruth = secretType === 'truth';
 
   return (
-    <div className="min-h-[100dvh] w-full bg-black flex flex-col md:max-w-lg md:mx-auto">
+    <div className="min-h-dvh w-full bg-black flex flex-col md:max-w-lg md:mx-auto">
       {/* Dynamic background */}
       <div
         className={`fixed inset-0 pointer-events-none transition-colors duration-500 ${
           isTruth
-            ? 'bg-gradient-to-br from-emerald-950 via-black to-teal-950'
-            : 'bg-gradient-to-br from-rose-950 via-black to-red-950'
+            ? 'bg-linear-to-br from-emerald-950 via-black to-teal-950'
+            : 'bg-linear-to-br from-rose-950 via-black to-red-950'
         }`}
       />
 

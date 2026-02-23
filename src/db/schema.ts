@@ -54,7 +54,7 @@ export type DrinkTaskModel = typeof drinkTaskTable.$inferSelect;
 
 export const bluffWordsTable = pgTable('bluff_words', {
   id: uuid('id').primaryKey().defaultRandom(),
-  word: varchar('word', { length: 100 }).notNull(),
+  word: varchar('word', { length: 100 }).notNull().unique(),
   pronunciation: varchar('pronunciation', { length: 100 }).notNull(),
   definition: text('definition').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),

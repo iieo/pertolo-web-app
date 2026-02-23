@@ -109,10 +109,69 @@ const germanBluffWords = [
     definition:
       'Eine verhörte oder falsch verstandene Phrase – besonders in Liedtexten – die eine neue, unbeabsichtigte Bedeutung erzeugt.',
   },
+  {
+    word: 'Kinkerlitzchen',
+    pronunciation: 'KIN-ker-litz-chen',
+    definition: 'Eine Kleinigkeit, etwas Unbedeutendes oder Belangloses.',
+  },
+  {
+    word: 'Schadenfreude',
+    pronunciation: 'SCHA-den-freu-de',
+    definition: 'Die Freude über den Misserfolg oder das Unglück anderer.',
+  },
+  {
+    word: 'Ohrwurm',
+    pronunciation: 'OHR-wurm',
+    definition: 'Ein eingängiges Lied oder eine Melodie, die man nicht mehr aus dem Kopf bekommt.',
+  },
+  {
+    word: 'Torschlusspanik',
+    pronunciation: 'TOR-schluss-pa-nik',
+    definition:
+      'Die Angst, eine Chance oder ein Lebensziel (insbesondere Heirat/Kinderkriegen) zu verpassen, wenn man älter wird.',
+  },
+  {
+    word: 'Verschlimmbessern',
+    pronunciation: 'ver-SCHLIMM-bes-sern',
+    definition: 'Etwas bei dem Versuch, es zu verbessern, stattdessen noch schlechter machen.',
+  },
+  {
+    word: 'Weltschmerz',
+    pronunciation: 'WELT-schmerz',
+    definition:
+      'Ein Gefühl der Melancholie und des Pessimismus angesichts der Unvollkommenheit der Welt.',
+  },
+  {
+    word: 'Kummerspeck',
+    pronunciation: 'KUM-mer-speck',
+    definition:
+      'Das Übergewicht, das man durch emotionales Essen (aus Frust oder Kummer) angesammelt hat.',
+  },
+  {
+    word: 'Fingerspitzengefühl',
+    pronunciation: 'FIN-ger-spit-zen-ge-fühl',
+    definition:
+      'Großes Einfühlungsvermögen und Taktgefühl im Umgang mit Menschen oder heiklen Situationen.',
+  },
+  {
+    word: 'Treppenwitz',
+    pronunciation: 'TREP-pen-witz',
+    definition:
+      'Ein geistreicher Einfall oder eine schlagfertige Antwort, die einem erst (zu spät) hinterher einfällt.',
+  },
+  {
+    word: 'Zweisamkeit',
+    pronunciation: 'ZWAI-sam-kait',
+    definition:
+      'Ein harmoisches, enges Verbundensein von genau zwei Menschen in trauter Atmosphäre.',
+  },
 ];
 
 async function seedBluffWords() {
-  await db.insert(bluffWordsTable).values(germanBluffWords);
+  await db
+    .insert(bluffWordsTable)
+    .values(germanBluffWords)
+    .onConflictDoNothing({ target: bluffWordsTable.word });
   console.log('Seeded German bluff words.');
   exit(0);
 }
