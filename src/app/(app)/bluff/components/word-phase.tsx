@@ -44,8 +44,8 @@ export function WordPhase() {
               style={{
                 fontSize:
                   currentWord.word.length > 12
-                    ? 'clamp(2.5rem, 10vw, 4.5rem)'
-                    : 'clamp(3.5rem, 14vw, 6.5rem)',
+                    ? 'clamp(1.5rem, 8vw, 3.5rem)'
+                    : 'clamp(2rem, 11vw, 5rem)',
                 lineHeight: 1.1,
               }}
             >

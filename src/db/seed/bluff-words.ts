@@ -15,36 +15,6 @@ const germanBluffWords = [
       'Das grollende oder gurgelnde Geräusch, das durch die Bewegung von Flüssigkeit und Gas im Darm erzeugt wird.',
   },
   {
-    word: 'Mumpitz',
-    pronunciation: 'MUM-pits',
-    definition: 'Unsinn, törichtes Zeug oder eine unsinnige Behauptung.',
-  },
-  {
-    word: 'Klabautermann',
-    pronunciation: 'Kla-BAU-ter-mann',
-    definition: 'Ein unsichtbarer Schiffsgeist der Seeleuten hilft oder Unheil ankündigt.',
-  },
-  {
-    word: 'Schabracke',
-    pronunciation: 'Scha-BRA-cke',
-    definition: 'Eine alte, abgenutzte Decke oder (abwertend) eine unansehnliche ältere Frau.',
-  },
-  {
-    word: 'Fisimatenten',
-    pronunciation: 'Fi-si-ma-TEN-ten',
-    definition: 'Ausflüchte, unnötige Schwierigkeiten oder Umstände.',
-  },
-  {
-    word: 'Papperlapapp',
-    pronunciation: 'Pap-per-la-PAPP',
-    definition: 'Ausruf der Ablehnung oder des Zweifels; "Unsinn!".',
-  },
-  {
-    word: 'Ohrensessel',
-    pronunciation: 'O-HREN-ses-sel',
-    definition: 'Ein bequemer, gepolsterter Sessel mit meist ausladenden Wangen im Kopfbereich.',
-  },
-  {
     word: 'Apricität',
     pronunciation: 'a-pri-tsi-TÄT',
     definition: 'Die Wärme der Sonne an einem kalten Wintertag.',
@@ -62,12 +32,6 @@ const germanBluffWords = [
       'Ein unfreiwilliger Zustand intensiver romantischer Verliebtheit, gekennzeichnet durch obsessives Denken und ein verzweifeltes Bedürfnis nach Gegenliebe.',
   },
   {
-    word: 'Smellfungus',
-    pronunciation: 'SMEL-fun-gus',
-    definition:
-      'Jemand, der an allem etwas auszusetzen hat und sich ständig über seine Umgebung beschwert.',
-  },
-  {
     word: 'Logomachie',
     pronunciation: 'lo-go-ma-CHIE',
     definition:
@@ -80,90 +44,384 @@ const germanBluffWords = [
       'Ein hartnäckiges Festhalten an einem falschen Glauben oder Brauch, selbst nachdem er widerlegt wurde.',
   },
   {
-    word: 'Resistentialismus',
-    pronunciation: 're-zis-ten-tia-LIS-mus',
-    definition:
-      'Die Theorie, dass unbelebte Dinge absichtlich Widerstand leisten und gegen Menschen arbeiten.',
-  },
-  {
     word: 'Acnestis',
     pronunciation: 'ak-NES-tis',
     definition:
       'Der Teil des Rückens zwischen den Schulterblättern, den eine Person nicht erreichen kann, um sich zu kratzen.',
   },
   {
-    word: 'Hiraeth',
-    pronunciation: 'HIE-raith',
+    word: 'Defenestration',
+    pronunciation: 'de-fe-nes-tra-TSION',
     definition:
-      'Ein walisisches Wort für eine tiefe, wehmütige Sehnsucht nach einem Zuhause, in das man nie zurückkehren kann.',
+      'Der Hinauswurf einer Person oder eines Gegenstandes aus einem Fenster, oft im historischen Kontext als politische Tat.',
   },
   {
-    word: 'Grawlix',
-    pronunciation: 'GRAW-liks',
+    word: 'Agnotologie',
+    pronunciation: 'ag-no-to-lo-GIE',
     definition:
-      'Die typografischen Symbole (wie @#$%!), die in Comics verwendet werden, um Fluchwörter darzustellen.',
+      'Die wissenschaftliche Erforschung von kulturell erschaffenem Unwissen oder Zweifeln, oft durch gezielte Desinformation.',
   },
   {
-    word: 'Mondegreen',
-    pronunciation: 'MON-de-green',
+    word: 'Pareidolie',
+    pronunciation: 'pa-rei-do-LIE',
     definition:
-      'Eine verhörte oder falsch verstandene Phrase – besonders in Liedtexten – die eine neue, unbeabsichtigte Bedeutung erzeugt.',
+      'Das psychologische Phänomen, in abstrakten Dingen vermeintliche Gesichter oder vertraute Muster zu erkennen.',
   },
   {
-    word: 'Kinkerlitzchen',
-    pronunciation: 'KIN-ker-litz-chen',
-    definition: 'Eine Kleinigkeit, etwas Unbedeutendes oder Belangloses.',
-  },
-  {
-    word: 'Schadenfreude',
-    pronunciation: 'SCHA-den-freu-de',
-    definition: 'Die Freude über den Misserfolg oder das Unglück anderer.',
-  },
-  {
-    word: 'Ohrwurm',
-    pronunciation: 'OHR-wurm',
-    definition: 'Ein eingängiges Lied oder eine Melodie, die man nicht mehr aus dem Kopf bekommt.',
-  },
-  {
-    word: 'Torschlusspanik',
-    pronunciation: 'TOR-schluss-pa-nik',
+    word: 'Ultracrepidarianismus',
+    pronunciation: 'ul-tra-kre-pi-da-ria-NIS-mus',
     definition:
-      'Die Angst, eine Chance oder ein Lebensziel (insbesondere Heirat/Kinderkriegen) zu verpassen, wenn man älter wird.',
+      'Die Angewohnheit, selbstbewusst Meinungen und Ratschläge zu Dingen abzugeben, von denen man eigentlich keine Ahnung hat.',
   },
   {
-    word: 'Verschlimmbessern',
-    pronunciation: 'ver-SCHLIMM-bes-sern',
-    definition: 'Etwas bei dem Versuch, es zu verbessern, stattdessen noch schlechter machen.',
-  },
-  {
-    word: 'Weltschmerz',
-    pronunciation: 'WELT-schmerz',
+    word: 'Palimpsest',
+    pronunciation: 'pa-limp-SEST',
     definition:
-      'Ein Gefühl der Melancholie und des Pessimismus angesichts der Unvollkommenheit der Welt.',
+      'Eine antike Manuskriptseite, deren ursprünglicher Text abgeschabt oder abgewaschen wurde, um sie kostensparend neu zu beschreiben.',
   },
   {
-    word: 'Kummerspeck',
-    pronunciation: 'KUM-mer-speck',
+    word: 'Dysania',
+    pronunciation: 'dys-A-nia',
     definition:
-      'Das Übergewicht, das man durch emotionales Essen (aus Frust oder Kummer) angesammelt hat.',
+      'Der chronische Zustand, bei dem es einer Person extrem schwerfällt, morgens aus dem Bett aufzustehen.',
   },
   {
-    word: 'Fingerspitzengefühl',
-    pronunciation: 'FIN-ger-spit-zen-ge-fühl',
+    word: 'Apophänie',
+    pronunciation: 'a-po-fä-NIE',
     definition:
-      'Großes Einfühlungsvermögen und Taktgefühl im Umgang mit Menschen oder heiklen Situationen.',
+      'Die Neigung, in völligen Zufallsdaten oder bedeutungslosen Phänomenen verborgene Muster und Zusammenhänge zu sehen.',
   },
   {
-    word: 'Treppenwitz',
-    pronunciation: 'TREP-pen-witz',
+    word: 'Boustrophedon',
+    pronunciation: 'bu-stro-fe-DON',
     definition:
-      'Ein geistreicher Einfall oder eine schlagfertige Antwort, die einem erst (zu spät) hinterher einfällt.',
+      'Eine antike Schreibrichtung, bei der die Zeilen abwechselnd von links nach rechts und von rechts nach links geschrieben werden ("wie ein Ochse pflügt").',
   },
   {
-    word: 'Zweisamkeit',
-    pronunciation: 'ZWAI-sam-kait',
+    word: 'Myrmekologie',
+    pronunciation: 'myr-me-ko-lo-GIE',
     definition:
-      'Ein harmoisches, enges Verbundensein von genau zwei Menschen in trauter Atmosphäre.',
+      'Ein Teilgebiet der Entomologie, das sich speziell und ausschließlich mit der wissenschaftlichen Erforschung von Ameisen beschäftigt.',
+  },
+  {
+    word: 'Hapaxlegomenon',
+    pronunciation: 'ha-pax-le-GO-me-non',
+    definition:
+      'Ein Wort, das in einem bestimmten Text, in einem Korpus oder in der gesamten Sprache historisch nur ein einziges Mal nachweisbar ist.',
+  },
+  {
+    word: 'Nychthemeron',
+    pronunciation: 'nych-the-ME-ron',
+    definition:
+      'Ein Zeitraum von genau 24 Stunden, der einen vollen, ununterbrochenen Tag-Nacht-Zyklus umfasst.',
+  },
+  {
+    word: 'Horripilation',
+    pronunciation: 'hor-ri-pi-la-TSION',
+    definition:
+      'Der biologische und medizinische Fachbegriff für das Aufrichten der Körperhaare bei Kälte oder starker Emotion, gemeinhin "Gänsehaut".',
+  },
+  {
+    word: 'Syzygie',
+    pronunciation: 'sy-zy-GIE',
+    definition:
+      'Die exakte astronomische Ausrichtung dreier oder mehrerer Himmelskörper in einer geraden Linie, wie beispielsweise bei einer Sonnenfinsternis.',
+  },
+  {
+    word: 'Epistaxis',
+    pronunciation: 'e-pis-TAK-sis',
+    definition: 'Der medizinische Fachausdruck für Nasenbluten.',
+  },
+  {
+    word: 'Vexillologie',
+    pronunciation: 'vek-sil-lo-lo-GIE',
+    definition: 'Die historische und systematische Lehre von den Fahnen und Flaggen.',
+  },
+  {
+    word: 'Krepitation',
+    pronunciation: 'kre-pi-ta-TSION',
+    definition:
+      'Ein knisterndes, reibendes Geräusch, wie es oft im medizinischen Bereich beim Aneinanderreiben gebrochener Knochenteile vorkommt.',
+  },
+  {
+    word: 'Koprolalie',
+    pronunciation: 'ko-pro-la-LIE',
+    definition:
+      'Der zwanghafte, meist mit Tourette assoziierte Drang, unwillkürlich obszöne oder unflätige Wörter auszusprechen.',
+  },
+  {
+    word: 'Misophonie',
+    pronunciation: 'mi-so-fo-NIE',
+    definition:
+      'Eine neurologisch bedingte, stark verringerte Toleranz gegenüber spezifischen und repetitiven Alltagsgeräuschen anderer, wie etwa Kauen.',
+  },
+  {
+    word: 'Pogonologie',
+    pronunciation: 'po-go-no-lo-GIE',
+    definition:
+      'Die wissenschaftliche oder historische Untersuchung, Kulturgeschichte und Lehre von den Bärten.',
+  },
+  {
+    word: 'Kallipygisch',
+    pronunciation: 'kal-li-PY-gisch',
+    definition:
+      'Ein oft in der klassischen Kunstgeschichte verwendeter Ausdruck für eine Statur, die mit einem außergewöhnlich wohlgeformten Gesäß ausgestattet ist.',
+  },
+  {
+    word: 'Oikophobie',
+    pronunciation: 'oi-ko-fo-BIE',
+    definition:
+      'Die tief verwurzelte Abneigung, Furcht oder Skepsis gegenüber der eigenen Kultur, dem eigenen Land oder der häuslichen Umgebung.',
+  },
+  {
+    word: 'Sesquipedalophobie',
+    pronunciation: 'ses-kwi-pe-da-lo-fo-BIE',
+    definition:
+      'Bezeichnenderweise der psychiatrische Fachbegriff für die irrationale Angst vor außergewöhnlich langen Wörtern.',
+  },
+  {
+    word: 'Somnambulismus',
+    pronunciation: 'som-nam-bu-LIS-mus',
+    definition:
+      'Das Schlafwandeln; ein Zustand, in dem betroffene Personen im Schlaf komplexe Handlungen ausführen, ohne sich später daran zu erinnern.',
+  },
+  {
+    word: 'Bruxismus',
+    pronunciation: 'bruk-SIS-mus',
+    definition:
+      'Das meist stressbedingte, unbewusste und nächtliche Zähneknirschen oder Aufeinanderpressen der Kiefer.',
+  },
+  {
+    word: 'Prosopagnosie',
+    pronunciation: 'pro-so-pag-no-SIE',
+    definition:
+      'Eine neurologisch bedingte Schwäche oder völlige Unfähigkeit, die Gesichter von vertrauten Mitmenschen zu erkennen, auch Gesichtsblindheit genannt.',
+  },
+  {
+    word: 'Ignoratio elenchi',
+    pronunciation: 'ig-no-RA-tio e-LEN-chi',
+    definition:
+      'Ein klassischer logischer Fehlschluss, bei dem ein vorgebrachtes Argument an sich zwar gültig ist, aber gänzlich am Thema vorbeigeht.',
+  },
+  {
+    word: 'Geotropismus',
+    pronunciation: 'ge-o-tro-PIS-mus',
+    definition:
+      'Wachstumsbewegung von Pflanzen oder Pflanzenteilen als biologische Reaktion auf die Schwerkraft.',
+  },
+  {
+    word: 'Anakoluth',
+    pronunciation: 'a-na-ko-LUTH',
+    definition:
+      'Ein rhetorisches Stilmittel oder grammatischer Bruch, bei dem die begonnene syntaktische Struktur im Satzverlauf unfertig abreißt.',
+  },
+  {
+    word: 'Spaghettifizierung',
+    pronunciation: 'spa-ghet-ti-fi-ZIE-rung',
+    definition:
+      'Die theoretische extreme materielle Verformung von Objekten in die Länge, wenn sie dem massiven Gravitationsfeld eines Schwarzen Lochs ausgesetzt werden.',
+  },
+  {
+    word: 'Orogenese',
+    pronunciation: 'o-ro-ge-NE-se',
+    definition:
+      'Der langwierige geologische und tektonische Entstehungsprozess von Gebirgen, primär durch kollidierende Erdplatten.',
+  },
+  {
+    word: 'Virga',
+    pronunciation: 'VIR-ga',
+    definition:
+      'Meteorologischer Begriff für sichtbaren Niederschlag, der zwar aus Wolken fällt, aber auf dem Weg zum Boden vollständig verdunstet.',
+  },
+  {
+    word: 'Triclinium',
+    pronunciation: 'tri-KLI-ni-um',
+    definition:
+      'Das antike römische Speisezimmer, in dem die Gäste repräsentativ auf drei hufeisenförmig angeordneten Liegen speisten.',
+  },
+  {
+    word: 'Fideikommiss',
+    pronunciation: 'fi-de-i-kom-MISS',
+    definition:
+      'Ein juristisches Instrument zur Standessicherung, das den Familienbesitz unveräußerlich macht und nach fester Erbfolge weitergibt.',
+  },
+  {
+    word: 'Akrasia',
+    pronunciation: 'a-kra-SIA',
+    definition:
+      'Der philosophische Begriff für Willensschwäche; das Handeln wider besseres Wissen und Gewissen.',
+  },
+  {
+    word: 'Alexithymie',
+    pronunciation: 'a-lex-i-thy-MIE',
+    definition:
+      'Eine Persönlichkeitsausprägung, bei der es einer Person extrem schwerfällt, die eigenen Gefühle oder die anderer wahrzunehmen und zu beschreiben (Gefühlsblindheit).',
+  },
+  {
+    word: 'Apoptose',
+    pronunciation: 'a-pop-TO-se',
+    definition:
+      'Der biologisch programmierte und genetisch gesteuerte Zelltod, der im Gegensatz zur Nekrose nicht durch äußere Verletzungen entsteht.',
+  },
+  {
+    word: 'Autopoiesis',
+    pronunciation: 'au-to-poi-E-sis',
+    definition:
+      'Der in der Systemtheorie und Biologie verwendete Begriff für die Fähigkeit eines Systems, sich selbst aus seinen eigenen Bestandteilen immer wieder neu zu erschaffen und zu erhalten.',
+  },
+  {
+    word: 'Eschatologie',
+    pronunciation: 'es-cha-to-lo-GIE',
+    definition:
+      'Die theologische Lehre von den sogenannten "letzten Dingen", also dem Ende der Welt, dem Jüngsten Gericht oder dem Leben nach dem Tod.',
+  },
+  {
+    word: 'Hypnagogie',
+    pronunciation: 'hyp-na-go-GIE',
+    definition:
+      'Der neurologische Übergangszustand vom Wachsein zum Schlaf, im Zuge dessen oft visuelle, auditive oder taktile Halluzinationen auftreten können.',
+  },
+  {
+    word: 'Idiosynkrasie',
+    pronunciation: 'i-dio-syn-kra-SIE',
+    definition:
+      'Eine angeborene oder erworbene, extrem starke Überempfindlichkeit oder übersteigerte Abneigung gegenüber bestimmten Reizen, Stoffen oder Personen.',
+  },
+  {
+    word: 'Klandestin',
+    pronunciation: 'klan-des-TIN',
+    definition:
+      'Ein Attribut für etwas, das im Geheimen, Verborgenen oder im Untergrund stattfindet (oft im politischen oder geheimdienstlichen Kontext).',
+  },
+  {
+    word: 'Liminalität',
+    pronunciation: 'li-mi-na-li-TÄT',
+    definition:
+      'Der anthropologische Begriff für einen Schwellenzustand in einem Übergangsritual, bei dem eine Person eine alte soziale Rolle abgelegt, aber eine neue noch nicht vollständig eingenommen hat.',
+  },
+  {
+    word: 'Myrmekochorie',
+    pronunciation: 'myr-me-ko-cho-RIE',
+    definition:
+      'Die Ausbreitung von Pflanzensamen durch Ameisen, ein klassisches Beispiel für eine mutualistische Beziehung in der Ökologie.',
+  },
+  {
+    word: 'Nosokomial',
+    pronunciation: 'no-so-ko-MIAL',
+    definition:
+      'Ein medizinischer Fachausdruck für eine Infektion oder Erkrankung, die ein Patient oder eine Patientin unglücklicherweise im Zuge eines Krankenhausaufenthalts erworben hat.',
+  },
+  {
+    word: 'Nystagmus',
+    pronunciation: 'nys-TAG-mus',
+    definition:
+      'Die unkontrollierbaren, rhythmischen Zitterbewegungen der Augen, die krankhaft sein können oder bei Gesunden als Reaktion auf starke Drehung auftreten.',
+  },
+  {
+    word: 'Obfuskation',
+    pronunciation: 'ob-fus-ka-TSION',
+    definition:
+      'Das absichtliche und systematische Verschleiern der Bedeutung von Kommunikation oder (in der Informatik) von des Quellcodes eines Programms.',
+  },
+  {
+    word: 'Onomasiologie',
+    pronunciation: 'o-no-ma-sio-lo-GIE',
+    definition:
+      'Ein Teilbereich der Linguistik (Bezeichnungslehre), der nicht von einem Wort ausgeht, um dessen Bedeutung zu suchen, sondern von einem Konzept ausgehend nach der passenden sprachlichen Bezeichnung fragt.',
+  },
+  {
+    word: 'Paroxysmus',
+    pronunciation: 'pa-rox-YS-mus',
+    definition:
+      'Die krampfartige, anfallsweise Steigerung eines Krankheitssymptoms zu seinem absoluten Höhepunkt oder auch ein plötzlicher heftiger Gefühlsausbruch.',
+  },
+  {
+    word: 'Phlebotomie',
+    pronunciation: 'phle-bo-to-MIE',
+    definition:
+      'Der historisch gewachsene medizinische Begriff für einen Aderlass oder die chirurgische Eröffnung einer Vene, meist zur Blutentnahme.',
+  },
+  {
+    word: 'Pseudologie',
+    pronunciation: 'pseu-do-lo-GIE',
+    definition:
+      'Der psychiatrische Terminus für krankhaftes, zwanghaftes und oft übersteigertes Lügen, teils bis hin zur eigenen Überzeugung von den erdichteten Geschichten (Münchhausen-Syndrom).',
+  },
+  {
+    word: 'Schediasmus',
+    pronunciation: 'sche-di-AS-mus',
+    definition:
+      'Ein kunst- und literaturwissenschaftlicher Begriff für ein rasch, aus dem Stegreif und ohne tiefere Überarbeitung hingeworfenes Werk oder einen flüchtigen Entwurf.',
+  },
+  {
+    word: 'Singultus',
+    pronunciation: 'sin-GUL-tus',
+    definition: 'Die klinische, medizinisch korrekte Bezeichnung für den gewöhnlichen Schluckauf.',
+  },
+  {
+    word: 'Solipsismus',
+    pronunciation: 'so-lip-SIS-mus',
+    definition:
+      'Die extreme philosophische und erkenntnistheoretische These, der zufolge einzig und allein das eigene (des Betrachters) Ich existiert.',
+  },
+  {
+    word: 'Soteriologie',
+    pronunciation: 'so-te-rio-lo-GIE',
+    definition:
+      'Der systematische Teilbereich der Theologie, der sich tiefgehend mit dem Konzept der Erlösung befasst und dieses analysiert.',
+  },
+  {
+    word: 'Speläologie',
+    pronunciation: 'spe-lä-o-lo-GIE',
+    definition: 'Die interdisziplinäre Geowissenschaft der Höhlenforschung.',
+  },
+  {
+    word: 'Tachyphylaxie',
+    pronunciation: 'ta-chy-phy-la-XIE',
+    definition:
+      'Ein pharmakologisches Phänomen der schnellen, manchmal innerhalb von Minuten einsetzenden, Gewöhnung an ein Medikament.',
+  },
+  {
+    word: 'Teleologie',
+    pronunciation: 'te-leo-lo-GIE',
+    definition:
+      'Die philosophische Lehre, Auffassung und Weltsicht, wonach Handlungen, Entwicklungen oder die gesamte Natur auf ein ganz bestimmtes, vorherbestimmtes Ziel (Telos) ausgerichtet sind.',
+  },
+  {
+    word: 'Theodizee',
+    pronunciation: 'theo-di-ZEE',
+    definition:
+      'Die theologische und philosophische Verteidigung der Güte und Gerechtigkeit Gottes angesichts des massiven Vorhandenseins von Leid und Bösem in der Welt.',
+  },
+  {
+    word: 'Ubiquitär',
+    pronunciation: 'u-bi-kwi-TÄR',
+    definition:
+      'Ein oft in der Biologie und Informatik gebrauchtes Adjektiv zur Beschreibung von Dingen, die absolut allgegenwärtig sind und praktisch überall vorkommen.',
+  },
+  {
+    word: 'Valetudinarier',
+    pronunciation: 'va-le-tu-di-NA-rier',
+    definition:
+      'Eine zumeist kränkelnde Person und in der Psychologie ein Mensch, der sich übermäßig und krankhaft Sorgen um seine eigene Gesundheit macht (verwandt mit dem Hypochonder).',
+  },
+  {
+    word: 'Xenobiotikum',
+    pronunciation: 'xe-no-bio-TI-kum',
+    definition:
+      'Jede chemische Verbindung, die dem aktuellen biologischen System oder Organismus evolutionär völlig fremd ist, wie beispielsweise viele moderne Medikamente oder synthetische Umweltgifte.',
+  },
+  {
+    word: 'Xylothek',
+    pronunciation: 'xy-lo-THEK',
+    definition:
+      'Eine spezielle naturhistorische Sammlung, in der Holzarten zumeist systematisiert, oft auch originell in Form von Buchattrappen, aufbewahrt werden.',
+  },
+  {
+    word: 'Zymologie',
+    pronunciation: 'zy-mo-lo-GIE',
+    definition:
+      'Die Lehre von der Gärung; eine angewandte Wissenschaft, die sich insbesondere mit den biochemischen Prozessen des Bierbrauens und der Weinherstellung befasst.',
   },
 ];
 
