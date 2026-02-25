@@ -32,7 +32,7 @@ async function getOrSetSessionId() {
 
 async function notifyGameUpdate(gameId: string) {
   // Trigger SSE for clients listening to this game
-  await db.execute(sql`NOTIFY werewolf_updates, ${gameId}`);
+  await db.execute(sql`SELECT pg_notify('werewolf_updates', ${gameId})`);
 }
 
 export async function createGame(formData: FormData) {

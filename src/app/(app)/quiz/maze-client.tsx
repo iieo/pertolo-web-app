@@ -180,7 +180,7 @@ export function MazeClient() {
 
                                     {/* Discovered Wall */}
                                     {isDiscoveredWall && (
-                                        <div className="absolute inset-0 flex items-center justify-center">
+                                        <div className="absolute inset-0 flex items-center justify-center bg-black">
                                             <Image
                                                 src="/quiz/wall.png"
                                                 alt="Wall"
@@ -229,7 +229,7 @@ export function MazeClient() {
 
             {/* Controls pointer */}
             <div className="mt-8 z-10 flex gap-2 items-center text-white/40 text-sm font-medium">
-                <kbd className="px-2 py-1 bg-white/10 rounded border border-white/20">W A S D</kbd>
+                <kbd className="px-2 py-1 bg-white/10 rounded border border-white/20">Arrow Keys</kbd>
                 <span>or Swipe</span>
             </div>
 
