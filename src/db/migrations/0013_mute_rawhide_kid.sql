@@ -1,0 +1,1 @@
+ALTER TABLE "werewolf_players" ADD COLUMN "action_type" varchar(50);

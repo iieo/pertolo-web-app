@@ -89,6 +89,7 @@ export const werewolfPlayersTable = pgTable('werewolf_players', {
   role: varchar('role', { length: 50 }),
   isAlive: boolean('is_alive').default(true).notNull(),
   actionTargetId: uuid('action_target_id'), // Temporarily holds the vote/action target
+  actionType: varchar('action_type', { length: 50 }), // Temporarily holds the type of action (e.g. 'heal', 'kill', 'love')
   isOwner: boolean('is_owner').default(false).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')

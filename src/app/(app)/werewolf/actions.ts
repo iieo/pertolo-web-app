@@ -117,7 +117,7 @@ export async function joinGame(formData: FormData) {
   redirect(`/werewolf/${gameId}`);
 }
 
-export async function startGame(gameId: string) {
+export async function startGame(gameId: string, roleConfigOverride?: Record<string, number>) {
   const sessionId = await getOrSetSessionId();
 
   const game = await db.query.werewolfGamesTable.findFirst({
@@ -132,14 +132,27 @@ export async function startGame(gameId: string) {
     where: eq(werewolfPlayersTable.gameId, gameId),
   });
 
-  // Simple role assignment based on config
-  // In a real app, you'd match the exact counts from game.rolesConfig.
-  // We'll do a simple fallback if there are not enough players
-  const config = game.rolesConfig as any;
+  // Role assignment
+  const config = roleConfigOverride || (game.rolesConfig as any);
+
+  if (roleConfigOverride) {
+    await db
+      .update(werewolfGamesTable)
+      .set({ rolesConfig: config })
+      .where(eq(werewolfGamesTable.id, gameId));
+  }
+
   let rolePool: string[] = [];
-  for (let i = 0; i < (config.werwolf || 1); i++) rolePool.push('werwolf');
+  for (let i = 0; i < (config.werwolf || 0); i++) rolePool.push('werwolf');
   for (let i = 0; i < (config.seher || 0); i++) rolePool.push('seher');
   for (let i = 0; i < (config.hexe || 0); i++) rolePool.push('hexe');
+  for (let i = 0; i < (config.jaeger || 0); i++) rolePool.push('jaeger');
+  for (let i = 0; i < (config.amor || 0); i++) rolePool.push('amor');
+  for (let i = 0; i < (config.heiler || 0); i++) rolePool.push('heiler');
+  for (let i = 0; i < (config.blinzelmaedchen || 0); i++) rolePool.push('blinzelmaedchen');
+  for (let i = 0; i < (config.dorfdepp || 0); i++) rolePool.push('dorfdepp');
+  for (let i = 0; i < (config.der_alte || 0); i++) rolePool.push('der_alte');
+  for (let i = 0; i < (config.wildes_kind || 0); i++) rolePool.push('wildes_kind');
 
   // Fill the rest with dorfbewohner
   while (rolePool.length < players.length) {
@@ -151,10 +164,12 @@ export async function startGame(gameId: string) {
 
   // Assign roles
   for (let i = 0; i < players.length; i++) {
+    const player = players[i];
+    if (!player) continue;
     await db
       .update(werewolfPlayersTable)
-      .set({ role: rolePool[i] })
-      .where(eq(werewolfPlayersTable.id, players[i].id));
+      .set({ role: rolePool[i] || 'dorfbewohner' })
+      .where(eq(werewolfPlayersTable.id, player.id));
   }
 
   await db
@@ -186,18 +201,18 @@ export async function nextPhase(gameId: string, targetPhase: string) {
   // Reset action targets when entering next phase
   await db
     .update(werewolfPlayersTable)
-    .set({ actionTargetId: null })
+    .set({ actionTargetId: null, actionType: null })
     .where(eq(werewolfPlayersTable.gameId, gameId));
 
   await notifyGameUpdate(gameId);
 }
 
-export async function submitAction(gameId: string, targetPlayerId: string) {
+export async function submitAction(gameId: string, targetPlayerId: string, actionType?: string) {
   const sessionId = await getOrSetSessionId();
 
   await db
     .update(werewolfPlayersTable)
-    .set({ actionTargetId: targetPlayerId })
+    .set({ actionTargetId: targetPlayerId, actionType: actionType || null })
     .where(
       and(eq(werewolfPlayersTable.gameId, gameId), eq(werewolfPlayersTable.sessionId, sessionId)),
     );
