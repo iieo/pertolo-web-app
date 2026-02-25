@@ -423,6 +423,186 @@ const germanBluffWords = [
     definition:
       'Die Lehre von der Gärung; eine angewandte Wissenschaft, die sich insbesondere mit den biochemischen Prozessen des Bierbrauens und der Weinherstellung befasst.',
   },
+  {
+    word: 'Hagestolz',
+    pronunciation: 'HA-ge-stolz',
+    definition:
+      'Ein älterer, überzeugter Junggeselle, der sein Leben lang bewusst und gewollt unverheiratet geblieben ist.',
+  },
+  {
+    word: 'Larmoyanz',
+    pronunciation: 'lar-mo-YANZ',
+    definition:
+      'Eine ausgeprägte, stark wehleidige und oft als lästig empfundene Weinerlichkeit oder Rührseligkeit.',
+  },
+  {
+    word: 'Kaprize',
+    pronunciation: 'ka-PRI-ze',
+    definition:
+      'Eine überraschende, unberechenbare und sehr eigensinnige Laune oder ein plötzlicher, wunderlicher Einfall.',
+  },
+  {
+    word: 'Süffisant',
+    pronunciation: 'süf-fi-SANT',
+    definition:
+      'Geprägt von einem deutlich spöttischen, meist herablassenden und sehr selbstgefälligen Verhalten.',
+  },
+  {
+    word: 'Gaudium',
+    pronunciation: 'GAU-di-um',
+    definition:
+      'Ein großer Spaß, ein ausgelassenes Vergnügen oder eine Quelle der allgemeinen und lauten Belustigung.',
+  },
+  {
+    word: 'Bonmot',
+    pronunciation: 'bong-MO',
+    definition:
+      'Ein besonders geistreicher, witziger, treffender und pointiert formulierter Ausspruch.',
+  },
+  {
+    word: 'Chuzpe',
+    pronunciation: 'CHUZ-pe',
+    definition:
+      'Eine bemerkenswerte Mischung aus unverschämter Dreistigkeit und bewundernswerter Durchsetzungskraft.',
+  },
+  {
+    word: 'Philister',
+    pronunciation: 'fi-LIS-ter',
+    definition:
+      'Ein extrem engstirniger, kleingeistiger Mensch und unkreativer Kunstbanause, dem geistige Werte völlig fremd sind.',
+  },
+  {
+    word: 'Ennui',
+    pronunciation: 'an-NÜI',
+    definition:
+      'Eine profunde, fast existenzielle Langeweile, die untrennbar mit einem Gefühl der inneren Leere einhergeht.',
+  },
+  {
+    word: 'Rabulistik',
+    pronunciation: 'ra-bu-LIS-tik',
+    definition:
+      'Die spitzfindige und berechnende Kunst der Wortverdreherei, oft in Form von sinnloser Haarspalterei.',
+  },
+  {
+    word: 'Sybarit',
+    pronunciation: 'sy-ba-RIT',
+    definition:
+      'Ein Mensch, der ganz dem Luxus, dem körperlichen Genuss, der Bequemlichkeit und der Weichlichkeit hingegeben ist.',
+  },
+  {
+    word: 'Bohemien',
+    pronunciation: 'bo-e-MIÄN',
+    definition:
+      'Ein Intellektueller oder Künstler, der ein bewusst unkonventionelles und von bürgerlichen Zwängen ungebundenes Leben führt.',
+  },
+  {
+    word: 'Brimborium',
+    pronunciation: 'brim-BO-ri-um',
+    definition:
+      'Viel unnötiges Aufhebens, umständliches Getue oder übertriebener Aufwand um eine absolute Nichtigkeit.',
+  },
+  {
+    word: 'Scharmützel',
+    pronunciation: 'schar-MÜT-zel',
+    definition:
+      'Ein kurzes, räumlich begrenztes Gefecht oder im übertragenen Sinn eine kleine, hitzige verbale Auseinandersetzung.',
+  },
+  {
+    word: 'Makulatur',
+    pronunciation: 'ma-ku-la-TUR',
+    definition:
+      'Altpapier, fehlerhaft gedruckte Bögen oder abwertend für ein Schriftstück, das völlig nutzlos oder überholt ist.',
+  },
+  {
+    word: 'Poussieren',
+    pronunciation: 'pus-SIE-ren',
+    definition:
+      'Mit jemandem heftig und aufmerksam flirten oder auf charmante Weise versuchen, ein Verhältnis zu beginnen.',
+  },
+  {
+    word: 'Flaneur',
+    pronunciation: 'fla-NÖR',
+    definition:
+      'Ein eleganter, weltmännischer Spaziergänger, der betont ziellos und genau beobachtend durch die Straßen flaniert.',
+  },
+  {
+    word: 'Katzbalgerei',
+    pronunciation: 'katz-bal-ge-REI',
+    definition:
+      'Ein wildes, sehr unübersichtliches und mit lautem Geschrei einhergehendes Handgemenge oder Rauferei.',
+  },
+  {
+    word: 'Klüngel',
+    pronunciation: 'KLÜN-gel',
+    definition:
+      'Eine informelle, meist anrüchige Gruppe von Menschen, die einander heimlich und systematisch Vorteile zuspielen.',
+  },
+  {
+    word: 'Fabulieren',
+    pronunciation: 'fa-bu-LIE-ren',
+    definition:
+      'In ausschweifenden, fantastischen Worten etwas erfinden und lustvoll darüber Erzählungen ausschmücken.',
+  },
+  {
+    word: 'Pittoresk',
+    pronunciation: 'pit-to-RESK',
+    definition:
+      'Derart malerisch, idyllisch und ansehnlich, dass es sich problemlos als Motiv für ein wunderschönes Landschaftsbild eignen würde.',
+  },
+  {
+    word: 'Renitent',
+    pronunciation: 're-ni-TENT',
+    definition:
+      'Eine Grundeinstellung, die sich hartnäckig widersetzt, unbelehrbar ist und als extrem störrisch und aufsässig wahrgenommen wird.',
+  },
+  {
+    word: 'Defätismus',
+    pronunciation: 'de-fä-TIS-mus',
+    definition:
+      'Eine langanhaltende Haltung der absoluten Mutlosigkeit, systematischen Schwarzseherei und der völligen Resignation.',
+  },
+  {
+    word: 'Lapidar',
+    pronunciation: 'la-pi-DAR',
+    definition:
+      'Überraschend kurz, treffend bündig und sehr unerwartet knapp formuliert, oftmals auf eine sehr beiläufig wirkende Art und Weise.',
+  },
+  {
+    word: 'Subversiv',
+    pronunciation: 'sub-ver-SIV',
+    definition:
+      'Stark umstürzlerisch, zersetzend und stets darauf ausgerichtet, eine bestehende Ordnung schleichend und im Verborgenen zu bekämpfen.',
+  },
+  {
+    word: 'Vindiktiv',
+    pronunciation: 'vin-dik-TIV',
+    definition:
+      'Das Attribut für einen Menschen, der in höchstem Maße rachsüchtig, vollkommen unversöhnlich und stark nachtragend agiert.',
+  },
+  {
+    word: 'Affront',
+    pronunciation: 'af-FRONG',
+    definition:
+      'Eine direkte, bewusste und meist in der Öffentlichkeit stattfindende brüskierende Kränkung oder heftige Beleidigung.',
+  },
+  {
+    word: 'Ambivalent',
+    pronunciation: 'am-bi-va-LENT',
+    definition:
+      'In sich stark zwiespältig, uneindeutig und von völlig widersprüchlichen Gefühlen, Gedanken oder Bestrebungen geprägt.',
+  },
+  {
+    word: 'Impertinenz',
+    pronunciation: 'im-per-ti-NENZ',
+    definition:
+      'Ein extrem freches, völlig unverschämtes und den Gegenüber herausfordernd unerhöriges Verhalten fernab jeglichen Anstandes.',
+  },
+  {
+    word: 'Konsterniert',
+    pronunciation: 'kon-ster-NIERT',
+    definition:
+      'Aufgrund von etwas völlig Unerwartetem oder Schockierendem für den Moment hochgradig bestürzt, fassungslos und völlig verwirrt.',
+  },
 ];
 
 async function seedBluffWords() {
