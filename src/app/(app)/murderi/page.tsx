@@ -5,15 +5,18 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Skull, Users, ArrowRight } from 'lucide-react';
+import { Skull, Users, ArrowRight, Loader2 } from 'lucide-react';
 
 export default function MurderiHome() {
   const [gameId, setGameId] = useState('');
+  const [joining, setJoining] = useState(false);
+  const [creating, setCreating] = useState(false);
   const router = useRouter();
 
   const handleJoin = () => {
     const code = gameId.trim().toUpperCase();
     if (code.length < 4) return;
+    setJoining(true);
     router.push(`/murderi/game/${code}`);
   };
 
@@ -76,11 +79,17 @@ export default function MurderiHome() {
               </div>
               <Button
                 onClick={handleJoin}
-                disabled={gameId.trim().length < 4}
+                disabled={gameId.trim().length < 4 || joining}
                 className="w-full h-14 text-sm font-black uppercase tracking-widest rounded-xl bg-[#dc2626] hover:bg-[#b91c1c] text-white disabled:opacity-20 shadow-lg shadow-red-600/10 transition-all flex items-center justify-center gap-2 group"
               >
-                Assemble Team
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                {joining ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <>
+                    Assemble Team
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                  </>
+                )}
               </Button>
             </div>
           </div>
@@ -94,12 +103,22 @@ export default function MurderiHome() {
 
           {/* Create Game */}
           <Button
-            onClick={() => router.push('/murderi/create')}
+            onClick={() => {
+              setCreating(true);
+              router.push('/murderi/create');
+            }}
+            disabled={creating}
             variant="outline"
-            className="w-full h-14 text-sm font-black uppercase tracking-widest rounded-xl bg-transparent border-[#333] hover:bg-[#111] text-[#888] hover:text-white transition-all flex items-center justify-center gap-2 group"
+            className="w-full h-14 text-sm font-black uppercase tracking-widest rounded-xl bg-transparent border-[#333] hover:bg-[#111] text-[#888] hover:text-white transition-all flex items-center justify-center gap-2 group disabled:opacity-50"
           >
-            <Users className="w-4 h-4 group-hover:text-[#dc2626] transition-colors" />
-            Initialize Agency
+            {creating ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <>
+                <Users className="w-4 h-4 group-hover:text-[#dc2626] transition-colors" />
+                Initialize Agency
+              </>
+            )}
           </Button>
         </div>
       </div>

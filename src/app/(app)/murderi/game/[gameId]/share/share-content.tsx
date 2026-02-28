@@ -3,11 +3,12 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Skull, Copy, Check, MessageCircle, Mail, ArrowRight } from 'lucide-react';
+import { Skull, Copy, Check, MessageCircle, Mail, ArrowRight, Loader2 } from 'lucide-react';
 
 export default function ShareContent({ gameId }: { gameId: string }) {
   const router = useRouter();
   const [copied, setCopied] = useState(false);
+  const [joining, setJoining] = useState(false);
 
   const shareText = `Join my Murderi game! Code: ${gameId} — open the app and enter this code.`;
 
@@ -85,11 +86,21 @@ export default function ShareContent({ gameId }: { gameId: string }) {
 
         {/* Join button */}
         <Button
-          onClick={() => router.push(`/murderi/game/${gameId}`)}
-          className="w-full h-14 text-base font-bold rounded-2xl bg-[#dc2626] hover:bg-[#b91c1c] text-white active:scale-[0.98] transition-transform"
+          onClick={() => {
+            setJoining(true);
+            router.push(`/murderi/game/${gameId}`);
+          }}
+          disabled={joining}
+          className="w-full h-14 text-base font-bold rounded-2xl bg-[#dc2626] hover:bg-[#b91c1c] text-white active:scale-[0.98] transition-transform disabled:opacity-60"
         >
-          Join the Game
-          <ArrowRight className="w-5 h-5 ml-2" />
+          {joining ? (
+            <Loader2 className="w-5 h-5 ml-2 animate-spin" />
+          ) : (
+            <>
+              Join the Game
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </>
+          )}
         </Button>
       </div>
     </div>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { dbGetGameOverview } from '../../actions';
-import { Skull, ChevronRight, Target, User } from 'lucide-react';
+import { Skull, ChevronRight, Target, User, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
@@ -33,6 +33,8 @@ export default function PlayerSelect({ gameId, initialPlayers }: PlayerSelectPro
   const [players, setPlayers] = useState(initialPlayers);
   const [savedPlayer, setSavedPlayer] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
+  const [loadingPlayer, setLoadingPlayer] = useState<string | null>(null);
+  const [viewingKillOrder, setViewingKillOrder] = useState(false);
 
   // Check localStorage on mount
   useEffect(() => {
@@ -57,6 +59,8 @@ export default function PlayerSelect({ gameId, initialPlayers }: PlayerSelectPro
   if (!ready) return null;
 
   const handleSelect = (player: string) => {
+    if (loadingPlayer) return;
+    setLoadingPlayer(player);
     savePlayer(gameId, player);
     router.push(`/murderi/game/${gameId}/${encodeURIComponent(player)}`);
   };
@@ -100,12 +104,18 @@ export default function PlayerSelect({ gameId, initialPlayers }: PlayerSelectPro
         {/* View target button if claimed and alive */}
         {hasClaimed && myStatus?.isAlive && (
           <Button
-            onClick={() =>
-              router.push(`/murderi/game/${gameId}/${encodeURIComponent(savedPlayer)}`)
-            }
-            className="w-full h-14 text-base font-bold rounded-2xl bg-[#dc2626] hover:bg-[#b91c1c] text-white active:scale-[0.98] transition-transform"
+            onClick={() => {
+              setViewingKillOrder(true);
+              router.push(`/murderi/game/${gameId}/${encodeURIComponent(savedPlayer)}`);
+            }}
+            disabled={viewingKillOrder}
+            className="w-full h-14 text-base font-bold rounded-2xl bg-[#dc2626] hover:bg-[#b91c1c] text-white active:scale-[0.98] transition-transform disabled:opacity-60"
           >
-            <Target className="w-5 h-5 mr-2" />
+            {viewingKillOrder ? (
+              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+            ) : (
+              <Target className="w-5 h-5 mr-2" />
+            )}
             View your kill order
           </Button>
         )}
@@ -173,16 +183,22 @@ export default function PlayerSelect({ gameId, initialPlayers }: PlayerSelectPro
                 );
               }
 
+              const isLoading = loadingPlayer === p.name;
               return (
                 <button
                   key={p.name}
                   onClick={() => handleSelect(p.name)}
-                  className="w-full flex items-center justify-between bg-[#1a1a1a] hover:bg-[#222] active:bg-[#2a2a2a] rounded-xl px-4 py-4 border border-[#2a2a2a] hover:border-[#dc2626]/40 transition-all group active:scale-[0.98]"
+                  disabled={loadingPlayer !== null}
+                  className="w-full flex items-center justify-between bg-[#1a1a1a] hover:bg-[#222] active:bg-[#2a2a2a] rounded-xl px-4 py-4 border border-[#2a2a2a] hover:border-[#dc2626]/40 transition-all group active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   <span className="text-white font-semibold text-[15px] truncate mr-2">
                     {p.name}
                   </span>
-                  <ChevronRight className="w-5 h-5 text-[#555] group-hover:text-[#dc2626] transition-colors shrink-0" />
+                  {isLoading ? (
+                    <Loader2 className="w-5 h-5 text-[#dc2626] animate-spin shrink-0" />
+                  ) : (
+                    <ChevronRight className="w-5 h-5 text-[#555] group-hover:text-[#dc2626] transition-colors shrink-0" />
+                  )}
                 </button>
               );
             })}
