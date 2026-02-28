@@ -187,7 +187,9 @@ export default function Home() {
 
             <div className="relative z-10 mt-auto">
               <h2 className="text-3xl font-extrabold text-white mb-2 tracking-tight">MURDERI</h2>
-              <p className="text-white/50 font-medium text-sm">Get your target before they get you</p>
+              <p className="text-white/50 font-medium text-sm">
+                Get your target before they get you
+              </p>
             </div>
           </Link>
         </nav>

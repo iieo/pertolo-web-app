@@ -44,7 +44,9 @@ export default function MurderiHome() {
                 <div className="w-10 h-10 rounded-xl bg-[#dc2626] flex items-center justify-center shadow-lg shadow-red-600/20">
                   <Skull className="w-6 h-6 text-white" />
                 </div>
-                <h1 className="text-4xl font-black text-white tracking-tighter uppercase italic">Murderi</h1>
+                <h1 className="text-4xl font-black text-white tracking-tighter uppercase italic">
+                  Murderi
+                </h1>
               </div>
               <p className="text-[#ccc] text-sm font-medium max-w-[240px] leading-relaxed">
                 A high-stakes social assassination game. Hunter or Prey?
@@ -63,7 +65,9 @@ export default function MurderiHome() {
               </p>
               <div className="flex items-center gap-1.5">
                 <div className="w-1 h-1 rounded-full bg-[#dc2626] animate-pulse" />
-                <span className="text-[10px] font-bold text-[#444] uppercase tracking-widest">Live</span>
+                <span className="text-[10px] font-bold text-[#444] uppercase tracking-widest">
+                  Live
+                </span>
               </div>
             </div>
             <div className="bg-[#111]/80 backdrop-blur-sm rounded-2xl border border-[#222] p-4 space-y-3">
@@ -97,7 +101,9 @@ export default function MurderiHome() {
           {/* Divider */}
           <div className="flex items-center gap-4 py-2">
             <div className="flex-1 h-[1px] bg-[#222]" />
-            <span className="text-[#444] text-[10px] font-black uppercase tracking-[0.3em]">Operational Status</span>
+            <span className="text-[#444] text-[10px] font-black uppercase tracking-[0.3em]">
+              Operational Status
+            </span>
             <div className="flex-1 h-[1px] bg-[#222]" />
           </div>
 

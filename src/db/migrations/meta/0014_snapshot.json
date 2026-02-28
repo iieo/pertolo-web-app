@@ -55,9 +55,7 @@
         "bluff_words_word_unique": {
           "name": "bluff_words_word_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "word"
-          ]
+          "columns": ["word"]
         }
       },
       "policies": {},
@@ -109,9 +107,7 @@
         "drink_categories_name_unique": {
           "name": "drink_categories_name_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
+          "columns": ["name"]
         }
       },
       "policies": {},
@@ -162,12 +158,8 @@
           "name": "drink_tasks_category_id_drink_categories_id_fk",
           "tableFrom": "drink_tasks",
           "tableTo": "drink_categories",
-          "columnsFrom": [
-            "category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["category_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -223,9 +215,7 @@
         "impostor_categories_name_unique": {
           "name": "impostor_categories_name_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
+          "columns": ["name"]
         }
       },
       "policies": {},
@@ -276,12 +266,8 @@
           "name": "impostor_words_category_id_impostor_categories_id_fk",
           "tableFrom": "impostor_words",
           "tableTo": "impostor_categories",
-          "columnsFrom": [
-            "category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["category_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -479,12 +465,8 @@
           "name": "werewolf_players_game_id_werewolf_games_id_fk",
           "tableFrom": "werewolf_players",
           "tableTo": "werewolf_games",
-          "columnsFrom": [
-            "game_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["game_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }

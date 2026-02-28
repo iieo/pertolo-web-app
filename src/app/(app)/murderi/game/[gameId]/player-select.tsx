@@ -94,8 +94,7 @@ export default function PlayerSelect({ gameId, initialPlayers }: PlayerSelectPro
                 Who are you?
               </h1>
               <p className="text-[#888] text-sm mt-1">
-                Game code:{' '}
-                <span className="font-black text-white tracking-widest">{gameId}</span>
+                Game code: <span className="font-black text-white tracking-widest">{gameId}</span>
               </p>
             </>
           )}
@@ -140,18 +139,20 @@ export default function PlayerSelect({ gameId, initialPlayers }: PlayerSelectPro
                 return (
                   <div
                     key={p.name}
-                    className={`flex items-center justify-between rounded-xl px-4 py-3.5 border ${p.isAlive
-                      ? 'bg-[#1a1a1a] border-[#2a2a2a]'
-                      : 'bg-[#1a1a1a]/50 border-[#2a2a2a] opacity-50'
-                      }`}
+                    className={`flex items-center justify-between rounded-xl px-4 py-3.5 border ${
+                      p.isAlive
+                        ? 'bg-[#1a1a1a] border-[#2a2a2a]'
+                        : 'bg-[#1a1a1a]/50 border-[#2a2a2a] opacity-50'
+                    }`}
                   >
                     <div className="flex items-center gap-3 min-w-0">
                       <div
                         className={`w-2.5 h-2.5 rounded-full shrink-0 ${p.isAlive ? 'bg-green-500' : 'bg-[#dc2626]'}`}
                       />
                       <span
-                        className={`font-medium text-[15px] truncate ${p.isAlive ? 'text-white' : 'text-[#666] line-through'
-                          }`}
+                        className={`font-medium text-[15px] truncate ${
+                          p.isAlive ? 'text-white' : 'text-[#666] line-through'
+                        }`}
                       >
                         {p.name}
                         {p.name === savedPlayer && (

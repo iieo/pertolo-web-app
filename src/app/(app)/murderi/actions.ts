@@ -83,9 +83,7 @@ export async function dbUpdateVictim(gameId: string, player: string): Promise<Re
         const orders = await tx
           .select()
           .from(murderiOrdersTable)
-          .where(
-            and(eq(murderiOrdersTable.gameId, gameId), eq(murderiOrdersTable.killer, player)),
-          );
+          .where(and(eq(murderiOrdersTable.gameId, gameId), eq(murderiOrdersTable.killer, player)));
 
         const order = orders[0];
         if (!order) throw new Error('Order not found');
@@ -94,16 +92,12 @@ export async function dbUpdateVictim(gameId: string, player: string): Promise<Re
         await tx
           .update(murderiOrdersTable)
           .set({ victim: order.victim })
-          .where(
-            and(eq(murderiOrdersTable.gameId, gameId), eq(murderiOrdersTable.victim, player)),
-          );
+          .where(and(eq(murderiOrdersTable.gameId, gameId), eq(murderiOrdersTable.victim, player)));
 
         await tx
           .update(murderiOrdersTable)
           .set({ victim: null })
-          .where(
-            and(eq(murderiOrdersTable.gameId, gameId), eq(murderiOrdersTable.killer, player)),
-          );
+          .where(and(eq(murderiOrdersTable.gameId, gameId), eq(murderiOrdersTable.killer, player)));
       },
       { isolationLevel: 'serializable' },
     );

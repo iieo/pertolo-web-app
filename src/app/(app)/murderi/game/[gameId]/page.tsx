@@ -2,11 +2,7 @@ import { dbGetPlayers } from '../../actions';
 import { notFound } from 'next/navigation';
 import PlayerSelect from './player-select';
 
-export default async function GamePlayers({
-  params,
-}: {
-  params: Promise<{ gameId: string }>;
-}) {
+export default async function GamePlayers({ params }: { params: Promise<{ gameId: string }> }) {
   const { gameId } = await params;
   const orders = await dbGetPlayers(gameId);
 
