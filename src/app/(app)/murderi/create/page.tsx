@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { dbCreateGame } from '../actions';
-import { Plus, Skull, Trash2, Play, Loader2 } from 'lucide-react';
+import { Plus, Trash2, Play, Loader2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 const STORAGE_KEY = 'murderi_saved_players';
@@ -92,11 +92,6 @@ export default function CreateGame() {
       <div className="flex-1 flex flex-col space-y-5 sm:space-y-6">
         {/* Header */}
         <div className="text-center">
-          <div className="flex justify-center mb-3">
-            <div className="w-12 h-12 rounded-xl bg-[#dc2626]/10 border border-[#dc2626]/30 flex items-center justify-center">
-              <Skull className="w-6 h-6 text-[#dc2626]" />
-            </div>
-          </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             Create Game
           </h1>

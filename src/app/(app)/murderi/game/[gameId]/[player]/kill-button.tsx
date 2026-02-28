@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { dbUpdateVictim } from '../../../actions';
-import { Loader2, Skull } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 export default function KillButton({
@@ -39,11 +39,7 @@ export default function KillButton({
       disabled={loading}
       className="w-full h-14 text-base font-bold rounded-2xl bg-[#1a1a1a] hover:bg-[#222] border border-[#333] text-white disabled:opacity-40 active:scale-[0.98] transition-transform"
     >
-      {loading ? (
-        <Loader2 className="w-5 h-5 animate-spin mr-2" />
-      ) : (
-        <Skull className="w-5 h-5 mr-2 text-[#dc2626]" />
-      )}
+      {loading && <Loader2 className="w-5 h-5 animate-spin mr-2" />}
       {loading ? 'Updating...' : 'I have been killed'}
     </Button>
   );

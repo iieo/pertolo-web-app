@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Skull, Users, ArrowRight, Loader2 } from 'lucide-react';
+import { Users, ArrowRight, Loader2 } from 'lucide-react';
 
 export default function MurderiHome() {
   const [gameId, setGameId] = useState('');
@@ -41,9 +41,6 @@ export default function MurderiHome() {
             {/* Logo Overlay */}
             <div className="absolute bottom-6 left-6 right-6">
               <div className="flex items-center gap-3 mb-2">
-                <div className="w-10 h-10 rounded-xl bg-[#dc2626] flex items-center justify-center shadow-lg shadow-red-600/20">
-                  <Skull className="w-6 h-6 text-white" />
-                </div>
                 <h1 className="text-4xl font-black text-white tracking-tighter uppercase italic">
                   Murderi
                 </h1>

@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Skull, Copy, Check, MessageCircle, Mail, ArrowRight, Loader2 } from 'lucide-react';
+import { Copy, Check, MessageCircle, Mail, ArrowRight, Loader2 } from 'lucide-react';
 
 export default function ShareContent({ gameId }: { gameId: string }) {
   const router = useRouter();
@@ -26,11 +26,6 @@ export default function ShareContent({ gameId }: { gameId: string }) {
       <div className="flex-1 flex flex-col justify-center space-y-6 sm:space-y-8">
         {/* Header */}
         <div className="text-center">
-          <div className="flex justify-center mb-3">
-            <div className="w-12 h-12 rounded-xl bg-[#dc2626]/10 border border-[#dc2626]/30 flex items-center justify-center">
-              <Skull className="w-6 h-6 text-[#dc2626]" />
-            </div>
-          </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             Game Created!
           </h1>

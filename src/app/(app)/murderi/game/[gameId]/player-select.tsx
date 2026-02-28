@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { dbGetGameOverview } from '../../actions';
-import { Skull, ChevronRight, Target, User, Loader2 } from 'lucide-react';
+import { ChevronRight, Target, User, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
@@ -74,11 +74,6 @@ export default function PlayerSelect({ gameId, initialPlayers }: PlayerSelectPro
       <div className="flex-1 flex flex-col space-y-5 sm:space-y-6">
         {/* Header */}
         <div className="text-center">
-          <div className="flex justify-center mb-3">
-            <div className="w-12 h-12 rounded-xl bg-[#dc2626]/10 border border-[#dc2626]/30 flex items-center justify-center">
-              <Skull className="w-6 h-6 text-[#dc2626]" />
-            </div>
-          </div>
           {hasClaimed ? (
             <>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
@@ -160,10 +155,8 @@ export default function PlayerSelect({ gameId, initialPlayers }: PlayerSelectPro
                         )}
                       </span>
                     </div>
-                    {p.isAlive ? (
+                    {p.isAlive && (
                       <User className="w-4 h-4 text-green-500/60 shrink-0 ml-2" />
-                    ) : (
-                      <Skull className="w-4 h-4 text-[#dc2626]/50 shrink-0 ml-2" />
                     )}
                   </div>
                 );
@@ -179,7 +172,6 @@ export default function PlayerSelect({ gameId, initialPlayers }: PlayerSelectPro
                     <span className="text-[#666] font-semibold text-[15px] line-through truncate">
                       {p.name}
                     </span>
-                    <Skull className="w-4 h-4 text-[#dc2626]/50 shrink-0 ml-2" />
                   </div>
                 );
               }
