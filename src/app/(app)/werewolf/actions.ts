@@ -52,10 +52,16 @@ export async function createGame(formData: FormData) {
     phase: 'lobby',
     rolesConfig: {
       werwolf: 2,
+      dorfbewohner: 0,
       seher: 1,
       hexe: 1,
       amor: 0,
       jaeger: 0,
+      heiler: 0,
+      blinzelmaedchen: 0,
+      dorfdepp: 0,
+      der_alte: 0,
+      wildes_kind: 0,
     },
   });
 
@@ -117,7 +123,7 @@ export async function joinGame(formData: FormData) {
   redirect(`/werewolf/${gameId}`);
 }
 
-export async function startGame(gameId: string, roleConfigOverride?: Record<string, number>) {
+export async function startGame(gameId: string, roleConfig: Record<string, number>) {
   const sessionId = await getOrSetSessionId();
 
   const game = await db.query.werewolfGamesTable.findFirst({
@@ -132,31 +138,36 @@ export async function startGame(gameId: string, roleConfigOverride?: Record<stri
     where: eq(werewolfPlayersTable.gameId, gameId),
   });
 
-  // Role assignment
-  const config = roleConfigOverride || (game.rolesConfig as any);
-
-  if (roleConfigOverride) {
-    await db
-      .update(werewolfGamesTable)
-      .set({ rolesConfig: config })
-      .where(eq(werewolfGamesTable.id, gameId));
+  if (players.length < 4) {
+    throw new Error('Mindestens 4 Spieler werden benötigt');
   }
 
-  let rolePool: string[] = [];
-  for (let i = 0; i < (config.werwolf || 0); i++) rolePool.push('werwolf');
-  for (let i = 0; i < (config.seher || 0); i++) rolePool.push('seher');
-  for (let i = 0; i < (config.hexe || 0); i++) rolePool.push('hexe');
-  for (let i = 0; i < (config.jaeger || 0); i++) rolePool.push('jaeger');
-  for (let i = 0; i < (config.amor || 0); i++) rolePool.push('amor');
-  for (let i = 0; i < (config.heiler || 0); i++) rolePool.push('heiler');
-  for (let i = 0; i < (config.blinzelmaedchen || 0); i++) rolePool.push('blinzelmaedchen');
-  for (let i = 0; i < (config.dorfdepp || 0); i++) rolePool.push('dorfdepp');
-  for (let i = 0; i < (config.der_alte || 0); i++) rolePool.push('der_alte');
-  for (let i = 0; i < (config.wildes_kind || 0); i++) rolePool.push('wildes_kind');
+  // Validate total role count matches player count exactly
+  const totalRoles = Object.values(roleConfig).reduce((a, b) => a + b, 0);
+  if (totalRoles !== players.length) {
+    throw new Error(
+      `Rollenanzahl (${totalRoles}) stimmt nicht mit der Spieleranzahl (${players.length}) überein. Bitte Dorfbewohner anpassen.`,
+    );
+  }
 
-  // Fill the rest with dorfbewohner
-  while (rolePool.length < players.length) {
-    rolePool.push('dorfbewohner');
+  // Validate at least 1 werewolf
+  if (!roleConfig.werwolf || roleConfig.werwolf < 1) {
+    throw new Error('Mindestens 1 Werwolf wird benötigt');
+  }
+
+  // Validate at least 1 dorfbewohner
+  if (!roleConfig.dorfbewohner || roleConfig.dorfbewohner < 1) {
+    throw new Error('Mindestens 1 Dorfbewohner wird benötigt');
+  }
+
+  await db
+    .update(werewolfGamesTable)
+    .set({ rolesConfig: roleConfig })
+    .where(eq(werewolfGamesTable.id, gameId));
+
+  let rolePool: string[] = [];
+  for (const [role, count] of Object.entries(roleConfig)) {
+    for (let i = 0; i < count; i++) rolePool.push(role);
   }
 
   // Shuffle
@@ -183,7 +194,21 @@ export async function startGame(gameId: string, roleConfigOverride?: Record<stri
   await notifyGameUpdate(gameId);
 }
 
-export async function nextPhase(gameId: string, targetPhase: string) {
+// Phase cycle: night -> day -> voting -> night -> day -> voting -> ...
+function getNextPhase(currentPhase: string): string {
+  switch (currentPhase) {
+    case 'night':
+      return 'day';
+    case 'day':
+      return 'voting';
+    case 'voting':
+      return 'night';
+    default:
+      return 'night';
+  }
+}
+
+export async function nextPhase(gameId: string) {
   const sessionId = await getOrSetSessionId();
 
   const game = await db.query.werewolfGamesTable.findFirst({
@@ -193,12 +218,53 @@ export async function nextPhase(gameId: string, targetPhase: string) {
   if (!game) throw new Error('Game not found');
   if (game.ownerSessionId !== sessionId) throw new Error('Only the owner can change phases');
 
+  const newPhase = getNextPhase(game.phase);
+
   await db
     .update(werewolfGamesTable)
-    .set({ phase: targetPhase })
+    .set({ phase: newPhase })
     .where(eq(werewolfGamesTable.id, gameId));
 
   // Reset action targets when entering next phase
+  await db
+    .update(werewolfPlayersTable)
+    .set({ actionTargetId: null, actionType: null })
+    .where(eq(werewolfPlayersTable.gameId, gameId));
+
+  await notifyGameUpdate(gameId);
+}
+
+export async function confirmVote(gameId: string, eliminatedPlayerId: string | null) {
+  const sessionId = await getOrSetSessionId();
+
+  const game = await db.query.werewolfGamesTable.findFirst({
+    where: eq(werewolfGamesTable.id, gameId),
+  });
+
+  if (!game) throw new Error('Game not found');
+  if (game.ownerSessionId !== sessionId) throw new Error('Unauthorized');
+  if (game.phase !== 'voting') throw new Error('Nur in der Abstimmungsphase möglich');
+
+  // If a player was chosen, eliminate them
+  if (eliminatedPlayerId) {
+    await db
+      .update(werewolfPlayersTable)
+      .set({ isAlive: false })
+      .where(
+        and(
+          eq(werewolfPlayersTable.gameId, gameId),
+          eq(werewolfPlayersTable.id, eliminatedPlayerId),
+        ),
+      );
+  }
+
+  // Move to next phase (night)
+  await db
+    .update(werewolfGamesTable)
+    .set({ phase: 'night' })
+    .where(eq(werewolfGamesTable.id, gameId));
+
+  // Reset action targets
   await db
     .update(werewolfPlayersTable)
     .set({ actionTargetId: null, actionType: null })

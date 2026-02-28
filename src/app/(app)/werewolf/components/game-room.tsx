@@ -1,13 +1,14 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { WerewolfGameModel, WerewolfPlayerModel } from '@/db/schema';
 import { refreshGameState } from '../actions/refresh';
-import { startGame, nextPhase, submitAction, eliminatePlayer } from '../actions';
+import { startGame, nextPhase, submitAction, eliminatePlayer, confirmVote } from '../actions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Settings, ShieldAlert, Skull, Eye, Moon, Sun, Vote, UserCircle2, Users, Minus, Plus } from 'lucide-react';
+import { Settings, ShieldAlert, Skull, Eye, Moon, Sun, Vote, UserCircle2, Users, Minus, Plus, ArrowRight, Check, X, AlertTriangle } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 type Props = {
     initialGame: WerewolfGameModel;
@@ -15,22 +16,55 @@ type Props = {
     me: WerewolfPlayerModel;
 };
 
-export default function GameRoom({ initialGame, initialPlayers, me }: Props) {
+const PHASE_LABELS: Record<string, string> = {
+    night: 'Nacht',
+    day: 'Tag',
+    voting: 'Abstimmung',
+};
+
+function getNextPhaseLabel(currentPhase: string): string {
+    switch (currentPhase) {
+        case 'night': return 'Tag';
+        case 'day': return 'Abstimmung';
+        case 'voting': return 'Nacht';
+        default: return 'Nacht';
+    }
+}
+
+function getNextPhaseIcon(currentPhase: string) {
+    switch (currentPhase) {
+        case 'night': return <Sun className="w-4 h-4" />;
+        case 'day': return <Vote className="w-4 h-4" />;
+        case 'voting': return <Moon className="w-4 h-4" />;
+        default: return <Moon className="w-4 h-4" />;
+    }
+}
+
+export default function GameRoom({ initialGame, initialPlayers, me: initialMe }: Props) {
     const [game, setGame] = useState(initialGame);
     const [players, setPlayers] = useState(initialPlayers);
+    const [me, setMe] = useState(initialMe);
     const [error, setError] = useState<string | null>(null);
+    const [newPlayerNames, setNewPlayerNames] = useState<string[]>([]);
+    const [showVoteConfirm, setShowVoteConfirm] = useState(false);
+    const [selectedVoteTarget, setSelectedVoteTarget] = useState<string | null>(null);
+    const router = useRouter();
 
-    const [roleConfig, setRoleConfig] = useState<Record<string, number>>((initialGame.rolesConfig as any) || {
-        werwolf: 1,
-        seher: 0,
-        hexe: 0,
-        jaeger: 0,
-        amor: 0,
-        heiler: 0,
-        blinzelmaedchen: 0,
-        dorfdepp: 0,
-        der_alte: 0,
-        wildes_kind: 0,
+    const [roleConfig, setRoleConfig] = useState<Record<string, number>>(() => {
+        const existing = (initialGame.rolesConfig as Record<string, number>) || {};
+        return {
+            werwolf: existing.werwolf ?? 1,
+            dorfbewohner: existing.dorfbewohner ?? 0,
+            seher: existing.seher ?? 0,
+            hexe: existing.hexe ?? 0,
+            jaeger: existing.jaeger ?? 0,
+            amor: existing.amor ?? 0,
+            heiler: existing.heiler ?? 0,
+            blinzelmaedchen: existing.blinzelmaedchen ?? 0,
+            dorfdepp: existing.dorfdepp ?? 0,
+            der_alte: existing.der_alte ?? 0,
+            wildes_kind: existing.wildes_kind ?? 0,
+        };
     });
 
     const updateRole = (role: string, delta: number) => {
@@ -41,6 +75,43 @@ export default function GameRoom({ initialGame, initialPlayers, me }: Props) {
     };
 
     const previousPhaseRef = useRef(initialGame.phase);
+    const previousPlayerCountRef = useRef(initialPlayers.length);
+
+    const handleGameUpdate = useCallback(async () => {
+        try {
+            const fresh = await refreshGameState(game.id);
+            const prevStatus = game.status;
+            setGame(fresh.game);
+            setPlayers(fresh.players);
+
+            // Update `me` from the fresh players
+            const freshMe = fresh.players.find(p => p.id === initialMe.id);
+            if (freshMe) {
+                setMe(freshMe);
+            }
+
+            // If the game just started, redirect all players
+            if (prevStatus === 'lobby' && fresh.game.status === 'in_progress') {
+                router.refresh();
+            }
+
+            // Show notification for new players (admin only)
+            if (initialMe.isOwner && fresh.game.status === 'lobby') {
+                if (fresh.players.length > previousPlayerCountRef.current) {
+                    const newNames = fresh.players
+                        .slice(previousPlayerCountRef.current)
+                        .map(p => p.name);
+                    setNewPlayerNames(prev => [...prev, ...newNames]);
+                    setTimeout(() => {
+                        setNewPlayerNames(prev => prev.slice(newNames.length));
+                    }, 4000);
+                }
+                previousPlayerCountRef.current = fresh.players.length;
+            }
+        } catch (err) {
+            console.error('Failed to refresh game state', err);
+        }
+    }, [game.id, game.status, initialMe.id, initialMe.isOwner, router]);
 
     useEffect(() => {
         const sse = new EventSource(`/werewolf/${game.id}/stream`);
@@ -49,9 +120,7 @@ export default function GameRoom({ initialGame, initialPlayers, me }: Props) {
             try {
                 const data = JSON.parse(event.data);
                 if (data.type === 'update') {
-                    const fresh = await refreshGameState(game.id);
-                    setGame(fresh.game);
-                    setPlayers(fresh.players);
+                    await handleGameUpdate();
                 }
             } catch (err) {
                 console.error('Failed to parse SSE', err);
@@ -65,7 +134,7 @@ export default function GameRoom({ initialGame, initialPlayers, me }: Props) {
         return () => {
             sse.close();
         };
-    }, [game.id]);
+    }, [game.id, handleGameUpdate]);
 
     useEffect(() => {
         if (!me.isOwner) return;
@@ -90,35 +159,51 @@ export default function GameRoom({ initialGame, initialPlayers, me }: Props) {
         }
     }, [game.phase, me.isOwner]);
 
+    const totalRoles = Object.values(roleConfig).reduce((a, b) => a + b, 0);
+    const canStart = totalRoles === players.length && players.length >= 4 && (roleConfig.werwolf || 0) >= 1 && (roleConfig.dorfbewohner || 0) >= 1;
+
     const handleStartGame = async () => {
+        setError(null);
         try {
             await startGame(game.id, roleConfig);
-        } catch (e: any) {
-            setError(e.message);
+        } catch (e: unknown) {
+            setError(e instanceof Error ? e.message : 'Fehler beim Starten');
         }
     };
 
-    const handleNextPhase = async (phase: string) => {
+    const handleNextPhase = async () => {
+        setError(null);
         try {
-            await nextPhase(game.id, phase);
-        } catch (e: any) {
-            setError(e.message);
+            await nextPhase(game.id);
+        } catch (e: unknown) {
+            setError(e instanceof Error ? e.message : 'Fehler beim Phasenwechsel');
         }
     };
 
     const handleAction = async (targetId: string, actionType?: string) => {
         try {
             await submitAction(game.id, targetId, actionType);
-        } catch (e: any) {
-            setError(e.message);
+        } catch (e: unknown) {
+            setError(e instanceof Error ? e.message : 'Fehler');
         }
     };
 
     const handleEliminate = async (targetId: string) => {
         try {
             await eliminatePlayer(game.id, targetId);
-        } catch (e: any) {
-            setError(e.message)
+        } catch (e: unknown) {
+            setError(e instanceof Error ? e.message : 'Fehler');
+        }
+    };
+
+    const handleConfirmVote = async (playerId: string | null) => {
+        setError(null);
+        try {
+            await confirmVote(game.id, playerId);
+            setShowVoteConfirm(false);
+            setSelectedVoteTarget(null);
+        } catch (e: unknown) {
+            setError(e instanceof Error ? e.message : 'Fehler');
         }
     };
 
@@ -138,7 +223,6 @@ export default function GameRoom({ initialGame, initialPlayers, me }: Props) {
     const avatarUrl = (role: string | null) => {
         if (!role) return null;
         if (role === 'werwolf') return '/werewolf/werewolf.png';
-        // Fallback since generation failed
         return null;
     };
 
@@ -157,6 +241,19 @@ export default function GameRoom({ initialGame, initialPlayers, me }: Props) {
             {/* Decorative Blur Orbs */}
             <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none" />
             <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-rose-600/10 rounded-full blur-[100px] pointer-events-none" />
+
+            {/* New Player Join Notification Toast */}
+            {newPlayerNames.length > 0 && (
+                <div className="fixed top-4 right-4 z-100 space-y-2 animate-in slide-in-from-right-8 fade-in duration-300">
+                    {newPlayerNames.map((name, i) => (
+                        <div key={`toast-${i}`} className="bg-emerald-600/90 backdrop-blur-md text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-2 border border-emerald-500/50">
+                            <Users className="w-4 h-4" />
+                            <span className="font-semibold">{name}</span>
+                            <span className="text-emerald-200 text-sm">ist beigetreten!</span>
+                        </div>
+                    ))}
+                </div>
+            )}
 
             <div className="max-w-4xl mx-auto space-y-8 p-4 md:p-8 relative z-10 animate-in fade-in duration-500">
 
@@ -196,7 +293,7 @@ export default function GameRoom({ initialGame, initialPlayers, me }: Props) {
 
                         <div className="bg-slate-950/50 rounded-xl p-4 border border-slate-800/80 space-y-2 text-left">
                             {players.map(p => (
-                                <div key={p.id} className="flex justify-between items-center bg-slate-900 px-4 py-3 rounded-lg border border-slate-800">
+                                <div key={p.id} className="flex justify-between items-center bg-slate-900 px-4 py-3 rounded-lg border border-slate-800 animate-in fade-in slide-in-from-left-2 duration-300">
                                     <span className="font-medium flex items-center gap-2">
                                         <UserCircle2 className="w-5 h-5 text-slate-500" />
                                         {p.name}
@@ -206,13 +303,23 @@ export default function GameRoom({ initialGame, initialPlayers, me }: Props) {
                             ))}
                         </div>
 
+                        {/* Player count indicator */}
+                        <div className="flex items-center justify-center gap-2 text-sm">
+                            <Users className="w-4 h-4 text-slate-500" />
+                            <span className="text-slate-400">{players.length} Spieler im Raum</span>
+                            {players.length < 4 && (
+                                <span className="text-amber-400 text-xs">(min. 4 benötigt)</span>
+                            )}
+                        </div>
+
                         {me.isOwner ? (
                             <div className="space-y-6">
                                 <div className="bg-slate-950/50 rounded-xl p-4 border border-slate-800/80 text-left">
                                     <h3 className="font-bold text-slate-200 mb-4 flex items-center gap-2"><Settings className="w-4 h-4" /> Rollen Setup</h3>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         {[
-                                            { id: 'werwolf', label: 'Werwolf' },
+                                            { id: 'werwolf', label: 'Werwolf', required: true },
+                                            { id: 'dorfbewohner', label: 'Dorfbewohner', required: true },
                                             { id: 'seher', label: 'Seherin' },
                                             { id: 'hexe', label: 'Hexe' },
                                             { id: 'jaeger', label: 'Jäger' },
@@ -223,8 +330,11 @@ export default function GameRoom({ initialGame, initialPlayers, me }: Props) {
                                             { id: 'der_alte', label: 'Der Alte' },
                                             { id: 'wildes_kind', label: 'Wildes Kind' },
                                         ].map(r => (
-                                            <div key={r.id} className="flex justify-between items-center bg-slate-900 border border-slate-800 px-3 py-2 rounded-lg">
-                                                <span className="text-sm font-medium text-slate-300">{r.label}</span>
+                                            <div key={r.id} className={`flex justify-between items-center bg-slate-900 border px-3 py-2 rounded-lg ${r.required ? 'border-slate-700' : 'border-slate-800'}`}>
+                                                <span className="text-sm font-medium text-slate-300 flex items-center gap-1">
+                                                    {r.label}
+                                                    {r.required && <span className="text-amber-400 text-[10px]">*</span>}
+                                                </span>
                                                 <div className="flex items-center gap-3">
                                                     <button onClick={() => updateRole(r.id, -1)} className="p-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-400 transition-colors">
                                                         <Minus className="w-3 h-3" />
@@ -237,15 +347,37 @@ export default function GameRoom({ initialGame, initialPlayers, me }: Props) {
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="mt-4 text-sm text-slate-500 text-center flex items-center justify-center gap-4">
-                                        <span>Summe Rollen: <span className="text-slate-300 font-bold">{Object.values(roleConfig).reduce((a, b) => a + b, 0)}</span></span>
-                                        <span>Spieler: <span className="text-slate-300 font-bold">{players.length}</span></span>
-                                        <span className="text-xs text-slate-600">(Rest wird Dorfbewohner)</span>
+                                    <div className="mt-4 text-sm text-slate-500 text-center flex flex-col items-center gap-2">
+                                        <div className="flex items-center gap-4">
+                                            <span>Summe Rollen: <span className={`font-bold ${totalRoles === players.length ? 'text-emerald-400' : 'text-red-400'}`}>{totalRoles}</span></span>
+                                            <span>Spieler: <span className="text-slate-300 font-bold">{players.length}</span></span>
+                                        </div>
+                                        {totalRoles !== players.length && (
+                                            <div className="flex items-center gap-1 text-amber-400 text-xs animate-in fade-in duration-200">
+                                                <AlertTriangle className="w-3 h-3" />
+                                                <span>Rollenanzahl muss exakt der Spieleranzahl entsprechen</span>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
 
-                                <Button onClick={handleStartGame} size="lg" className="w-full bg-emerald-600 hover:bg-emerald-700 text-lg h-14 shadow-lg shadow-emerald-900/20 transition-transform active:scale-95">
-                                    Spiel Starten
+                                <Button
+                                    onClick={handleStartGame}
+                                    size="lg"
+                                    disabled={!canStart}
+                                    className={`w-full text-lg h-14 shadow-lg transition-transform active:scale-95 ${canStart
+                                        ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-900/20'
+                                        : 'bg-slate-700 cursor-not-allowed opacity-60'
+                                        }`}
+                                >
+                                    {!canStart ? (
+                                        <span className="flex items-center gap-2">
+                                            <AlertTriangle className="w-5 h-5" />
+                                            {players.length < 4 ? 'Zu wenig Spieler' : totalRoles !== players.length ? `Rollen anpassen (${totalRoles}/${players.length})` : 'Konfiguration prüfen'}
+                                        </span>
+                                    ) : (
+                                        'Spiel Starten'
+                                    )}
                                 </Button>
                             </div>
                         ) : (
@@ -266,12 +398,12 @@ export default function GameRoom({ initialGame, initialPlayers, me }: Props) {
                                 {isVoting && <Vote className="w-10 h-10 text-rose-400" />}
                             </div>
                             <h2 className="text-3xl font-black uppercase tracking-widest text-slate-200">
-                                Phase: {game.phase}
+                                Phase: {PHASE_LABELS[game.phase] || game.phase}
                             </h2>
                             <div className="max-w-lg mx-auto bg-slate-900/50 backdrop-blur-sm border border-slate-800 p-4 rounded-xl shadow-inner">
                                 {isNight && <p className="text-indigo-200">Das Dorf schläft. Wölfe, Seherin und Hexe: wählt eure Ziele in der Stille der Nacht.</p>}
                                 {isDay && <p className="text-amber-200">Das Dorf ist erwacht. Diskutiert, wer sich nachts merkwürdig verhalten hat!</p>}
-                                {isVoting && <p className="text-rose-200 font-medium">Es ist Zeit zu entscheiden. Stimmt ab, wer heute hängen soll!</p>}
+                                {isVoting && <p className="text-rose-200 font-medium">Es ist Zeit zu entscheiden. Zeigt auf die Person, die ihr verdächtigt!</p>}
                             </div>
                         </div>
 
@@ -364,6 +496,66 @@ export default function GameRoom({ initialGame, initialPlayers, me }: Props) {
 
             </div>
 
+            {/* Vote Confirmation Modal */}
+            {showVoteConfirm && me.isOwner && (
+                <div className="fixed inset-0 z-200 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl space-y-6 animate-in zoom-in-95 duration-300">
+                        <div className="text-center">
+                            <div className="inline-flex items-center justify-center p-3 bg-rose-500/10 rounded-full mb-3">
+                                <Vote className="w-8 h-8 text-rose-400" />
+                            </div>
+                            <h3 className="text-xl font-bold text-white">Abstimmung bestätigen</h3>
+                            <p className="text-slate-400 text-sm mt-1">Wer wurde vom Dorf gewählt?</p>
+                        </div>
+
+                        <div className="space-y-2 max-h-60 overflow-y-auto">
+                            {players.filter(p => p.isAlive).map(p => (
+                                <button
+                                    key={p.id}
+                                    onClick={() => setSelectedVoteTarget(p.id)}
+                                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all ${selectedVoteTarget === p.id
+                                        ? 'bg-rose-600/20 border-rose-500 text-white'
+                                        : 'bg-slate-800/60 border-slate-700 text-slate-300 hover:border-slate-600'
+                                        }`}
+                                >
+                                    <span className="flex items-center gap-2">
+                                        <UserCircle2 className="w-5 h-5" />
+                                        {p.name}
+                                    </span>
+                                    {selectedVoteTarget === p.id && <Check className="w-5 h-5 text-rose-400" />}
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                            <Button
+                                onClick={() => handleConfirmVote(selectedVoteTarget)}
+                                disabled={!selectedVoteTarget}
+                                className={`w-full h-12 text-base font-semibold ${selectedVoteTarget ? 'bg-rose-600 hover:bg-rose-700' : 'bg-slate-700 cursor-not-allowed'}`}
+                            >
+                                <Skull className="w-4 h-4 mr-2" />
+                                Gewählte Person eliminieren
+                            </Button>
+                            <Button
+                                onClick={() => handleConfirmVote(null)}
+                                variant="outline"
+                                className="w-full h-12 text-base border-slate-700 text-slate-300 hover:bg-slate-800"
+                            >
+                                <X className="w-4 h-4 mr-2" />
+                                Unentschieden / Niemand stirbt
+                            </Button>
+                            <Button
+                                onClick={() => { setShowVoteConfirm(false); setSelectedVoteTarget(null); }}
+                                variant="ghost"
+                                className="w-full text-slate-500 hover:text-slate-300"
+                            >
+                                Abbrechen
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* OWNER CONTROLS - Fixed floating Action Bar at bottom */}
             {me.isOwner && game.status === 'in_progress' && (
                 <div className="fixed bottom-0 left-0 right-0 p-4 border-t border-slate-800 bg-slate-950/80 backdrop-blur-xl z-50">
@@ -374,10 +566,27 @@ export default function GameRoom({ initialGame, initialPlayers, me }: Props) {
                                 <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest flex items-center gap-1">
                                     <Settings className="w-3 h-3" /> Game Master Controls
                                 </p>
-                                <div className="flex gap-2 relative">
-                                    <Button size="sm" onClick={() => handleNextPhase('day')} className="flex-1 bg-amber-600/20 text-amber-400 hover:bg-amber-600/40 border border-amber-600/50">Tag</Button>
-                                    <Button size="sm" onClick={() => handleNextPhase('voting')} className="flex-1 bg-rose-600/20 text-rose-400 hover:bg-rose-600/40 border border-rose-600/50">Voting</Button>
-                                    <Button size="sm" onClick={() => handleNextPhase('night')} className="flex-1 bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600/40 border border-indigo-600/50">Nacht</Button>
+                                <div className="flex gap-2">
+                                    {isVoting ? (
+                                        <Button
+                                            size="sm"
+                                            onClick={() => setShowVoteConfirm(true)}
+                                            className="flex-1 bg-rose-600/20 text-rose-400 hover:bg-rose-600/40 border border-rose-600/50"
+                                        >
+                                            <Vote className="w-4 h-4 mr-2" />
+                                            Abstimmung abschließen
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            size="sm"
+                                            onClick={handleNextPhase}
+                                            className="flex-1 bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600/40 border border-indigo-600/50"
+                                        >
+                                            {getNextPhaseIcon(game.phase)}
+                                            <span className="ml-2">Weiter: {getNextPhaseLabel(game.phase)}</span>
+                                            <ArrowRight className="w-4 h-4 ml-2" />
+                                        </Button>
+                                    )}
                                 </div>
                             </div>
 
