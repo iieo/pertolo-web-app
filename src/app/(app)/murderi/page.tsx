@@ -17,17 +17,19 @@ export default function MurderiHome() {
   };
 
   return (
-    <div className="min-h-[100dvh] w-full bg-black flex flex-col p-4 sm:p-6 md:max-w-md md:mx-auto">
-      <div className="flex-1 flex flex-col justify-center space-y-10">
+    <div className="min-h-[100dvh] w-full bg-black flex flex-col px-5 py-6 sm:p-6 md:max-w-md md:mx-auto pb-[env(safe-area-inset-bottom,24px)]">
+      <div className="flex-1 flex flex-col justify-center space-y-8 sm:space-y-10">
         {/* Header */}
         <div className="text-center">
           <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 rounded-2xl bg-[#dc2626]/10 border border-[#dc2626]/30 flex items-center justify-center">
-              <Skull className="w-8 h-8 text-[#dc2626]" />
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#dc2626]/10 border border-[#dc2626]/30 flex items-center justify-center">
+              <Skull className="w-7 h-7 sm:w-8 sm:h-8 text-[#dc2626]" />
             </div>
           </div>
-          <h1 className="text-5xl font-extrabold text-white tracking-tight mb-2">Murderi</h1>
-          <p className="text-[#888] text-base font-medium">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-2">
+            Murderi
+          </h1>
+          <p className="text-[#888] text-sm sm:text-base font-medium">
             Get your target before they get you.
           </p>
         </div>
@@ -37,19 +39,19 @@ export default function MurderiHome() {
           <p className="text-xs font-bold text-[#888] uppercase tracking-widest px-1">
             Join a game
           </p>
-          <div className="bg-[#111] rounded-2xl border border-[#222] p-5 space-y-4">
+          <div className="bg-[#111] rounded-2xl border border-[#222] p-4 sm:p-5 space-y-3">
             <Input
               placeholder="Enter game code"
               value={gameId}
               onChange={(e) => setGameId(e.target.value.toUpperCase())}
               onKeyDown={(e) => e.key === 'Enter' && handleJoin()}
               maxLength={6}
-              className="bg-[#1a1a1a] border-[#333] text-white placeholder:text-[#555] text-lg font-bold tracking-widest uppercase text-center rounded-xl h-14 focus-visible:ring-[#dc2626]"
+              className="bg-[#1a1a1a] border-[#333] text-white placeholder:text-[#555] text-[16px] sm:text-lg font-bold tracking-widest uppercase text-center rounded-xl h-14 focus-visible:ring-[#dc2626]"
             />
             <Button
               onClick={handleJoin}
               disabled={gameId.trim().length < 4}
-              className="w-full h-13 text-base font-bold rounded-xl bg-[#dc2626] hover:bg-[#b91c1c] text-white disabled:opacity-40"
+              className="w-full h-12 sm:h-13 text-base font-bold rounded-xl bg-[#dc2626] hover:bg-[#b91c1c] text-white disabled:opacity-40 active:scale-[0.98] transition-transform"
             >
               Join Game
             </Button>
@@ -68,10 +70,10 @@ export default function MurderiHome() {
           <p className="text-xs font-bold text-[#888] uppercase tracking-widest px-1">
             Start a new game
           </p>
-          <div className="bg-[#111] rounded-2xl border border-[#222] p-5">
+          <div className="bg-[#111] rounded-2xl border border-[#222] p-4 sm:p-5">
             <Button
               onClick={() => router.push('/murderi/create')}
-              className="w-full h-13 text-base font-bold rounded-xl bg-[#1a1a1a] hover:bg-[#222] text-white border border-[#333]"
+              className="w-full h-12 sm:h-13 text-base font-bold rounded-xl bg-[#1a1a1a] hover:bg-[#222] text-white border border-[#333] active:scale-[0.98] transition-transform"
             >
               <Users className="w-5 h-5 mr-2" />
               Create Game

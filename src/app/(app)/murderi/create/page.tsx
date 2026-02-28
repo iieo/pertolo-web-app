@@ -88,8 +88,8 @@ export default function CreateGame() {
   };
 
   return (
-    <div className="min-h-[100dvh] w-full bg-black flex flex-col p-4 sm:p-6 md:max-w-md md:mx-auto">
-      <div className="flex-1 flex flex-col space-y-6 pt-4">
+    <div className="min-h-[100dvh] w-full bg-black flex flex-col px-5 py-6 sm:p-6 md:max-w-md md:mx-auto pb-[env(safe-area-inset-bottom,24px)]">
+      <div className="flex-1 flex flex-col space-y-5 sm:space-y-6">
         {/* Header */}
         <div className="text-center">
           <div className="flex justify-center mb-3">
@@ -97,12 +97,14 @@ export default function CreateGame() {
               <Skull className="w-6 h-6 text-[#dc2626]" />
             </div>
           </div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight">Create Game</h1>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Create Game
+          </h1>
           <p className="text-[#888] text-sm mt-1">Add your players below</p>
         </div>
 
         {/* Add player form */}
-        <div className="bg-[#111] rounded-2xl border border-[#222] p-5 space-y-3">
+        <div className="bg-[#111] rounded-2xl border border-[#222] p-4 sm:p-5 space-y-3">
           <p className="text-xs font-bold text-[#888] uppercase tracking-widest">Add players</p>
           <div className="flex gap-2">
             <Input
@@ -111,12 +113,12 @@ export default function CreateGame() {
               value={playerName}
               onChange={(e) => setPlayerName(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleAddPlayer()}
-              className="flex-1 bg-[#1a1a1a] border-[#333] text-white placeholder:text-[#555] rounded-xl h-11 focus-visible:ring-[#dc2626]"
+              className="flex-1 bg-[#1a1a1a] border-[#333] text-white placeholder:text-[#555] text-[16px] rounded-xl h-12 focus-visible:ring-[#dc2626]"
             />
             <Button
               type="button"
               onClick={handleAddPlayer}
-              className="h-11 px-4 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded-xl shrink-0"
+              className="h-12 w-12 p-0 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded-xl shrink-0 active:scale-[0.95] transition-transform"
             >
               <Plus className="w-5 h-5" />
             </Button>
@@ -125,20 +127,20 @@ export default function CreateGame() {
 
         {/* Player list */}
         {players.length > 0 && (
-          <div className="bg-[#111] rounded-2xl border border-[#222] p-5 space-y-3">
+          <div className="bg-[#111] rounded-2xl border border-[#222] p-4 sm:p-5 space-y-3">
             <p className="text-xs font-bold text-[#888] uppercase tracking-widest">
               Players ({players.length})
             </p>
-            <div className="space-y-2">
+            <div className="space-y-2 max-h-[40vh] overflow-y-auto">
               {players.map((player) => (
                 <div
                   key={player}
                   className="flex items-center justify-between bg-[#1a1a1a] rounded-xl px-4 py-3 border border-[#2a2a2a]"
                 >
-                  <span className="text-white font-medium">{player}</span>
+                  <span className="text-white font-medium truncate mr-3">{player}</span>
                   <button
                     onClick={() => removePlayer(player)}
-                    className="text-[#555] hover:text-[#dc2626] transition-colors"
+                    className="text-[#555] hover:text-[#dc2626] active:text-[#dc2626] transition-colors p-2 -m-2 shrink-0"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -149,7 +151,7 @@ export default function CreateGame() {
         )}
 
         {/* Create button */}
-        <div className="pb-6">
+        <div className="mt-auto pt-2 pb-2">
           {players.length < 3 && (
             <p className="text-center text-[#555] text-sm mb-3">
               Add {3 - players.length} more player{3 - players.length !== 1 ? 's' : ''} to start
@@ -158,7 +160,7 @@ export default function CreateGame() {
           <Button
             onClick={handleCreateGame}
             disabled={players.length < 3 || isLoading}
-            className="w-full h-14 text-base font-bold rounded-2xl bg-[#dc2626] hover:bg-[#b91c1c] text-white disabled:opacity-40"
+            className="w-full h-14 text-base font-bold rounded-2xl bg-[#dc2626] hover:bg-[#b91c1c] text-white disabled:opacity-40 active:scale-[0.98] transition-transform"
           >
             {isLoading ? (
               <Loader2 className="w-5 h-5 animate-spin mr-2" />
