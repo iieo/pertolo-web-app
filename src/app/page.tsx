@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Gamepad2, Beer, Music, BookOpen, ChevronRight, Moon, Map } from 'lucide-react';
+import { Gamepad2, Beer, Music, BookOpen, ChevronRight, Moon, Map, Skull } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -165,6 +165,29 @@ export default function Home() {
             <div className="relative z-10 mt-auto">
               <h2 className="text-3xl font-extrabold text-white mb-2 tracking-tight">DAILY MAZE</h2>
               <p className="text-white/50 font-medium text-sm">Find the hidden path in the dark</p>
+            </div>
+          </Link>
+          {/* Murderi Card */}
+          <Link
+            href="/murderi"
+            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(220,38,38,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-[600ms]"
+          >
+            <div className="absolute inset-0 bg-linear-to-br from-red-700/0 via-red-700/0 to-red-700/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-red-700/20 blur-[50px] -translate-y-1/2 translate-x-1/2 group-hover:bg-red-700/40 transition-colors duration-500" />
+
+            <div className="relative z-10 flex items-center justify-between">
+              <div className="w-14 h-14 rounded-2xl bg-red-700/20 flex items-center justify-center border border-red-700/30 text-red-500 group-hover:scale-110 group-hover:bg-red-700 group-hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(185,28,28,0.2)]">
+                <Skull size={28} strokeWidth={2.5} />
+              </div>
+              <ChevronRight
+                className="text-white/20 group-hover:text-red-500 group-hover:translate-x-1 transition-all duration-300"
+                size={28}
+              />
+            </div>
+
+            <div className="relative z-10 mt-auto">
+              <h2 className="text-3xl font-extrabold text-white mb-2 tracking-tight">MURDERI</h2>
+              <p className="text-white/50 font-medium text-sm">Get your target before they get you</p>
             </div>
           </Link>
         </nav>

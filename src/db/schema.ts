@@ -100,3 +100,13 @@ export const werewolfPlayersTable = pgTable('werewolf_players', {
 
 export type WerewolfGameModel = typeof werewolfGamesTable.$inferSelect;
 export type WerewolfPlayerModel = typeof werewolfPlayersTable.$inferSelect;
+
+export const murderiOrdersTable = pgTable('murderi_orders', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  gameId: varchar('game_id', { length: 10 }).notNull(),
+  killer: text('killer').notNull(),
+  victim: text('victim'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+});
+
+export type MurderiOrderModel = typeof murderiOrdersTable.$inferSelect;

@@ -99,6 +99,13 @@
       "when": 1772037853952,
       "tag": "0013_mute_rawhide_kid",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1772311832549,
+      "tag": "0014_nifty_squadron_supreme",
+      "breakpoints": true
     }
   ]
 }
