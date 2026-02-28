@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Skull, Users } from 'lucide-react';
+import { Skull, Users, ArrowRight } from 'lucide-react';
 
 export default function MurderiHome() {
   const [gameId, setGameId] = useState('');
@@ -17,70 +18,94 @@ export default function MurderiHome() {
   };
 
   return (
-    <div className="min-h-[100dvh] w-full bg-black flex flex-col px-5 py-6 sm:p-6 md:max-w-md md:mx-auto pb-[env(safe-area-inset-bottom,24px)]">
-      <div className="flex-1 flex flex-col justify-center space-y-8 sm:space-y-10">
-        {/* Header */}
-        <div className="text-center">
-          <div className="flex justify-center mb-4">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#dc2626]/10 border border-[#dc2626]/30 flex items-center justify-center">
-              <Skull className="w-7 h-7 sm:w-8 sm:h-8 text-[#dc2626]" />
+    <div className="min-h-[100dvh] w-full bg-black flex flex-col p-4 sm:p-6 md:max-w-md md:mx-auto relative overflow-hidden">
+      {/* Background Glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[50dvh] bg-gradient-to-b from-[#dc2626]/20 to-transparent pointer-events-none" />
+
+      <div className="flex-1 flex flex-col justify-between space-y-8 z-10 py-8">
+        {/* Hero Section */}
+        <div className="space-y-6">
+          <div className="relative aspect-[4/5] w-full rounded-3xl overflow-hidden border border-[#222] shadow-2xl shadow-red-900/10">
+            <Image
+              src="/murderi/hero.png"
+              alt="Murderi Hero Illustration"
+              fill
+              className="object-cover"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
+
+            {/* Logo Overlay */}
+            <div className="absolute bottom-6 left-6 right-6">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="w-10 h-10 rounded-xl bg-[#dc2626] flex items-center justify-center shadow-lg shadow-red-600/20">
+                  <Skull className="w-6 h-6 text-white" />
+                </div>
+                <h1 className="text-4xl font-black text-white tracking-tighter uppercase italic">Murderi</h1>
+              </div>
+              <p className="text-[#ccc] text-sm font-medium max-w-[240px] leading-relaxed">
+                A high-stakes social assassination game. Hunter or Prey?
+              </p>
             </div>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-white tracking-tight mb-2">
-            Murderi
-          </h1>
-          <p className="text-[#888] text-sm sm:text-base font-medium">
-            Get your target before they get you.
-          </p>
         </div>
 
-        {/* Join Game */}
-        <div className="space-y-3">
-          <p className="text-xs font-bold text-[#888] uppercase tracking-widest px-1">
-            Join a game
-          </p>
-          <div className="bg-[#111] rounded-2xl border border-[#222] p-4 sm:p-5 space-y-3">
-            <Input
-              placeholder="Enter game code"
-              value={gameId}
-              onChange={(e) => setGameId(e.target.value.toUpperCase())}
-              onKeyDown={(e) => e.key === 'Enter' && handleJoin()}
-              maxLength={6}
-              className="bg-[#1a1a1a] border-[#333] text-white placeholder:text-[#555] text-[16px] sm:text-lg font-bold tracking-widest uppercase text-center rounded-xl h-14 focus-visible:ring-[#dc2626]"
-            />
-            <Button
-              onClick={handleJoin}
-              disabled={gameId.trim().length < 4}
-              className="w-full h-12 sm:h-13 text-base font-bold rounded-xl bg-[#dc2626] hover:bg-[#b91c1c] text-white disabled:opacity-40 active:scale-[0.98] transition-transform"
-            >
-              Join Game
-            </Button>
+        {/* Actions Section */}
+        <div className="space-y-6">
+          {/* Join Game */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between px-1">
+              <p className="text-[10px] font-black text-[#666] uppercase tracking-[0.2em]">
+                Active Mission
+              </p>
+              <div className="flex items-center gap-1.5">
+                <div className="w-1 h-1 rounded-full bg-[#dc2626] animate-pulse" />
+                <span className="text-[10px] font-bold text-[#444] uppercase tracking-widest">Live</span>
+              </div>
+            </div>
+            <div className="bg-[#111]/80 backdrop-blur-sm rounded-2xl border border-[#222] p-4 space-y-3">
+              <div className="relative">
+                <Input
+                  placeholder="ENTER ACCESS CODE"
+                  value={gameId}
+                  onChange={(e) => setGameId(e.target.value.toUpperCase())}
+                  onKeyDown={(e) => e.key === 'Enter' && handleJoin()}
+                  maxLength={6}
+                  className="bg-[#1a1a1a] border-[#333] text-white placeholder:text-[#333] text-lg font-black tracking-[0.3em] uppercase text-center rounded-xl h-14 focus-visible:ring-[#dc2626] focus-visible:border-[#dc2626]/50 transition-all"
+                />
+              </div>
+              <Button
+                onClick={handleJoin}
+                disabled={gameId.trim().length < 4}
+                className="w-full h-14 text-sm font-black uppercase tracking-widest rounded-xl bg-[#dc2626] hover:bg-[#b91c1c] text-white disabled:opacity-20 shadow-lg shadow-red-600/10 transition-all flex items-center justify-center gap-2 group"
+              >
+                Assemble Team
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              </Button>
+            </div>
           </div>
-        </div>
 
-        {/* Divider */}
-        <div className="flex items-center gap-4">
-          <div className="flex-1 h-px bg-[#222]" />
-          <span className="text-[#555] text-sm font-bold uppercase tracking-widest">or</span>
-          <div className="flex-1 h-px bg-[#222]" />
-        </div>
-
-        {/* Create Game */}
-        <div className="space-y-3">
-          <p className="text-xs font-bold text-[#888] uppercase tracking-widest px-1">
-            Start a new game
-          </p>
-          <div className="bg-[#111] rounded-2xl border border-[#222] p-4 sm:p-5">
-            <Button
-              onClick={() => router.push('/murderi/create')}
-              className="w-full h-12 sm:h-13 text-base font-bold rounded-xl bg-[#1a1a1a] hover:bg-[#222] text-white border border-[#333] active:scale-[0.98] transition-transform"
-            >
-              <Users className="w-5 h-5 mr-2" />
-              Create Game
-            </Button>
+          {/* Divider */}
+          <div className="flex items-center gap-4 py-2">
+            <div className="flex-1 h-[1px] bg-[#222]" />
+            <span className="text-[#444] text-[10px] font-black uppercase tracking-[0.3em]">Operational Status</span>
+            <div className="flex-1 h-[1px] bg-[#222]" />
           </div>
+
+          {/* Create Game */}
+          <Button
+            onClick={() => router.push('/murderi/create')}
+            variant="outline"
+            className="w-full h-14 text-sm font-black uppercase tracking-widest rounded-xl bg-transparent border-[#333] hover:bg-[#111] text-[#888] hover:text-white transition-all flex items-center justify-center gap-2 group"
+          >
+            <Users className="w-4 h-4 group-hover:text-[#dc2626] transition-colors" />
+            Initialize Agency
+          </Button>
         </div>
       </div>
+
+      {/* Footer Decoration */}
+      <div className="absolute bottom-[-100px] left-1/2 -translate-x-1/2 w-[200%] h-[200px] bg-[#dc2626]/5 blur-[120px] pointer-events-none" />
     </div>
   );
 }

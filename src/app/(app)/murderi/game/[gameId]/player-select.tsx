@@ -66,8 +66,8 @@ export default function PlayerSelect({ gameId, initialPlayers }: PlayerSelectPro
   const alive = players.filter((p) => p.isAlive).length;
 
   return (
-    <div className="min-h-[100dvh] w-full bg-black flex flex-col p-4 sm:p-6 md:max-w-md md:mx-auto">
-      <div className="flex-1 flex flex-col space-y-6 pt-4">
+    <div className="min-h-[100dvh] w-full bg-black flex flex-col px-5 py-6 sm:p-6 md:max-w-md md:mx-auto pb-[env(safe-area-inset-bottom,24px)]">
+      <div className="flex-1 flex flex-col space-y-5 sm:space-y-6">
         {/* Header */}
         <div className="text-center">
           <div className="flex justify-center mb-3">
@@ -77,14 +77,18 @@ export default function PlayerSelect({ gameId, initialPlayers }: PlayerSelectPro
           </div>
           {hasClaimed ? (
             <>
-              <h1 className="text-3xl font-extrabold text-white tracking-tight">Game Overview</h1>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                Game Overview
+              </h1>
               <p className="text-[#888] text-sm mt-1">
                 {alive} of {players.length} players remaining
               </p>
             </>
           ) : (
             <>
-              <h1 className="text-3xl font-extrabold text-white tracking-tight">Who are you?</h1>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                Who are you?
+              </h1>
               <p className="text-[#888] text-sm mt-1">
                 Game code:{' '}
                 <span className="font-black text-white tracking-widest">{gameId}</span>
@@ -99,7 +103,7 @@ export default function PlayerSelect({ gameId, initialPlayers }: PlayerSelectPro
             onClick={() =>
               router.push(`/murderi/game/${gameId}/${encodeURIComponent(savedPlayer)}`)
             }
-            className="w-full h-14 text-base font-bold rounded-2xl bg-[#dc2626] hover:bg-[#b91c1c] text-white"
+            className="w-full h-14 text-base font-bold rounded-2xl bg-[#dc2626] hover:bg-[#b91c1c] text-white active:scale-[0.98] transition-transform"
           >
             <Target className="w-5 h-5 mr-2" />
             View your kill order
@@ -115,7 +119,7 @@ export default function PlayerSelect({ gameId, initialPlayers }: PlayerSelectPro
         )}
 
         {/* Player list */}
-        <div className="bg-[#111] rounded-2xl border border-[#222] p-5 space-y-3">
+        <div className="bg-[#111] rounded-2xl border border-[#222] p-4 sm:p-5 space-y-3">
           <p className="text-xs font-bold text-[#888] uppercase tracking-widest">
             {hasClaimed ? 'Players' : 'Select your name'}
           </p>
@@ -126,20 +130,18 @@ export default function PlayerSelect({ gameId, initialPlayers }: PlayerSelectPro
                 return (
                   <div
                     key={p.name}
-                    className={`flex items-center justify-between rounded-xl px-4 py-3 border ${
-                      p.isAlive
-                        ? 'bg-[#1a1a1a] border-[#2a2a2a]'
-                        : 'bg-[#1a1a1a]/50 border-[#2a2a2a] opacity-50'
-                    }`}
+                    className={`flex items-center justify-between rounded-xl px-4 py-3.5 border ${p.isAlive
+                      ? 'bg-[#1a1a1a] border-[#2a2a2a]'
+                      : 'bg-[#1a1a1a]/50 border-[#2a2a2a] opacity-50'
+                      }`}
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
                       <div
-                        className={`w-2 h-2 rounded-full ${p.isAlive ? 'bg-green-500' : 'bg-[#dc2626]'}`}
+                        className={`w-2.5 h-2.5 rounded-full shrink-0 ${p.isAlive ? 'bg-green-500' : 'bg-[#dc2626]'}`}
                       />
                       <span
-                        className={`font-medium text-base ${
-                          p.isAlive ? 'text-white' : 'text-[#666] line-through'
-                        }`}
+                        className={`font-medium text-[15px] truncate ${p.isAlive ? 'text-white' : 'text-[#666] line-through'
+                          }`}
                       >
                         {p.name}
                         {p.name === savedPlayer && (
@@ -148,9 +150,9 @@ export default function PlayerSelect({ gameId, initialPlayers }: PlayerSelectPro
                       </span>
                     </div>
                     {p.isAlive ? (
-                      <User className="w-4 h-4 text-green-500/60" />
+                      <User className="w-4 h-4 text-green-500/60 shrink-0 ml-2" />
                     ) : (
-                      <Skull className="w-4 h-4 text-[#dc2626]/50" />
+                      <Skull className="w-4 h-4 text-[#dc2626]/50 shrink-0 ml-2" />
                     )}
                   </div>
                 );
@@ -163,10 +165,10 @@ export default function PlayerSelect({ gameId, initialPlayers }: PlayerSelectPro
                     key={p.name}
                     className="flex items-center justify-between bg-[#1a1a1a]/50 rounded-xl px-4 py-4 border border-[#2a2a2a] opacity-50"
                   >
-                    <span className="text-[#666] font-semibold text-base line-through">
+                    <span className="text-[#666] font-semibold text-[15px] line-through truncate">
                       {p.name}
                     </span>
-                    <Skull className="w-4 h-4 text-[#dc2626]/50" />
+                    <Skull className="w-4 h-4 text-[#dc2626]/50 shrink-0 ml-2" />
                   </div>
                 );
               }
@@ -175,10 +177,12 @@ export default function PlayerSelect({ gameId, initialPlayers }: PlayerSelectPro
                 <button
                   key={p.name}
                   onClick={() => handleSelect(p.name)}
-                  className="w-full flex items-center justify-between bg-[#1a1a1a] hover:bg-[#222] active:bg-[#2a2a2a] rounded-xl px-4 py-4 border border-[#2a2a2a] hover:border-[#dc2626]/40 transition-all group"
+                  className="w-full flex items-center justify-between bg-[#1a1a1a] hover:bg-[#222] active:bg-[#2a2a2a] rounded-xl px-4 py-4 border border-[#2a2a2a] hover:border-[#dc2626]/40 transition-all group active:scale-[0.98]"
                 >
-                  <span className="text-white font-semibold text-base">{p.name}</span>
-                  <ChevronRight className="w-5 h-5 text-[#555] group-hover:text-[#dc2626] transition-colors" />
+                  <span className="text-white font-semibold text-[15px] truncate mr-2">
+                    {p.name}
+                  </span>
+                  <ChevronRight className="w-5 h-5 text-[#555] group-hover:text-[#dc2626] transition-colors shrink-0" />
                 </button>
               );
             })}
@@ -186,10 +190,10 @@ export default function PlayerSelect({ gameId, initialPlayers }: PlayerSelectPro
         </div>
 
         {hasClaimed && (
-          <div className="pb-6">
+          <div className="mt-auto pt-2 pb-2">
             <Link
               href="/murderi"
-              className="block text-center px-6 py-3 bg-[#111] border border-[#222] rounded-2xl text-white font-semibold hover:bg-[#1a1a1a] transition-all"
+              className="flex items-center justify-center w-full h-12 bg-[#111] border border-[#222] rounded-2xl text-white font-semibold hover:bg-[#1a1a1a] active:scale-[0.98] transition-all"
             >
               Back to home
             </Link>

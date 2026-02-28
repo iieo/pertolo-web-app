@@ -37,7 +37,7 @@ export default function KillButton({
     <Button
       onClick={handleKilled}
       disabled={loading}
-      className="w-full h-14 text-base font-bold rounded-2xl bg-[#1a1a1a] hover:bg-[#222] border border-[#333] text-white disabled:opacity-40"
+      className="w-full h-14 text-base font-bold rounded-2xl bg-[#1a1a1a] hover:bg-[#222] border border-[#333] text-white disabled:opacity-40 active:scale-[0.98] transition-transform"
     >
       {loading ? (
         <Loader2 className="w-5 h-5 animate-spin mr-2" />

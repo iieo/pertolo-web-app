@@ -55,7 +55,7 @@ export default function PlayerGameView({ gameId, player, initialVictim }: Player
   // Winner state
   if (isWinner) {
     return (
-      <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4 md:max-w-md md:mx-auto">
+      <div className="min-h-dvh bg-black flex flex-col items-center justify-center px-5 py-6 sm:p-6 md:max-w-md md:mx-auto pb-[env(safe-area-inset-bottom,24px)]">
         <div className="w-full space-y-6 text-center">
           <div className="flex justify-center">
             <div className="w-20 h-20 rounded-2xl bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center">
@@ -63,12 +63,16 @@ export default function PlayerGameView({ gameId, player, initialVictim }: Player
             </div>
           </div>
           <div>
-            <h1 className="text-4xl font-extrabold text-white tracking-tight">You Won!</h1>
-            <p className="text-[#888] mt-2">You are the last assassin standing.</p>
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+              You Won!
+            </h1>
+            <p className="text-[#888] mt-2 text-sm sm:text-base">
+              You are the last assassin standing.
+            </p>
           </div>
           <Link
             href={`/murderi/game/${gameId}`}
-            className="inline-block mt-4 px-6 py-3 bg-[#111] border border-[#222] rounded-2xl text-white font-semibold hover:bg-[#1a1a1a] transition-all"
+            className="flex items-center justify-center w-full h-12 bg-[#111] border border-[#222] rounded-2xl text-white font-semibold hover:bg-[#1a1a1a] active:scale-[0.98] transition-all"
           >
             View game overview
           </Link>
@@ -79,12 +83,12 @@ export default function PlayerGameView({ gameId, player, initialVictim }: Player
 
   // Alive state — show target
   return (
-    <div className="min-h-screen w-full bg-black flex flex-col p-4 sm:p-6 md:max-w-md md:mx-auto">
-      <div className="flex-1 flex flex-col space-y-6">
+    <div className="min-h-dvh w-full bg-black flex flex-col px-5 py-6 sm:p-6 md:max-w-md md:mx-auto pb-[env(safe-area-inset-bottom,24px)]">
+      <div className="flex-1 flex flex-col">
         {/* Back button */}
         <Link
           href={`/murderi/game/${gameId}`}
-          className="flex items-center gap-2 text-[#888] hover:text-white transition-colors w-fit pt-2"
+          className="flex items-center gap-2 text-[#888] hover:text-white active:text-white transition-colors w-fit py-2 -ml-1 pl-1 pr-3"
         >
           <ArrowLeft className="w-4 h-4" />
           <span className="text-sm font-semibold">Game overview</span>
@@ -98,17 +102,20 @@ export default function PlayerGameView({ gameId, player, initialVictim }: Player
                 <Skull className="w-6 h-6 text-[#dc2626]" />
               </div>
             </div>
-            <h1 className="text-3xl font-extrabold text-white tracking-tight">Kill Order</h1>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              Kill Order
+            </h1>
             <p className="text-[#888] text-sm mt-1">You are {player}</p>
           </div>
 
-          {/* Target reveal */}
-          <div className="bg-[#111] rounded-2xl border border-[#dc2626]/20 p-6 text-center space-y-3">
+          <div className="bg-[#111] rounded-2xl border border-[#dc2626]/20 p-5 sm:p-6 text-center space-y-3">
             <div className="flex items-center justify-center gap-2 text-xs font-bold text-[#888] uppercase tracking-widest">
               <Target className="w-4 h-4 text-[#dc2626]" />
               Your target
             </div>
-            <p className="text-4xl font-black text-white tracking-tight">{victim}</p>
+            <p className="text-3xl sm:text-4xl font-black text-white tracking-tight wrap-break-word">
+              {victim}
+            </p>
             <p className="text-[#666] text-sm">
               Give them anything. When they receive it, they are eliminated.
             </p>

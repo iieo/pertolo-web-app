@@ -21,8 +21,8 @@ export default function ShareContent({ gameId }: { gameId: string }) {
   const mailtoUrl = `mailto:?subject=Join my Murderi game&body=${encodeURIComponent(shareText)}`;
 
   return (
-    <div className="min-h-[100dvh] w-full bg-black flex flex-col p-4 sm:p-6 md:max-w-md md:mx-auto">
-      <div className="flex-1 flex flex-col justify-center space-y-8">
+    <div className="min-h-[100dvh] w-full bg-black flex flex-col px-5 py-6 sm:p-6 md:max-w-md md:mx-auto pb-[env(safe-area-inset-bottom,24px)]">
+      <div className="flex-1 flex flex-col justify-center space-y-6 sm:space-y-8">
         {/* Header */}
         <div className="text-center">
           <div className="flex justify-center mb-3">
@@ -30,17 +30,21 @@ export default function ShareContent({ gameId }: { gameId: string }) {
               <Skull className="w-6 h-6 text-[#dc2626]" />
             </div>
           </div>
-          <h1 className="text-3xl font-extrabold text-white tracking-tight">Game Created!</h1>
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+            Game Created!
+          </h1>
           <p className="text-[#888] text-sm mt-1">Share the code with all players</p>
         </div>
 
         {/* Game code display */}
-        <div className="bg-[#111] rounded-2xl border border-[#222] p-6 text-center space-y-4">
+        <div className="bg-[#111] rounded-2xl border border-[#222] p-5 sm:p-6 text-center space-y-4">
           <p className="text-xs font-bold text-[#888] uppercase tracking-widest">Game Code</p>
-          <div className="text-6xl font-black text-white tracking-[0.2em]">{gameId}</div>
+          <div className="text-5xl sm:text-6xl font-black text-white tracking-[0.15em] sm:tracking-[0.2em]">
+            {gameId}
+          </div>
           <button
             onClick={handleCopy}
-            className="flex items-center gap-2 mx-auto px-4 py-2 bg-[#1a1a1a] hover:bg-[#222] border border-[#333] rounded-xl text-sm font-semibold text-[#888] hover:text-white transition-all"
+            className="flex items-center gap-2 mx-auto px-5 py-2.5 bg-[#1a1a1a] hover:bg-[#222] active:bg-[#2a2a2a] border border-[#333] rounded-xl text-sm font-semibold text-[#888] hover:text-white transition-all active:scale-[0.97]"
           >
             {copied ? (
               <>
@@ -57,21 +61,21 @@ export default function ShareContent({ gameId }: { gameId: string }) {
         </div>
 
         {/* Share options */}
-        <div className="bg-[#111] rounded-2xl border border-[#222] p-5 space-y-3">
+        <div className="bg-[#111] rounded-2xl border border-[#222] p-4 sm:p-5 space-y-3">
           <p className="text-xs font-bold text-[#888] uppercase tracking-widest">Share via</p>
           <div className="flex gap-3">
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 flex items-center justify-center gap-2 h-12 rounded-xl bg-[#25d366]/10 border border-[#25d366]/30 text-[#25d366] font-bold hover:bg-[#25d366]/20 transition-all"
+              className="flex-1 flex items-center justify-center gap-2 h-12 rounded-xl bg-[#25d366]/10 border border-[#25d366]/30 text-[#25d366] font-bold text-sm hover:bg-[#25d366]/20 active:bg-[#25d366]/30 transition-all active:scale-[0.97]"
             >
               <MessageCircle className="w-5 h-5" />
               WhatsApp
             </a>
             <a
               href={mailtoUrl}
-              className="flex-1 flex items-center justify-center gap-2 h-12 rounded-xl bg-[#1a1a1a] border border-[#333] text-white font-bold hover:bg-[#222] transition-all"
+              className="flex-1 flex items-center justify-center gap-2 h-12 rounded-xl bg-[#1a1a1a] border border-[#333] text-white font-bold text-sm hover:bg-[#222] active:bg-[#2a2a2a] transition-all active:scale-[0.97]"
             >
               <Mail className="w-5 h-5" />
               Email
@@ -82,7 +86,7 @@ export default function ShareContent({ gameId }: { gameId: string }) {
         {/* Join button */}
         <Button
           onClick={() => router.push(`/murderi/game/${gameId}`)}
-          className="w-full h-14 text-base font-bold rounded-2xl bg-[#dc2626] hover:bg-[#b91c1c] text-white"
+          className="w-full h-14 text-base font-bold rounded-2xl bg-[#dc2626] hover:bg-[#b91c1c] text-white active:scale-[0.98] transition-transform"
         >
           Join the Game
           <ArrowRight className="w-5 h-5 ml-2" />
