@@ -1,15 +1,21 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { dbUpdateVictim } from '../../../actions';
 import { Loader2, Skull } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
-export default function KillButton({ gameId, player }: { gameId: string; player: string }) {
+export default function KillButton({
+  gameId,
+  player,
+  onKilled,
+}: {
+  gameId: string;
+  player: string;
+  onKilled: () => void;
+}) {
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const handleKilled = async () => {
     setLoading(true);
@@ -19,7 +25,7 @@ export default function KillButton({ gameId, player }: { gameId: string; player:
         toast.error(result.error);
         return;
       }
-      router.push('/murderi/killed');
+      onKilled();
     } catch {
       toast.error('Something went wrong. Please try again.');
     } finally {

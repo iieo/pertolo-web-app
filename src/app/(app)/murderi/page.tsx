@@ -39,7 +39,7 @@ export default function MurderiHome() {
           </p>
           <div className="bg-[#111] rounded-2xl border border-[#222] p-5 space-y-4">
             <Input
-              placeholder="Enter game code (e.g. ABCD)"
+              placeholder="Enter game code"
               value={gameId}
               onChange={(e) => setGameId(e.target.value.toUpperCase())}
               onKeyDown={(e) => e.key === 'Enter' && handleJoin()}

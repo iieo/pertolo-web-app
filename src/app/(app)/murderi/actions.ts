@@ -137,3 +137,23 @@ export async function dbGetOrderState(
     },
   };
 }
+
+export async function dbGetGameOverview(
+  gameId: string,
+): Promise<Result<{ players: { name: string; isAlive: boolean }[] }>> {
+  const orders = await db
+    .select()
+    .from(murderiOrdersTable)
+    .where(eq(murderiOrdersTable.gameId, gameId));
+
+  if (orders.length === 0) {
+    return { success: false, error: 'Game not found' };
+  }
+
+  const players = orders.map((o) => ({
+    name: o.killer,
+    isAlive: o.victim !== null,
+  }));
+
+  return { success: true, data: { players } };
+}

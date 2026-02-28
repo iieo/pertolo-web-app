@@ -26,8 +26,9 @@ export default async function PlayerPage({
     );
   }
 
+  // Dead — redirect to overview
   if (order.victim == null) {
-    redirect('/murderi/killed');
+    redirect(`/murderi/game/${gameId}`);
   }
 
   return <PlayerGameView gameId={gameId} player={decodedPlayer} initialVictim={order.victim} />;
