@@ -4,38 +4,49 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { dbInsertOrder } from '../actions';
+import { dbCreateGame } from '../actions';
 import { Plus, Skull, Trash2, Play, Loader2 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
-function generateGameId(length = 4): string {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  let result = '';
-  for (let i = 0; i < length; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
+const STORAGE_KEY = 'murderi_saved_players';
+
+function loadSavedPlayers(): string[] {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return [];
+    const parsed: unknown = JSON.parse(saved);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((item): item is string => typeof item === 'string');
+  } catch {
+    return [];
   }
-  return result;
 }
 
-function createOrders(players: string[]) {
-  const shuffled = players.slice().sort(() => 0.5 - Math.random());
-  return shuffled.map((killer, i) => ({
-    killer,
-    victim: shuffled[(i + 1) % shuffled.length] as string,
-  }));
+function savePlayers(players: string[]) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(players));
+  } catch {
+    // localStorage may be full or unavailable
+  }
 }
 
 export default function CreateGame() {
   const [players, setPlayers] = useState<string[]>([]);
-  const [gameId, setGameId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [playerName, setPlayerName] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   useEffect(() => {
-    setGameId(generateGameId());
+    const saved = loadSavedPlayers();
+    if (saved.length > 0) {
+      setPlayers(saved);
+    }
   }, []);
+
+  useEffect(() => {
+    savePlayers(players);
+  }, [players]);
 
   const handleAddPlayer = () => {
     const name = playerName.trim();
@@ -62,11 +73,18 @@ export default function CreateGame() {
       return;
     }
     setIsLoading(true);
-    const orders = createOrders(players);
-    for (const order of orders) {
-      await dbInsertOrder(gameId, order.killer, order.victim);
+    try {
+      const result = await dbCreateGame(players);
+      if (!result.success) {
+        toast.error(result.error);
+        return;
+      }
+      router.push(`/murderi/game/${result.data.gameId}/share`);
+    } catch {
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
-    router.push(`/murderi/game/${gameId}/share`);
   };
 
   return (
@@ -80,10 +98,7 @@ export default function CreateGame() {
             </div>
           </div>
           <h1 className="text-3xl font-extrabold text-white tracking-tight">Create Game</h1>
-          <p className="text-[#888] text-sm mt-1">
-            Game code:{' '}
-            <span className="font-black text-white tracking-widest">{gameId}</span>
-          </p>
+          <p className="text-[#888] text-sm mt-1">Add your players below</p>
         </div>
 
         {/* Add player form */}

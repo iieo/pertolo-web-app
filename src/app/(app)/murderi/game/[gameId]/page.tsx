@@ -15,8 +15,6 @@ export default async function GamePlayers({
     notFound();
   }
 
-  const players = orders.map((o) => o.killer);
-
   return (
     <div className="min-h-[100dvh] w-full bg-black flex flex-col p-4 sm:p-6 md:max-w-md md:mx-auto">
       <div className="flex-1 flex flex-col space-y-6 pt-4">
@@ -40,16 +38,34 @@ export default async function GamePlayers({
             Select your name
           </p>
           <div className="space-y-2">
-            {players.map((player) => (
-              <Link
-                key={player}
-                href={`/murderi/game/${gameId}/${encodeURIComponent(player)}`}
-                className="flex items-center justify-between bg-[#1a1a1a] hover:bg-[#222] active:bg-[#2a2a2a] rounded-xl px-4 py-4 border border-[#2a2a2a] hover:border-[#dc2626]/40 transition-all group"
-              >
-                <span className="text-white font-semibold text-base">{player}</span>
-                <ChevronRight className="w-5 h-5 text-[#555] group-hover:text-[#dc2626] transition-colors" />
-              </Link>
-            ))}
+            {orders.map((order) => {
+              const isEliminated = order.victim === null;
+
+              if (isEliminated) {
+                return (
+                  <div
+                    key={order.killer}
+                    className="flex items-center justify-between bg-[#1a1a1a]/50 rounded-xl px-4 py-4 border border-[#2a2a2a] opacity-50"
+                  >
+                    <span className="text-[#666] font-semibold text-base line-through">
+                      {order.killer}
+                    </span>
+                    <Skull className="w-4 h-4 text-[#dc2626]/50" />
+                  </div>
+                );
+              }
+
+              return (
+                <Link
+                  key={order.killer}
+                  href={`/murderi/game/${gameId}/${encodeURIComponent(order.killer)}`}
+                  className="flex items-center justify-between bg-[#1a1a1a] hover:bg-[#222] active:bg-[#2a2a2a] rounded-xl px-4 py-4 border border-[#2a2a2a] hover:border-[#dc2626]/40 transition-all group"
+                >
+                  <span className="text-white font-semibold text-base">{order.killer}</span>
+                  <ChevronRight className="w-5 h-5 text-[#555] group-hover:text-[#dc2626] transition-colors" />
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>
