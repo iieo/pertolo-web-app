@@ -1,0 +1,11 @@
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Gruppenspiele',
+  description: 'Finde heraus, in welcher Gruppe du bist!',
+  robots: { index: false, follow: false },
+};
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return <div>{children}</div>;
+}
