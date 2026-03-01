@@ -29,7 +29,7 @@ export default function Home() {
           {/* Imposter Card */}
           <Link
             href="/imposter"
-            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(220,38,38,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-100"
+            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(220,38,38,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 fill-mode-backwards delay-100"
           >
             <div className="absolute inset-0 bg-linear-to-br from-red-500/0 via-red-500/0 to-red-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/20 blur-[50px] -translate-y-1/2 translate-x-1/2 group-hover:bg-red-500/40 transition-colors duration-500" />
@@ -53,7 +53,7 @@ export default function Home() {
           {/* Drink Card */}
           <Link
             href="/drink"
-            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(217,70,239,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-200"
+            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(217,70,239,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 fill-mode-backwards delay-200"
           >
             <div className="absolute inset-0 bg-linear-to-br from-fuchsia-500/0 via-fuchsia-500/0 to-fuchsia-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="absolute top-0 right-0 w-32 h-32 bg-fuchsia-500/20 blur-[50px] -translate-y-1/2 translate-x-1/2 group-hover:bg-fuchsia-500/40 transition-colors duration-500" />
@@ -77,7 +77,7 @@ export default function Home() {
           {/* Trainer Card */}
           <Link
             href="/bco-trainer"
-            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(6,182,212,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-300"
+            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(6,182,212,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 fill-mode-backwards delay-300"
           >
             <div className="absolute inset-0 bg-linear-to-br from-cyan-500/0 via-cyan-500/0 to-cyan-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/20 blur-[50px] -translate-y-1/2 translate-x-1/2 group-hover:bg-cyan-500/40 transition-colors duration-500" />
@@ -100,7 +100,7 @@ export default function Home() {
           {/* Bluff Card */}
           <Link
             href="/bluff"
-            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(139,92,246,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-[400ms]"
+            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(139,92,246,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 fill-mode-backwards delay-400"
           >
             <div className="absolute inset-0 bg-linear-to-br from-violet-500/0 via-violet-500/0 to-violet-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="absolute top-0 right-0 w-32 h-32 bg-violet-500/20 blur-[50px] -translate-y-1/2 translate-x-1/2 group-hover:bg-violet-500/40 transition-colors duration-500" />
@@ -123,7 +123,7 @@ export default function Home() {
           {/* Werewolf Card */}
           <Link
             href="/werewolf"
-            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(234,179,8,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-500"
+            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(234,179,8,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 fill-mode-backwards delay-500"
           >
             <div className="absolute inset-0 bg-linear-to-br from-yellow-500/0 via-yellow-500/0 to-yellow-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-500/20 blur-[50px] -translate-y-1/2 translate-x-1/2 group-hover:bg-yellow-500/40 transition-colors duration-500" />
@@ -147,7 +147,7 @@ export default function Home() {
           {/* Quiz (Daily Maze) Card */}
           <Link
             href="/quiz"
-            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(34,197,94,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-700"
+            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(34,197,94,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 fill-mode-backwards delay-700"
           >
             <div className="absolute inset-0 bg-linear-to-br from-green-500/0 via-green-500/0 to-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/20 blur-[50px] -translate-y-1/2 translate-x-1/2 group-hover:bg-green-500/40 transition-colors duration-500" />
@@ -170,7 +170,7 @@ export default function Home() {
           {/* Murderi Card */}
           <Link
             href="/murderi"
-            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(220,38,38,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-[600ms]"
+            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(220,38,38,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 fill-mode-backwards delay-600"
           >
             <div className="absolute inset-0 bg-linear-to-br from-red-700/0 via-red-700/0 to-red-700/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="absolute top-0 right-0 w-32 h-32 bg-red-700/20 blur-[50px] -translate-y-1/2 translate-x-1/2 group-hover:bg-red-700/40 transition-colors duration-500" />
@@ -195,7 +195,7 @@ export default function Home() {
           {/* Bet Card */}
           <Link
             href="/bet"
-            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(245,158,11,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-[800ms]"
+            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(245,158,11,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 fill-mode-backwards delay-800"
           >
             <div className="absolute inset-0 bg-linear-to-br from-amber-500/0 via-amber-500/0 to-amber-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/20 blur-[50px] -translate-y-1/2 translate-x-1/2 group-hover:bg-amber-500/40 transition-colors duration-500" />
