@@ -285,7 +285,11 @@ export async function confirmVote(gameId: string, eliminatedPlayerId: string | n
   await notifyGameUpdate(gameId);
 }
 
-export async function submitAction(gameId: string, targetPlayerId: string, actionType?: string) {
+export async function submitAction(
+  gameId: string,
+  targetPlayerId: string,
+  actionType?: string,
+): Promise<{ peekedRole?: string; peekedName?: string }> {
   const sessionId = await getOrSetSessionId();
 
   const game = await db.query.werewolfGamesTable.findFirst({
@@ -332,6 +336,12 @@ export async function submitAction(gameId: string, targetPlayerId: string, actio
     );
 
   await notifyGameUpdate(gameId);
+
+  if (actionType === 'peek') {
+    return { peekedRole: target.role ?? undefined, peekedName: target.name };
+  }
+
+  return {};
 }
 
 export async function eliminatePlayer(gameId: string, playerId: string) {

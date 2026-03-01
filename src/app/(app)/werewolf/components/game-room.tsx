@@ -72,6 +72,7 @@ export default function GameRoom({ initialGame, initialPlayers, me: initialMe }:
   const [newPlayerNames, setNewPlayerNames] = useState<string[]>([]);
   const [showVoteConfirm, setShowVoteConfirm] = useState(false);
   const [selectedVoteTarget, setSelectedVoteTarget] = useState<string | null>(null);
+  const [peekedInfo, setPeekedInfo] = useState<{ name: string; role: string } | null>(null);
   const router = useRouter();
 
   const [roleConfig, setRoleConfig] = useState<Record<string, number>>(() => {
@@ -214,7 +215,10 @@ export default function GameRoom({ initialGame, initialPlayers, me: initialMe }:
 
   const handleAction = async (targetId: string, actionType?: string) => {
     try {
-      await submitAction(game.id, targetId, actionType);
+      const result = await submitAction(game.id, targetId, actionType);
+      if (actionType === 'peek' && result.peekedRole && result.peekedName) {
+        setPeekedInfo({ name: result.peekedName, role: result.peekedRole });
+      }
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Fehler');
     }
@@ -271,6 +275,23 @@ export default function GameRoom({ initialGame, initialPlayers, me: initialMe }:
     }
   };
 
+  const roleLabel = (role: string | null) => {
+    const labels: Record<string, string> = {
+      werwolf: 'Werwolf',
+      dorfbewohner: 'Dorfbewohner',
+      seher: 'Seherin',
+      hexe: 'Hexe',
+      jaeger: 'Jäger',
+      amor: 'Amor',
+      heiler: 'Heiler',
+      blinzelmaedchen: 'Blinzelmädchen',
+      dorfdepp: 'Dorfdepp',
+      der_alte: 'Der Alte',
+      wildes_kind: 'Wildes Kind',
+    };
+    return role ? (labels[role] ?? role) : null;
+  };
+
   return (
     <div
       className={`min-h-[100dvh] bg-gradient-to-b ${backgroundClass} text-slate-50 transition-colors duration-1000 relative overflow-hidden pb-32`}
@@ -315,7 +336,7 @@ export default function GameRoom({ initialGame, initialPlayers, me: initialMe }:
             </p>
             <p className="text-lg font-bold text-white">{me.name}</p>
             {me.role && (
-              <p className={`text-sm font-semibold uppercase ${roleColor(me.role)}`}>{me.role}</p>
+              <p className={`text-sm font-semibold uppercase ${roleColor(me.role)}`}>{roleLabel(me.role)}</p>
             )}
             {!me.isAlive && (
               <p className="text-red-500 flex items-center justify-center md:justify-end gap-1 font-bold mt-1 text-sm">
@@ -680,6 +701,11 @@ export default function GameRoom({ initialGame, initialPlayers, me: initialMe }:
                               DU
                             </span>
                           )}
+                          {isMe && me.role && (
+                            <p className={`text-sm font-bold uppercase tracking-wide mt-1 ${roleColor(me.role)}`}>
+                              {roleLabel(me.role)}
+                            </p>
+                          )}
                         </div>
 
                         <div className="mt-auto">{actionUI}</div>
@@ -692,6 +718,32 @@ export default function GameRoom({ initialGame, initialPlayers, me: initialMe }:
           </div>
         )}
       </div>
+
+      {/* Seherin Peek Result Modal */}
+      {peekedInfo && (
+        <div className="fixed inset-0 z-200 flex items-center justify-center bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-slate-900 border border-purple-700/50 rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl space-y-5 animate-in zoom-in-95 duration-300 text-center">
+            <div className="inline-flex items-center justify-center p-3 bg-purple-500/10 rounded-full">
+              <Eye className="w-8 h-8 text-purple-400" />
+            </div>
+            <div>
+              <p className="text-slate-400 text-sm uppercase tracking-widest font-semibold mb-1">
+                Seherin — Deine Vision
+              </p>
+              <p className="text-2xl font-extrabold text-white">{peekedInfo.name}</p>
+              <p className={`text-xl font-bold uppercase tracking-wide mt-2 ${roleColor(peekedInfo.role)}`}>
+                {roleLabel(peekedInfo.role)}
+              </p>
+            </div>
+            <Button
+              onClick={() => setPeekedInfo(null)}
+              className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+            >
+              Verstanden
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Vote Confirmation Modal */}
       {showVoteConfirm && me.isOwner && (
