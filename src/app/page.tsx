@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Gamepad2, Beer, Music, BookOpen, ChevronRight, Moon, Map, Skull } from 'lucide-react';
+import { Gamepad2, Beer, Music, BookOpen, ChevronRight, Moon, Map, Skull, Coins } from 'lucide-react';
 
 export default function Home() {
   return (
@@ -190,6 +190,29 @@ export default function Home() {
               <p className="text-white/50 font-medium text-sm">
                 Get your target before they get you
               </p>
+            </div>
+          </Link>
+          {/* Bet Card */}
+          <Link
+            href="/bet"
+            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(245,158,11,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 delay-[800ms]"
+          >
+            <div className="absolute inset-0 bg-linear-to-br from-amber-500/0 via-amber-500/0 to-amber-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/20 blur-[50px] -translate-y-1/2 translate-x-1/2 group-hover:bg-amber-500/40 transition-colors duration-500" />
+
+            <div className="relative z-10 flex items-center justify-between">
+              <div className="w-14 h-14 rounded-2xl bg-amber-500/20 flex items-center justify-center border border-amber-500/30 text-amber-400 group-hover:scale-110 group-hover:bg-amber-500 group-hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+                <Coins size={28} strokeWidth={2.5} />
+              </div>
+              <ChevronRight
+                className="text-white/20 group-hover:text-amber-400 group-hover:translate-x-1 transition-all duration-300"
+                size={28}
+              />
+            </div>
+
+            <div className="relative z-10 mt-auto">
+              <h2 className="text-3xl font-extrabold text-white mb-2 tracking-tight">BET</h2>
+              <p className="text-white/50 font-medium text-sm">Wager points with friends</p>
             </div>
           </Link>
         </nav>
