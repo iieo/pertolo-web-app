@@ -246,45 +246,6 @@ export async function nextPhase(gameId: string) {
   await notifyGameUpdate(gameId);
 }
 
-export async function confirmVote(gameId: string, eliminatedPlayerId: string | null) {
-  const sessionId = await getOrSetSessionId();
-
-  const game = await db.query.werewolfGamesTable.findFirst({
-    where: eq(werewolfGamesTable.id, gameId),
-  });
-
-  if (!game) throw new Error('Game not found');
-  if (game.ownerSessionId !== sessionId) throw new Error('Unauthorized');
-  if (game.phase !== 'voting') throw new Error('Nur in der Abstimmungsphase möglich');
-
-  // If a player was chosen, eliminate them
-  if (eliminatedPlayerId) {
-    await db
-      .update(werewolfPlayersTable)
-      .set({ isAlive: false })
-      .where(
-        and(
-          eq(werewolfPlayersTable.gameId, gameId),
-          eq(werewolfPlayersTable.id, eliminatedPlayerId),
-        ),
-      );
-  }
-
-  // Move to next phase (night)
-  await db
-    .update(werewolfGamesTable)
-    .set({ phase: 'night' })
-    .where(eq(werewolfGamesTable.id, gameId));
-
-  // Reset action targets
-  await db
-    .update(werewolfPlayersTable)
-    .set({ actionTargetId: null, actionType: null })
-    .where(eq(werewolfPlayersTable.gameId, gameId));
-
-  await notifyGameUpdate(gameId);
-}
-
 export async function submitAction(
   gameId: string,
   targetPlayerId: string,
@@ -337,6 +298,9 @@ export async function submitAction(
 
   await notifyGameUpdate(gameId);
 
+  // Check if all required players have acted — auto-advance if so
+  await checkAndAutoAdvance(gameId);
+
   if (actionType === 'peek') {
     return { peekedRole: target.role ?? undefined, peekedName: target.name };
   }
@@ -344,19 +308,153 @@ export async function submitAction(
   return {};
 }
 
-export async function eliminatePlayer(gameId: string, playerId: string) {
-  const sessionId = await getOrSetSessionId();
-
+async function checkAndAutoAdvance(gameId: string) {
   const game = await db.query.werewolfGamesTable.findFirst({
     where: eq(werewolfGamesTable.id, gameId),
   });
+  if (!game || game.status !== 'in_progress') return;
 
-  if (!game || game.ownerSessionId !== sessionId) throw new Error('Unauthorized');
+  const players = await db.query.werewolfPlayersTable.findMany({
+    where: eq(werewolfPlayersTable.gameId, gameId),
+  });
 
-  await db
-    .update(werewolfPlayersTable)
-    .set({ isAlive: false })
-    .where(and(eq(werewolfPlayersTable.gameId, gameId), eq(werewolfPlayersTable.id, playerId)));
+  const alivePlayers = players.filter((p) => p.isAlive);
 
-  await notifyGameUpdate(gameId);
+  if (game.phase === 'night') {
+    // Check if all alive night-role players have submitted actions
+    const nightRoles = ['werwolf', 'hexe', 'seher', 'heiler', 'amor', 'wildes_kind'];
+    const nightActors = alivePlayers.filter((p) => nightRoles.includes(p.role || ''));
+    const allActed = nightActors.every((p) => p.actionTargetId !== null);
+    if (!allActed || nightActors.length === 0) return;
+
+    // Resolve night — find werewolf kill target (most voted among werewolves)
+    const werewolves = nightActors.filter((p) => p.role === 'werwolf');
+    const killVotes: Record<string, number> = {};
+    for (const w of werewolves) {
+      if (w.actionTargetId) {
+        killVotes[w.actionTargetId] = (killVotes[w.actionTargetId] || 0) + 1;
+      }
+    }
+
+    let werewolfTargetId: string | null = null;
+    let maxVotes = 0;
+    for (const [targetId, count] of Object.entries(killVotes)) {
+      if (count > maxVotes) {
+        maxVotes = count;
+        werewolfTargetId = targetId;
+      }
+    }
+
+    // Check if hexe healed the target
+    const hexe = nightActors.find((p) => p.role === 'hexe');
+    const hexeHealedTarget =
+      hexe && hexe.actionType === 'heal' && hexe.actionTargetId === werewolfTargetId;
+
+    // Check if heiler protected the target
+    const heiler = nightActors.find((p) => p.role === 'heiler');
+    const heilerProtectedTarget =
+      heiler && heiler.actionType === 'protect' && heiler.actionTargetId === werewolfTargetId;
+
+    const survived = hexeHealedTarget || heilerProtectedTarget;
+
+    // Eliminate werewolf target if not saved
+    if (werewolfTargetId && !survived) {
+      await db
+        .update(werewolfPlayersTable)
+        .set({ isAlive: false })
+        .where(
+          and(
+            eq(werewolfPlayersTable.gameId, gameId),
+            eq(werewolfPlayersTable.id, werewolfTargetId),
+          ),
+        );
+    }
+
+    // Hexe kill — separate target dies too
+    if (hexe && hexe.actionType === 'kill' && hexe.actionTargetId) {
+      await db
+        .update(werewolfPlayersTable)
+        .set({ isAlive: false })
+        .where(
+          and(
+            eq(werewolfPlayersTable.gameId, gameId),
+            eq(werewolfPlayersTable.id, hexe.actionTargetId),
+          ),
+        );
+    }
+
+    // Optimistic concurrency: only advance if still in night phase
+    const updated = await db
+      .update(werewolfGamesTable)
+      .set({ phase: 'day' })
+      .where(and(eq(werewolfGamesTable.id, gameId), eq(werewolfGamesTable.phase, 'night')))
+      .returning({ id: werewolfGamesTable.id });
+
+    if (updated.length === 0) return; // Another request already advanced
+
+    // Reset action targets
+    await db
+      .update(werewolfPlayersTable)
+      .set({ actionTargetId: null, actionType: null })
+      .where(eq(werewolfPlayersTable.gameId, gameId));
+
+    await notifyGameUpdate(gameId);
+  } else if (game.phase === 'voting') {
+    // Check if all alive players have voted
+    const allVoted = alivePlayers.every(
+      (p) => p.actionTargetId !== null && p.actionType === 'vote',
+    );
+    if (!allVoted || alivePlayers.length === 0) return;
+
+    // Count votes per target
+    const voteCounts: Record<string, number> = {};
+    for (const p of alivePlayers) {
+      if (p.actionTargetId) {
+        voteCounts[p.actionTargetId] = (voteCounts[p.actionTargetId] || 0) + 1;
+      }
+    }
+
+    // Find most voted — if tie, nobody dies
+    let maxCount = 0;
+    let eliminated: string | null = null;
+    let isTie = false;
+    for (const [targetId, count] of Object.entries(voteCounts)) {
+      if (count > maxCount) {
+        maxCount = count;
+        eliminated = targetId;
+        isTie = false;
+      } else if (count === maxCount) {
+        isTie = true;
+      }
+    }
+
+    if (!isTie && eliminated) {
+      await db
+        .update(werewolfPlayersTable)
+        .set({ isAlive: false })
+        .where(
+          and(
+            eq(werewolfPlayersTable.gameId, gameId),
+            eq(werewolfPlayersTable.id, eliminated),
+          ),
+        );
+    }
+
+    // Optimistic concurrency: only advance if still in voting phase
+    const updated = await db
+      .update(werewolfGamesTable)
+      .set({ phase: 'night' })
+      .where(and(eq(werewolfGamesTable.id, gameId), eq(werewolfGamesTable.phase, 'voting')))
+      .returning({ id: werewolfGamesTable.id });
+
+    if (updated.length === 0) return;
+
+    // Reset action targets
+    await db
+      .update(werewolfPlayersTable)
+      .set({ actionTargetId: null, actionType: null })
+      .where(eq(werewolfPlayersTable.gameId, gameId));
+
+    await notifyGameUpdate(gameId);
+  }
 }

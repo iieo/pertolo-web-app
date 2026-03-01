@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { WerewolfGameModel, WerewolfPlayerModel } from '@/db/schema';
 import { refreshGameState } from '../actions/refresh';
-import { startGame, nextPhase, submitAction, eliminatePlayer, confirmVote } from '../actions';
+import { startGame, nextPhase, submitAction } from '../actions';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -18,9 +18,6 @@ import {
   Users,
   Minus,
   Plus,
-  ArrowRight,
-  Check,
-  X,
   AlertTriangle,
 } from 'lucide-react';
 import Image from 'next/image';
@@ -38,40 +35,12 @@ const PHASE_LABELS: Record<string, string> = {
   voting: 'Abstimmung',
 };
 
-function getNextPhaseLabel(currentPhase: string): string {
-  switch (currentPhase) {
-    case 'night':
-      return 'Tag';
-    case 'day':
-      return 'Abstimmung';
-    case 'voting':
-      return 'Nacht';
-    default:
-      return 'Nacht';
-  }
-}
-
-function getNextPhaseIcon(currentPhase: string) {
-  switch (currentPhase) {
-    case 'night':
-      return <Sun className="w-4 h-4" />;
-    case 'day':
-      return <Vote className="w-4 h-4" />;
-    case 'voting':
-      return <Moon className="w-4 h-4" />;
-    default:
-      return <Moon className="w-4 h-4" />;
-  }
-}
-
 export default function GameRoom({ initialGame, initialPlayers, me: initialMe }: Props) {
   const [game, setGame] = useState(initialGame);
   const [players, setPlayers] = useState(initialPlayers);
   const [me, setMe] = useState(initialMe);
   const [error, setError] = useState<string | null>(null);
   const [newPlayerNames, setNewPlayerNames] = useState<string[]>([]);
-  const [showVoteConfirm, setShowVoteConfirm] = useState(false);
-  const [selectedVoteTarget, setSelectedVoteTarget] = useState<string | null>(null);
   const [peekedInfo, setPeekedInfo] = useState<{ name: string; role: string } | null>(null);
   const router = useRouter();
 
@@ -204,40 +173,12 @@ export default function GameRoom({ initialGame, initialPlayers, me: initialMe }:
     }
   };
 
-  const handleNextPhase = async () => {
-    setError(null);
-    try {
-      await nextPhase(game.id);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Fehler beim Phasenwechsel');
-    }
-  };
-
   const handleAction = async (targetId: string, actionType?: string) => {
     try {
       const result = await submitAction(game.id, targetId, actionType);
       if (actionType === 'peek' && result.peekedRole && result.peekedName) {
         setPeekedInfo({ name: result.peekedName, role: result.peekedRole });
       }
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Fehler');
-    }
-  };
-
-  const handleEliminate = async (targetId: string) => {
-    try {
-      await eliminatePlayer(game.id, targetId);
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : 'Fehler');
-    }
-  };
-
-  const handleConfirmVote = async (playerId: string | null) => {
-    setError(null);
-    try {
-      await confirmVote(game.id, playerId);
-      setShowVoteConfirm(false);
-      setSelectedVoteTarget(null);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Fehler');
     }
@@ -294,7 +235,7 @@ export default function GameRoom({ initialGame, initialPlayers, me: initialMe }:
 
   return (
     <div
-      className={`min-h-[100dvh] bg-gradient-to-b ${backgroundClass} text-slate-50 transition-colors duration-1000 relative overflow-hidden pb-32`}
+      className={`min-h-[100dvh] bg-gradient-to-b ${backgroundClass} text-slate-50 transition-colors duration-1000 relative overflow-hidden`}
     >
       {/* Decorative Blur Orbs */}
       <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-indigo-600/10 rounded-full blur-[120px] pointer-events-none" />
@@ -317,35 +258,6 @@ export default function GameRoom({ initialGame, initialPlayers, me: initialMe }:
       )}
 
       <div className="max-w-4xl mx-auto space-y-8 p-4 md:p-8 relative z-10 animate-in fade-in duration-500">
-        {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-900/50 backdrop-blur-md border border-slate-800/60 rounded-2xl p-4 shadow-xl">
-          <div className="flex flex-col items-center md:items-start">
-            <h1 className="text-3xl font-extrabold tracking-tight flex items-center gap-2">
-              <Moon className="text-indigo-400 w-8 h-8" /> Werwolf
-            </h1>
-            <p className="text-slate-400 text-sm mt-1">
-              Game Code:{' '}
-              <span className="font-mono bg-slate-800 px-2 py-0.5 rounded text-white">
-                {game.id}
-              </span>
-            </p>
-          </div>
-          <div className="text-center md:text-right bg-slate-950/50 px-4 py-2 rounded-xl border border-slate-800">
-            <p className="text-xs text-slate-500 uppercase tracking-wider font-semibold">
-              Dein Status
-            </p>
-            <p className="text-lg font-bold text-white">{me.name}</p>
-            {me.role && (
-              <p className={`text-sm font-semibold uppercase ${roleColor(me.role)}`}>{roleLabel(me.role)}</p>
-            )}
-            {!me.isAlive && (
-              <p className="text-red-500 flex items-center justify-center md:justify-end gap-1 font-bold mt-1 text-sm">
-                <Skull className="w-4 h-4" /> TOT
-              </p>
-            )}
-          </div>
-        </div>
-
         {error && (
           <div className="bg-red-950/80 border border-red-500 text-red-200 px-4 py-3 rounded-xl animate-in fade-in slide-in-from-top-2 shadow-lg flex items-center gap-2">
             <ShieldAlert className="w-5 h-5 shrink-0" /> {error}
@@ -463,11 +375,10 @@ export default function GameRoom({ initialGame, initialPlayers, me: initialMe }:
                   onClick={handleStartGame}
                   size="lg"
                   disabled={!canStart}
-                  className={`w-full text-lg h-14 shadow-lg transition-transform active:scale-95 ${
-                    canStart
-                      ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-900/20'
-                      : 'bg-slate-700 cursor-not-allowed opacity-60'
-                  }`}
+                  className={`w-full text-lg h-14 shadow-lg transition-transform active:scale-95 ${canStart
+                    ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-900/20'
+                    : 'bg-slate-700 cursor-not-allowed opacity-60'
+                    }`}
                 >
                   {!canStart ? (
                     <span className="flex items-center gap-2">
@@ -499,11 +410,7 @@ export default function GameRoom({ initialGame, initialPlayers, me: initialMe }:
         {game.status === 'in_progress' && (
           <div className="space-y-8">
             <div className="text-center space-y-4 animate-in zoom-in-95 duration-500">
-              <div className="inline-flex items-center justify-center p-5 bg-slate-900/80 shadow-2xl border border-slate-700 rounded-full">
-                {isNight && <Moon className="w-10 h-10 text-indigo-400" />}
-                {isDay && <Sun className="w-10 h-10 text-amber-400" />}
-                {isVoting && <Vote className="w-10 h-10 text-rose-400" />}
-              </div>
+
               <h2 className="text-3xl font-black uppercase tracking-widest text-slate-200">
                 Phase: {PHASE_LABELS[game.phase] || game.phase}
               </h2>
@@ -525,6 +432,24 @@ export default function GameRoom({ initialGame, initialPlayers, me: initialMe }:
                   </p>
                 )}
               </div>
+
+              {isDay && me.isOwner && (
+                <Button
+                  onClick={async () => {
+                    setError(null);
+                    try {
+                      await nextPhase(game.id);
+                    } catch (e: unknown) {
+                      setError(e instanceof Error ? e.message : 'Fehler beim Phasenwechsel');
+                    }
+                  }}
+                  size="lg"
+                  className="bg-rose-600 hover:bg-rose-700 text-white shadow-lg transition-transform active:scale-95"
+                >
+                  <Vote className="w-5 h-5 mr-2" />
+                  Start Abstimmung
+                </Button>
+              )}
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
@@ -745,174 +670,6 @@ export default function GameRoom({ initialGame, initialPlayers, me: initialMe }:
         </div>
       )}
 
-      {/* Vote Confirmation Modal */}
-      {showVoteConfirm && me.isOwner && (
-        <div className="fixed inset-0 z-200 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl space-y-6 animate-in zoom-in-95 duration-300">
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center p-3 bg-rose-500/10 rounded-full mb-3">
-                <Vote className="w-8 h-8 text-rose-400" />
-              </div>
-              <h3 className="text-xl font-bold text-white">Abstimmung bestätigen</h3>
-              <p className="text-slate-400 text-sm mt-1">Wer wurde vom Dorf gewählt?</p>
-            </div>
-
-            <div className="space-y-2 max-h-60 overflow-y-auto">
-              {players
-                .filter((p) => p.isAlive)
-                .map((p) => (
-                  <button
-                    key={p.id}
-                    onClick={() => setSelectedVoteTarget(p.id)}
-                    className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-all ${
-                      selectedVoteTarget === p.id
-                        ? 'bg-rose-600/20 border-rose-500 text-white'
-                        : 'bg-slate-800/60 border-slate-700 text-slate-300 hover:border-slate-600'
-                    }`}
-                  >
-                    <span className="flex items-center gap-2">
-                      <UserCircle2 className="w-5 h-5" />
-                      {p.name}
-                    </span>
-                    {selectedVoteTarget === p.id && <Check className="w-5 h-5 text-rose-400" />}
-                  </button>
-                ))}
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <Button
-                onClick={() => handleConfirmVote(selectedVoteTarget)}
-                disabled={!selectedVoteTarget}
-                className={`w-full h-12 text-base font-semibold ${selectedVoteTarget ? 'bg-rose-600 hover:bg-rose-700' : 'bg-slate-700 cursor-not-allowed'}`}
-              >
-                <Skull className="w-4 h-4 mr-2" />
-                Gewählte Person eliminieren
-              </Button>
-              <Button
-                onClick={() => handleConfirmVote(null)}
-                variant="outline"
-                className="w-full h-12 text-base border-slate-700 text-slate-300 hover:bg-slate-800"
-              >
-                <X className="w-4 h-4 mr-2" />
-                Unentschieden / Niemand stirbt
-              </Button>
-              <Button
-                onClick={() => {
-                  setShowVoteConfirm(false);
-                  setSelectedVoteTarget(null);
-                }}
-                variant="ghost"
-                className="w-full text-slate-500 hover:text-slate-300"
-              >
-                Abbrechen
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* OWNER CONTROLS - Fixed floating Action Bar at bottom */}
-      {me.isOwner && game.status === 'in_progress' && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 border-t border-slate-800 bg-slate-950/80 backdrop-blur-xl z-50">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-              <div className="space-y-1 flex-1">
-                <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest flex items-center gap-1">
-                  <Settings className="w-3 h-3" /> Game Master Controls
-                </p>
-                <div className="flex gap-2">
-                  {isVoting ? (
-                    <Button
-                      size="sm"
-                      onClick={() => setShowVoteConfirm(true)}
-                      className="flex-1 bg-rose-600/20 text-rose-400 hover:bg-rose-600/40 border border-rose-600/50"
-                    >
-                      <Vote className="w-4 h-4 mr-2" />
-                      Abstimmung abschließen
-                    </Button>
-                  ) : (
-                    <Button
-                      size="sm"
-                      onClick={handleNextPhase}
-                      className="flex-1 bg-indigo-600/20 text-indigo-400 hover:bg-indigo-600/40 border border-indigo-600/50"
-                    >
-                      {getNextPhaseIcon(game.phase)}
-                      <span className="ml-2">Weiter: {getNextPhaseLabel(game.phase)}</span>
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  )}
-                </div>
-              </div>
-
-              <div className="space-y-1">
-                <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest text-right">
-                  Manuell Eliminieren
-                </p>
-                <div className="flex gap-1 flex-wrap justify-end">
-                  {players
-                    .filter((p) => p.isAlive)
-                    .map((p) => (
-                      <Button
-                        key={`kill-${p.id}`}
-                        size="icon"
-                        variant="destructive"
-                        className="h-8 w-8 rounded-full"
-                        onClick={() => handleEliminate(p.id)}
-                        title={`Kill ${p.name}`}
-                      >
-                        <Skull className="w-3 h-3" />
-                      </Button>
-                    ))}
-                </div>
-              </div>
-            </div>
-
-            {/* Action Log for Game Master */}
-            <div className="mt-4 border-t border-slate-800/50 pt-3">
-              <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-2">
-                Historie / Aktuelle Ziele
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {players
-                  .filter((p) => p.actionTargetId)
-                  .map((p) => {
-                    const target = players.find((t) => t.id === p.actionTargetId);
-                    return (
-                      <div
-                        key={`log-${p.id}`}
-                        className="bg-slate-900 border border-slate-700 text-xs px-2 py-1 rounded-md text-slate-300 flex items-center gap-1 shadow-sm"
-                      >
-                        <span
-                          className={`font-bold ${roleColor(p.role)} uppercase tracking-wider text-[10px]`}
-                        >
-                          {p.role}
-                        </span>
-                        <span>{p.name}</span>
-                        <span className="text-slate-500 mx-1">→</span>
-                        <span
-                          className={
-                            p.actionType === 'kill' || p.actionType === 'vote'
-                              ? 'text-red-400 font-semibold'
-                              : 'text-emerald-400 font-semibold'
-                          }
-                        >
-                          {p.actionType || 'kill'}
-                        </span>
-                        <span className="text-slate-500 mx-1">→</span>
-                        <span className="font-bold text-white">{target?.name || '?'}</span>
-                      </div>
-                    );
-                  })}
-                {players.filter((p) => p.actionTargetId).length === 0 && (
-                  <span className="text-xs text-slate-600 italic">
-                    Noch keine Aktionen in dieser Phase.
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
