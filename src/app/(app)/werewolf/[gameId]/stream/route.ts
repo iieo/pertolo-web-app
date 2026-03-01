@@ -12,29 +12,36 @@ export async function GET(
   // We need a dedicated Postgres connection for LISTEN
   const connectionString = process.env.DATABASE_URL!;
   const sql = postgres(connectionString);
+  const encoder = new TextEncoder();
+  let closed = false;
 
   const stream = new ReadableStream({
     async start(controller) {
       // Send initial connection successful message
-      controller.enqueue(`data: {"type": "connected"}\n\n`);
+      controller.enqueue(encoder.encode(`data: {"type": "connected"}\n\n`));
 
       try {
         await sql.listen('werewolf_updates', (payload) => {
           // payload is the gameId from NOTIFY werewolf_updates, 'GAME_ID'
           if (payload === gameId || payload === '') {
-            controller.enqueue(`data: {"type": "update", "gameId": "${gameId}"}\n\n`);
+            controller.enqueue(
+              encoder.encode(`data: {"type": "update", "gameId": "${gameId}"}\n\n`),
+            );
           }
         });
 
         // Keep connection alive with pings
         const intervalId = setInterval(() => {
-          controller.enqueue(`: ping\n\n`);
+          controller.enqueue(encoder.encode(`: ping\n\n`));
         }, 15000);
 
         // Handle client disconnect
         request.signal.addEventListener('abort', () => {
           clearInterval(intervalId);
-          sql.end(); // Close the dedicated connection
+          if (!closed) {
+            closed = true;
+            sql.end();
+          }
           controller.close();
         });
       } catch (err) {
@@ -43,7 +50,10 @@ export async function GET(
       }
     },
     cancel() {
-      sql.end();
+      if (!closed) {
+        closed = true;
+        sql.end();
+      }
     },
   });
 

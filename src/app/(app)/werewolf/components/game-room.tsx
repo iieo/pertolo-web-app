@@ -99,12 +99,14 @@ export default function GameRoom({ initialGame, initialPlayers, me: initialMe }:
   };
 
   const previousPhaseRef = useRef(initialGame.phase);
-  const previousPlayerCountRef = useRef(initialPlayers.length);
+  const previousStatusRef = useRef(initialGame.status);
+  const previousPlayerIdsRef = useRef(new Set(initialPlayers.map((p) => p.id)));
 
   const handleGameUpdate = useCallback(async () => {
     try {
       const fresh = await refreshGameState(game.id);
-      const prevStatus = game.status;
+      const prevStatus = previousStatusRef.current;
+      previousStatusRef.current = fresh.game.status;
       setGame(fresh.game);
       setPlayers(fresh.players);
 
@@ -121,19 +123,21 @@ export default function GameRoom({ initialGame, initialPlayers, me: initialMe }:
 
       // Show notification for new players (admin only)
       if (initialMe.isOwner && fresh.game.status === 'lobby') {
-        if (fresh.players.length > previousPlayerCountRef.current) {
-          const newNames = fresh.players.slice(previousPlayerCountRef.current).map((p) => p.name);
+        const freshIds = new Set(fresh.players.map((p) => p.id));
+        const newPlayers = fresh.players.filter((p) => !previousPlayerIdsRef.current.has(p.id));
+        if (newPlayers.length > 0) {
+          const newNames = newPlayers.map((p) => p.name);
           setNewPlayerNames((prev) => [...prev, ...newNames]);
           setTimeout(() => {
             setNewPlayerNames((prev) => prev.slice(newNames.length));
           }, 4000);
         }
-        previousPlayerCountRef.current = fresh.players.length;
+        previousPlayerIdsRef.current = freshIds;
       }
     } catch (err) {
       console.error('Failed to refresh game state', err);
     }
-  }, [game.id, game.status, initialMe.id, initialMe.isOwner, router]);
+  }, [game.id, initialMe.id, initialMe.isOwner, router]);
 
   useEffect(() => {
     const sse = new EventSource(`/werewolf/${game.id}/stream`);
@@ -141,7 +145,7 @@ export default function GameRoom({ initialGame, initialPlayers, me: initialMe }:
     sse.onmessage = async (event) => {
       try {
         const data = JSON.parse(event.data);
-        if (data.type === 'update') {
+        if (data.type === 'update' || data.type === 'connected') {
           await handleGameUpdate();
         }
       } catch (err) {
@@ -182,11 +186,13 @@ export default function GameRoom({ initialGame, initialPlayers, me: initialMe }:
   }, [game.phase, me.isOwner]);
 
   const totalRoles = Object.values(roleConfig).reduce((a, b) => a + b, 0);
+  const werewolfCount = roleConfig.werwolf || 0;
+  const maxWerwolf = Math.floor(players.length / 2);
   const canStart =
     totalRoles === players.length &&
     players.length >= 4 &&
-    (roleConfig.werwolf || 0) >= 1 &&
-    (roleConfig.dorfbewohner || 0) >= 1;
+    werewolfCount >= 1 &&
+    werewolfCount <= maxWerwolf;
 
   const handleStartGame = async () => {
     setError(null);
@@ -370,7 +376,7 @@ export default function GameRoom({ initialGame, initialPlayers, me: initialMe }:
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {[
                       { id: 'werwolf', label: 'Werwolf', required: true },
-                      { id: 'dorfbewohner', label: 'Dorfbewohner', required: true },
+                      { id: 'dorfbewohner', label: 'Dorfbewohner' },
                       { id: 'seher', label: 'Seherin' },
                       { id: 'hexe', label: 'Hexe' },
                       { id: 'jaeger', label: 'Jäger' },
@@ -447,9 +453,13 @@ export default function GameRoom({ initialGame, initialPlayers, me: initialMe }:
                       <AlertTriangle className="w-5 h-5" />
                       {players.length < 4
                         ? 'Zu wenig Spieler'
-                        : totalRoles !== players.length
-                          ? `Rollen anpassen (${totalRoles}/${players.length})`
-                          : 'Konfiguration prüfen'}
+                        : werewolfCount < 1
+                          ? 'Mindestens 1 Werwolf'
+                          : werewolfCount > maxWerwolf
+                            ? `Max. ${maxWerwolf} Werwölfe erlaubt`
+                            : totalRoles !== players.length
+                              ? `Rollen anpassen (${totalRoles}/${players.length})`
+                              : 'Konfiguration prüfen'}
                     </span>
                   ) : (
                     'Spiel Starten'

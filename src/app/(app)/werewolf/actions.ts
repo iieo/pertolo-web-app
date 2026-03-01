@@ -43,7 +43,15 @@ export async function createGame(formData: FormData) {
     throw new Error('Name is required');
   }
 
-  const gameId = generateRandomCode();
+  let gameId = generateRandomCode();
+  for (let attempt = 0; attempt < 10; attempt++) {
+    const existing = await db.query.werewolfGamesTable.findFirst({
+      where: eq(werewolfGamesTable.id, gameId),
+    });
+    if (!existing) break;
+    gameId = generateRandomCode();
+    if (attempt === 9) throw new Error('Failed to generate a unique game code');
+  }
 
   await db.insert(werewolfGamesTable).values({
     id: gameId,
@@ -150,14 +158,15 @@ export async function startGame(gameId: string, roleConfig: Record<string, numbe
     );
   }
 
-  // Validate at least 1 werewolf
-  if (!roleConfig.werwolf || roleConfig.werwolf < 1) {
+  // Validate werewolf count: at least 1, at most half the players
+  const werewolfCount = roleConfig.werwolf || 0;
+  if (werewolfCount < 1) {
     throw new Error('Mindestens 1 Werwolf wird benötigt');
   }
-
-  // Validate at least 1 dorfbewohner
-  if (!roleConfig.dorfbewohner || roleConfig.dorfbewohner < 1) {
-    throw new Error('Mindestens 1 Dorfbewohner wird benötigt');
+  if (werewolfCount > Math.floor(players.length / 2)) {
+    throw new Error(
+      `Maximal ${Math.floor(players.length / 2)} Werwölfe bei ${players.length} Spielern erlaubt`,
+    );
   }
 
   await db
@@ -170,8 +179,11 @@ export async function startGame(gameId: string, roleConfig: Record<string, numbe
     for (let i = 0; i < count; i++) rolePool.push(role);
   }
 
-  // Shuffle
-  rolePool = rolePool.sort(() => Math.random() - 0.5);
+  // Fisher-Yates shuffle
+  for (let i = rolePool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [rolePool[i], rolePool[j]] = [rolePool[j]!, rolePool[i]!];
+  }
 
   // Assign roles
   for (let i = 0; i < players.length; i++) {
@@ -275,6 +287,42 @@ export async function confirmVote(gameId: string, eliminatedPlayerId: string | n
 
 export async function submitAction(gameId: string, targetPlayerId: string, actionType?: string) {
   const sessionId = await getOrSetSessionId();
+
+  const game = await db.query.werewolfGamesTable.findFirst({
+    where: eq(werewolfGamesTable.id, gameId),
+  });
+
+  if (!game) throw new Error('Game not found');
+  if (game.status !== 'in_progress') throw new Error('Game is not in progress');
+
+  const players = await db.query.werewolfPlayersTable.findMany({
+    where: eq(werewolfPlayersTable.gameId, gameId),
+  });
+
+  const actor = players.find((p) => p.sessionId === sessionId);
+  if (!actor) throw new Error('Player not found');
+
+  const target = players.find((p) => p.id === targetPlayerId);
+  if (!target) throw new Error('Target player not found');
+  if (!target.isAlive) throw new Error('Target player is not alive');
+
+  const isDeadHunter = !actor.isAlive && actor.role === 'jaeger';
+
+  if (!actor.isAlive && !isDeadHunter) {
+    throw new Error('Dead players cannot perform actions');
+  }
+
+  // Validate phase-appropriate actions
+  const nightRoles = ['werwolf', 'hexe', 'seher', 'heiler', 'amor', 'wildes_kind'];
+  if (game.phase === 'night' && !nightRoles.includes(actor.role || '')) {
+    throw new Error('Your role cannot act at night');
+  }
+  if (game.phase === 'voting' && actionType !== 'vote' && !isDeadHunter) {
+    throw new Error('Only voting is allowed during the voting phase');
+  }
+  if (game.phase === 'day' && !isDeadHunter) {
+    throw new Error('No actions during the day phase');
+  }
 
   await db
     .update(werewolfPlayersTable)

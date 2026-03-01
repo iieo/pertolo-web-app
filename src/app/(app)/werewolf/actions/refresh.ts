@@ -2,7 +2,7 @@
 
 import { db } from '@/db';
 import { werewolfGamesTable, werewolfPlayersTable } from '@/db/schema';
-import { eq } from 'drizzle-orm';
+import { eq, asc } from 'drizzle-orm';
 
 export async function refreshGameState(gameId: string) {
   const game = await db.query.werewolfGamesTable.findFirst({
@@ -15,6 +15,7 @@ export async function refreshGameState(gameId: string) {
 
   const players = await db.query.werewolfPlayersTable.findMany({
     where: eq(werewolfPlayersTable.gameId, gameId),
+    orderBy: asc(werewolfPlayersTable.createdAt),
   });
 
   return { game, players };
