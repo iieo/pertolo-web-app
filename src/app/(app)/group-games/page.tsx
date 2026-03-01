@@ -18,74 +18,60 @@ const PLAYERS = [
   'Alex',
   'Johanna',
 ];
-
 const GROUPS = [
   {
     id: 1,
-    task: 'Kochen',
-    emoji: '🍳',
-    description: 'Kocht gemeinsam ein Gericht für die ganze Gruppe. Kreativität erwünscht!',
-    members: ['Bäda', 'Cici', 'Laura'],
+    task: 'Schwurbler',
+    emoji: '🕵️‍♂️',
+    description: 'Erstellt eine Präsentation über ausgedachte/existierende Verschwörungstheorien. Sucht euch Essen für die Gruppe aus und holt es oder kocht selbst etwas. Wenn Zeit: Erstellt ein Geräusche raten quiz. ',
     colorA: '#f97316',
     colorB: '#ef4444',
   },
   {
     id: 2,
-    task: 'Bar mixen',
-    emoji: '🍹',
-    description: 'Mixt einen Signature-Drink und präsentiert ihn der Gruppe. Prost!',
-    members: ['Jakob', 'Lars', 'Leo'],
+    task: 'Mallehit',
+    emoji: '🏝️',
+    description: 'Erstellt einen Mallehit (am besten mit einem Drohnen-Musikvideo)',
     colorA: '#a855f7',
     colorB: '#3b82f6',
   },
   {
     id: 3,
-    task: 'Karaoke singen',
-    emoji: '🎤',
-    description: 'Wählt einen Song und performt ihn vor allen. Falsch singen ist Pflicht!',
-    members: ['Loui', 'Riedl', 'Sammer'],
+    task: 'Saufi',
+    emoji: '🍻',
+    description: 'Ihr kennt euren Task!',
     colorA: '#ec4899',
     colorB: '#d946ef',
   },
   {
     id: 4,
-    task: 'Tanz-Battle',
-    emoji: '💃',
-    description: 'Erfindet eine Choreografie und fordert die anderen Gruppen heraus!',
-    members: ['Steff', 'Tania', 'Tom'],
+    task: 'Minigames',
+    emoji: '🎯',
+    description: 'Erstellt ein cooles Quiz für die Gruppe. Bereitet Minispiele wie auf einem Jahrmarkt vor welche die anderen danach absolvieren müssen.',
     colorA: '#eab308',
     colorB: '#f97316',
-  },
-  {
-    id: 5,
-    task: 'Cocktails shaken',
-    emoji: '🍸',
-    description: 'Kreiert zwei Cocktails – einen mit und einen ohne Alkohol. Zum Wohl!',
-    members: ['Alex', 'Johanna'],
-    colorA: '#06b6d4',
-    colorB: '#14b8a6',
-  },
+  }
 ];
 
 const ASSIGNMENTS: Record<string, number> = {
-  Bäda: 1,
-  Cici: 1,
+  Bäda: 3,
+  Cici: 3,
   Laura: 1,
   Jakob: 2,
   Lars: 2,
-  Leo: 2,
-  Loui: 3,
-  Riedl: 3,
+  Leo: 4,
+  Loui: 4,
+  Riedl: 2,
   Sammer: 3,
   Steff: 4,
-  Tania: 4,
-  Tom: 4,
-  Alex: 5,
-  Johanna: 5,
+  Tania: 1,
+  Tom: 1,
+  Alex: 1,
+  Johanna: 2,
 };
 
 // Pseudo-random-looking cycle order for the fast spin phase (22 frames)
-const FAST_CYCLE = [0, 2, 4, 1, 3, 2, 0, 4, 3, 1, 4, 2, 0, 3, 1, 4, 0, 2, 3, 1, 0, 4];
+const FAST_CYCLE = [0, 2, 3, 1, 3, 2, 0, 2, 3, 0, 1, 2, 0, 3, 1, 2, 0, 2, 3, 1, 0, 2];
 
 // Confetti particles configuration
 const CONFETTI = Array.from({ length: 18 }, (_, i) => ({
@@ -244,9 +230,9 @@ export default function GroupGamesPage() {
                   style={
                     isClaimed && group
                       ? {
-                          background: `linear-gradient(135deg, ${group.colorA}28, ${group.colorB}28)`,
-                          borderColor: `${group.colorA}70`,
-                        }
+                        background: `linear-gradient(135deg, ${group.colorA}28, ${group.colorB}28)`,
+                        borderColor: `${group.colorA}70`,
+                      }
                       : undefined
                   }
                   className={[
