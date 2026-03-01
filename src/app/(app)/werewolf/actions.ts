@@ -246,6 +246,44 @@ export async function nextPhase(gameId: string) {
   await notifyGameUpdate(gameId);
 }
 
+export async function skipAction(gameId: string): Promise<void> {
+  const sessionId = await getOrSetSessionId();
+
+  const game = await db.query.werewolfGamesTable.findFirst({
+    where: eq(werewolfGamesTable.id, gameId),
+  });
+
+  if (!game) throw new Error('Game not found');
+  if (game.status !== 'in_progress') throw new Error('Game is not in progress');
+  if (game.phase !== 'night') throw new Error('Überspringen nur in der Nacht möglich');
+
+  const actor = await db.query.werewolfPlayersTable.findFirst({
+    where: and(
+      eq(werewolfPlayersTable.gameId, gameId),
+      eq(werewolfPlayersTable.sessionId, sessionId),
+    ),
+  });
+
+  if (!actor) throw new Error('Player not found');
+  if (!actor.isAlive) throw new Error('Dead players cannot perform actions');
+
+  const nightRoles = ['werwolf', 'hexe', 'seher', 'heiler', 'amor', 'wildes_kind'];
+  if (!nightRoles.includes(actor.role || '')) {
+    throw new Error('Your role cannot act at night');
+  }
+
+  // Use the player's own ID as a sentinel for "skipped"
+  await db
+    .update(werewolfPlayersTable)
+    .set({ actionTargetId: actor.id, actionType: 'skip' })
+    .where(
+      and(eq(werewolfPlayersTable.gameId, gameId), eq(werewolfPlayersTable.sessionId, sessionId)),
+    );
+
+  await notifyGameUpdate(gameId);
+  await checkAndAutoAdvance(gameId);
+}
+
 export async function submitAction(
   gameId: string,
   targetPlayerId: string,
