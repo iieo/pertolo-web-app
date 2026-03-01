@@ -155,9 +155,7 @@ export default function PlayerSelect({ gameId, initialPlayers }: PlayerSelectPro
                         )}
                       </span>
                     </div>
-                    {p.isAlive && (
-                      <User className="w-4 h-4 text-green-500/60 shrink-0 ml-2" />
-                    )}
+                    {p.isAlive && <User className="w-4 h-4 text-green-500/60 shrink-0 ml-2" />}
                   </div>
                 );
               }
