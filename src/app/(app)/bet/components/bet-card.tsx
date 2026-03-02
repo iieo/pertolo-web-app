@@ -20,6 +20,12 @@ export function BetCard({ id, title, status, ownerName, totalPool, options }: Be
     cancelled: 'bg-red-500/20 text-red-400 border-red-500/30',
   }[status];
 
+  const statusLabel = {
+    open: 'Offen',
+    resolved: 'Beendet',
+    cancelled: 'Storniert',
+  }[status];
+
   return (
     <Link
       href={`/bet/${id}`}
@@ -29,9 +35,9 @@ export function BetCard({ id, title, status, ownerName, totalPool, options }: Be
         <div className="min-w-0 flex-1">
           <div className="mb-2 flex items-center gap-2">
             <Badge variant="outline" className={statusColor}>
-              {status}
+              {statusLabel}
             </Badge>
-            <span className="truncate text-xs text-white/40">by {ownerName}</span>
+            <span className="truncate text-xs text-white/40">von {ownerName}</span>
           </div>
           <h3 className="mb-3 text-lg font-bold text-white">{title}</h3>
 

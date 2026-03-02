@@ -27,12 +27,12 @@ export function WagerForm({ betId, totalPool, options, onWagerPlaced }: WagerFor
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!selectedOption) {
-      toast.error('Select an option');
+      toast.error('Wähle eine Option');
       return;
     }
     const numAmount = parseInt(amount);
     if (!numAmount || numAmount <= 0) {
-      toast.error('Enter a valid amount');
+      toast.error('Gib einen gültigen Betrag ein');
       return;
     }
 
@@ -43,12 +43,12 @@ export function WagerForm({ betId, totalPool, options, onWagerPlaced }: WagerFor
         toast.error(result.error);
         return;
       }
-      toast.success('Wager placed!');
+      toast.success('Einsatz platziert!');
       setAmount('');
       await refreshBalance();
       onWagerPlaced();
     } catch {
-      toast.error('Failed to place wager');
+      toast.error('Einsatz fehlgeschlagen');
     } finally {
       setLoading(false);
     }
@@ -59,7 +59,7 @@ export function WagerForm({ betId, totalPool, options, onWagerPlaced }: WagerFor
       onSubmit={handleSubmit}
       className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-4"
     >
-      <h3 className="text-sm font-semibold text-white/70">Place a Wager</h3>
+      <h3 className="text-sm font-semibold text-white/70">Einsatz tätigen</h3>
 
       <div className="flex flex-col gap-2">
         {options.map((opt) => (
@@ -84,7 +84,7 @@ export function WagerForm({ betId, totalPool, options, onWagerPlaced }: WagerFor
           type="number"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          placeholder="Amount"
+          placeholder="Betrag"
           min={1}
           className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
         />
@@ -115,7 +115,7 @@ export function WagerForm({ betId, totalPool, options, onWagerPlaced }: WagerFor
 
       {selectedOption && parseInt(amount) > 0 && (
         <div className="rounded-xl bg-amber-500/10 border border-amber-500/20 p-3 flex justify-between items-center text-sm">
-          <span className="text-white/60">Potential return</span>
+          <span className="text-white/60">Möglicher Gewinn</span>
           <div className="flex items-center gap-1 font-bold text-amber-400">
             <Coins size={14} />
             <span>
@@ -138,7 +138,7 @@ export function WagerForm({ betId, totalPool, options, onWagerPlaced }: WagerFor
         className="w-full bg-amber-500 text-black font-bold hover:bg-amber-400"
       >
         <Coins size={16} className="mr-2" />
-        {loading ? 'Placing...' : 'Place Bet'}
+        {loading ? 'Wird platziert...' : 'Wette platzieren'}
       </Button>
     </form>
   );

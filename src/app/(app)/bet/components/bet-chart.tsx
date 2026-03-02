@@ -26,7 +26,7 @@ const COLORS = [
 ];
 
 export function BetChart({ betId }: BetChartProps) {
-  const [data, setData] = useState<{ date: string; [key: string]: any }[]>([]);
+  const [data, setData] = useState<{ date: string;[key: string]: any }[]>([]);
   const [lineKeys, setLineKeys] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -45,7 +45,7 @@ export function BetChart({ betId }: BetChartProps) {
   if (loading) {
     return (
       <div className="h-64 flex items-center justify-center animate-pulse rounded-2xl border border-white/10 bg-white/5">
-        <span className="text-white/40">Loading chart...</span>
+        <span className="text-white/40">Diagramm wird geladen...</span>
       </div>
     );
   }
@@ -53,14 +53,14 @@ export function BetChart({ betId }: BetChartProps) {
   if (data.length === 0) {
     return (
       <div className="h-64 flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-sm text-white/40">
-        No wager history yet
+        Noch keine Einsatzhistorie vorhanden
       </div>
     );
   }
 
   return (
     <div className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-4">
-      <h3 className="text-sm font-semibold text-white/70">Win/Loss Ratio Over Time (Odds)</h3>
+      <h3 className="text-sm font-semibold text-white/70">Win/Loss Ratio über Zeit (Quoten)</h3>
       <div className="h-64 w-full">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data}>

@@ -16,13 +16,13 @@ import Link from 'next/link';
 
 const registerSchema = z
   .object({
-    name: z.string().min(2, 'Name must be at least 2 characters').max(50),
-    email: z.string().email('Invalid email'),
-    password: z.string().min(8, 'Password must be at least 8 characters'),
+    name: z.string().min(2, 'Name muss mindestens 2 Zeichen lang sein').max(50),
+    email: z.string().email('Ungültige E-Mail-Adresse'),
+    password: z.string().min(8, 'Passwort muss mindestens 8 Zeichen lang sein'),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
+    message: 'Passwörter stimmen nicht überein',
     path: ['confirmPassword'],
   });
 
@@ -56,16 +56,16 @@ export function RegisterForm() {
       });
 
       if (signInResult.error) {
-        toast.error('Registered but sign in failed. Please log in.');
+        toast.error('Registriert, aber Anmeldung fehlgeschlagen. Bitte melde dich manuell an.');
         router.push('/bet/login');
         return;
       }
 
-      toast.success('Welcome! +10,000 points');
+      toast.success('Willkommen! +10.000 Punkte');
       router.push('/bet');
       router.refresh();
     } catch {
-      toast.error('Registration failed');
+      toast.error('Registrierung fehlgeschlagen');
     } finally {
       setLoading(false);
     }
@@ -79,7 +79,7 @@ export function RegisterForm() {
         </Label>
         <Input
           id="name"
-          placeholder="Your name"
+          placeholder="Dein Name"
           className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
           {...register('name')}
         />
@@ -88,7 +88,7 @@ export function RegisterForm() {
 
       <div className="space-y-2">
         <Label htmlFor="email" className="text-white/70">
-          Email
+          E-Mail
         </Label>
         <Input
           id="email"
@@ -102,7 +102,7 @@ export function RegisterForm() {
 
       <div className="space-y-2">
         <Label htmlFor="password" className="text-white/70">
-          Password
+          Passwort
         </Label>
         <Input
           id="password"
@@ -116,7 +116,7 @@ export function RegisterForm() {
 
       <div className="space-y-2">
         <Label htmlFor="confirmPassword" className="text-white/70">
-          Confirm Password
+          Passwort bestätigen
         </Label>
         <Input
           id="confirmPassword"
@@ -136,13 +136,13 @@ export function RegisterForm() {
         className="w-full bg-amber-500 text-black font-bold hover:bg-amber-400"
       >
         <UserPlus size={18} className="mr-2" />
-        {loading ? 'Creating account...' : 'Create Account'}
+        {loading ? 'Konto wird erstellt...' : 'Konto erstellen'}
       </Button>
 
       <p className="text-center text-sm text-white/40">
-        Already have an account?{' '}
+        Bereits ein Konto vorhanden?{' '}
         <Link href="/bet/login" className="text-amber-400 hover:underline">
-          Sign in
+          Anmelden
         </Link>
       </p>
     </form>

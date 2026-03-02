@@ -36,7 +36,7 @@ export function UserDrawer({ open, onClose, user }: UserDrawerProps) {
           </DrawerTitle>
         </DrawerHeader>
         <div className="px-4 pb-8">
-          <h4 className="mb-2 text-xs font-semibold text-white/50">Point History</h4>
+          <h4 className="mb-2 text-xs font-semibold text-white/50">Punktestand-Verlauf</h4>
           <PointHistoryChart userId={user.userId} />
         </div>
       </DrawerContent>

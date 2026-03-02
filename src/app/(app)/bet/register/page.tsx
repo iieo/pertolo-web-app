@@ -9,8 +9,8 @@ export default function RegisterPage() {
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-500/20 border border-amber-500/30">
             <Coins size={32} className="text-amber-400" />
           </div>
-          <h1 className="text-3xl font-extrabold text-white">Create Account</h1>
-          <p className="text-white/50">Start with 10,000 points to bet with friends</p>
+          <h1 className="text-3xl font-extrabold text-white">Konto erstellen</h1>
+          <p className="text-white/50">Starte mit 10.000 Punkten, um mit Freunden zu wetten</p>
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">

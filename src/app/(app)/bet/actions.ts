@@ -30,7 +30,7 @@ export async function registerUser(
     });
 
     if (!result?.user?.id) {
-      return { success: false, error: 'Registration failed' };
+      return { success: false, error: 'Registrierung fehlgeschlagen' };
     }
 
     const userId = result.user.id;
@@ -45,13 +45,13 @@ export async function registerUser(
         userId,
         amount: 10000,
         type: 'signup_bonus',
-        description: 'Welcome bonus',
+        description: 'Willkommensbonus',
       });
     });
 
     return { success: true, data: { userId } };
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Registration failed';
+    const message = e instanceof Error ? e.message : 'Registrierung fehlgeschlagen';
     return { success: false, error: message };
   }
 }
@@ -86,13 +86,13 @@ export async function checkLoginBonus(): Promise<Result<{ awarded: boolean; amou
         userId: session.user.id,
         amount: bonusAmount,
         type: 'login_bonus',
-        description: 'Weekly login bonus',
+        description: 'Wöchentlicher Login-Bonus',
       });
     });
 
     return { success: true, data: { awarded: true, amount: bonusAmount } };
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Failed to check login bonus';
+    const message = e instanceof Error ? e.message : 'Login-Bonus Prüfung fehlgeschlagen';
     return { success: false, error: message };
   }
 }
@@ -100,7 +100,7 @@ export async function checkLoginBonus(): Promise<Result<{ awarded: boolean; amou
 export async function getMyBalance(): Promise<Result<number>> {
   try {
     const session = await getSession();
-    if (!session) return { success: false, error: 'Not authenticated' };
+    if (!session) return { success: false, error: 'Nicht authentifiziert' };
 
     const [profile] = await db
       .select({ pointsBalance: userProfilesTable.pointsBalance })
@@ -109,7 +109,7 @@ export async function getMyBalance(): Promise<Result<number>> {
 
     return { success: true, data: profile?.pointsBalance ?? 0 };
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Failed to get balance';
+    const message = e instanceof Error ? e.message : 'Kontostand konnte nicht geladen werden';
     return { success: false, error: message };
   }
 }
@@ -129,7 +129,7 @@ export async function createBet(input: CreateBetInput): Promise<Result<{ betId: 
     const session = await requireSession();
 
     if (input.options.length < 2) {
-      return { success: false, error: 'At least 2 options required' };
+      return { success: false, error: 'Mindestens 2 Optionen erforderlich' };
     }
 
     let betId = '';
@@ -144,7 +144,7 @@ export async function createBet(input: CreateBetInput): Promise<Result<{ betId: 
         })
         .returning({ id: betsTable.id });
 
-      if (!bet) throw new Error('Failed to create bet');
+      if (!bet) throw new Error('Wette konnte nicht erstellt werden');
       betId = bet.id;
 
       await tx.insert(betOptionsTable).values(
@@ -167,7 +167,7 @@ export async function createBet(input: CreateBetInput): Promise<Result<{ betId: 
 
     return { success: true, data: { betId } };
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Failed to create bet';
+    const message = e instanceof Error ? e.message : 'Wette konnte nicht erstellt werden';
     return { success: false, error: message };
   }
 }
@@ -267,7 +267,7 @@ export async function getBets(filter?: 'open' | 'resolved' | 'mine'): Promise<
 
     return { success: true, data: result };
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Failed to get bets';
+    const message = e instanceof Error ? e.message : 'Wettdetails konnten nicht geladen werden';
     return { success: false, error: message };
   }
 }
@@ -308,7 +308,7 @@ export async function getBetDetail(betId: string): Promise<
       .innerJoin(usersTable, eq(betsTable.ownerId, usersTable.id))
       .where(eq(betsTable.id, betId));
 
-    if (!bet) return { success: false, error: 'Bet not found' };
+    if (!bet) return { success: false, error: 'Wette nicht gefunden' };
 
     // Check access control
     if (userId && bet.visibility === 'private') {
@@ -322,7 +322,7 @@ export async function getBetDetail(betId: string): Promise<
             eq(betAccessControlTable.type, 'blacklist'),
           ),
         );
-      if (blocked) return { success: false, error: 'Access denied' };
+      if (blocked) return { success: false, error: 'Zugriff verweigert' };
     }
 
     const options = await db.select().from(betOptionsTable).where(eq(betOptionsTable.betId, betId));
@@ -376,7 +376,7 @@ export async function placeWager(
     const session = await requireSession();
     const userId = session.user.id;
 
-    if (amount <= 0) return { success: false, error: 'Amount must be positive' };
+    if (amount <= 0) return { success: false, error: 'Betrag muss positiv sein' };
 
     let wagerId = '';
     await db.transaction(async (tx) => {
@@ -385,21 +385,21 @@ export async function placeWager(
         .select({ status: betsTable.status })
         .from(betsTable)
         .where(eq(betsTable.id, betId));
-      if (!bet || bet.status !== 'open') throw new Error('Bet is not open');
+      if (!bet || bet.status !== 'open') throw new Error('Wette ist nicht offen');
 
       // Check option belongs to bet
       const [option] = await tx
         .select()
         .from(betOptionsTable)
         .where(and(eq(betOptionsTable.id, optionId), eq(betOptionsTable.betId, betId)));
-      if (!option) throw new Error('Invalid option');
+      if (!option) throw new Error('Ungültige Option');
 
       // Check balance
       const [profile] = await tx
         .select()
         .from(userProfilesTable)
         .where(eq(userProfilesTable.userId, userId));
-      if (!profile || profile.pointsBalance < amount) throw new Error('Insufficient balance');
+      if (!profile || profile.pointsBalance < amount) throw new Error('Nicht genügend Guthaben');
 
       // Deduct balance
       await tx
@@ -414,7 +414,7 @@ export async function placeWager(
         .insert(wagersTable)
         .values({ betId, optionId, userId, amount })
         .returning({ id: wagersTable.id });
-      if (!wager) throw new Error('Failed to create wager');
+      if (!wager) throw new Error('Einsatz fehlgeschlagen');
       wagerId = wager.id;
 
       // Update option total
@@ -430,13 +430,13 @@ export async function placeWager(
         userId,
         amount: -amount,
         type: 'wager',
-        description: `Wager on bet`,
+        description: `Einsatz auf Wette`,
       });
     });
 
     return { success: true, data: { wagerId } };
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Failed to place wager';
+    const message = e instanceof Error ? e.message : 'Einsatz fehlgeschlagen';
     return { success: false, error: message };
   }
 }
@@ -454,11 +454,11 @@ export async function sellWager(wagerId: string): Promise<Result<{ cashout: numb
         .from(wagersTable)
         .where(and(eq(wagersTable.id, wagerId), eq(wagersTable.userId, userId)));
 
-      if (!wager) throw new Error('Wager not found');
+      if (!wager) throw new Error('Einsatz nicht gefunden');
 
       // Get bet
       const [bet] = await tx.select().from(betsTable).where(eq(betsTable.id, wager.betId));
-      if (!bet || bet.status !== 'open') throw new Error('Bet is not open');
+      if (!bet || bet.status !== 'open') throw new Error('Wette ist nicht offen');
 
       // Get all options
       const options = await tx
@@ -468,10 +468,10 @@ export async function sellWager(wagerId: string): Promise<Result<{ cashout: numb
       const totalPool = options.reduce((sum, o) => sum + o.totalPoints, 0);
 
       const targetOption = options.find((o) => o.id === wager.optionId);
-      if (!targetOption) throw new Error('Option not found');
+      if (!targetOption) throw new Error('Option nicht gefunden');
 
       if (targetOption.totalPoints === 0 || totalPool === 0)
-        throw new Error('Invalid option total');
+        throw new Error('Ungültiger Options-Gesamtwert');
 
       // Calculate cashout exactly proportionally
       cashout = Math.floor((wager.amount / targetOption.totalPoints) * totalPool);
@@ -504,13 +504,13 @@ export async function sellWager(wagerId: string): Promise<Result<{ cashout: numb
         userId,
         amount: cashout,
         type: 'payout',
-        description: 'Sold wager at current odds',
+        description: 'Einsatz zu aktuellen Quoten verkauft',
       });
     });
 
     return { success: true, data: { cashout } };
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Failed to sell wager';
+    const message = e instanceof Error ? e.message : 'Verkauf des Einsatzes fehlgeschlagen';
     return { success: false, error: message };
   }
 }
@@ -525,16 +525,17 @@ export async function resolveBet(
     let totalPayouts = 0;
     await db.transaction(async (tx) => {
       const [bet] = await tx.select().from(betsTable).where(eq(betsTable.id, betId));
-      if (!bet) throw new Error('Bet not found');
-      if (bet.ownerId !== session.user.id) throw new Error('Only the owner can resolve');
-      if (bet.status !== 'open') throw new Error('Bet is not open');
+      if (!bet) throw new Error('Wette nicht gefunden');
+      if (bet.ownerId !== session.user.id)
+        throw new Error('Nur der Ersteller kann die Wette auswerten');
+      if (bet.status !== 'open') throw new Error('Wette ist nicht offen');
 
       // Verify option belongs to bet
       const [option] = await tx
         .select()
         .from(betOptionsTable)
         .where(and(eq(betOptionsTable.id, winningOptionId), eq(betOptionsTable.betId, betId)));
-      if (!option) throw new Error('Invalid winning option');
+      if (!option) throw new Error('Ungültige gewinnende Option');
 
       // Get all options to calculate pool
       const options = await tx
@@ -577,7 +578,7 @@ export async function resolveBet(
             userId: wager.userId,
             amount: payout,
             type: 'payout',
-            description: `Payout from bet`,
+            description: `Auszahlung von Wette`,
           });
         }
       }
@@ -591,7 +592,7 @@ export async function resolveBet(
 
     return { success: true, data: { payouts: totalPayouts } };
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Failed to resolve bet';
+    const message = e instanceof Error ? e.message : 'Auswertung fehlgeschlagen';
     return { success: false, error: message };
   }
 }
@@ -603,9 +604,10 @@ export async function cancelBet(betId: string): Promise<Result<{ refunded: numbe
     let totalRefunded = 0;
     await db.transaction(async (tx) => {
       const [bet] = await tx.select().from(betsTable).where(eq(betsTable.id, betId));
-      if (!bet) throw new Error('Bet not found');
-      if (bet.ownerId !== session.user.id) throw new Error('Only the owner can cancel');
-      if (bet.status !== 'open') throw new Error('Bet is not open');
+      if (!bet) throw new Error('Wette nicht gefunden');
+      if (bet.ownerId !== session.user.id)
+        throw new Error('Nur der Ersteller kann die Wette stornieren');
+      if (bet.status !== 'open') throw new Error('Wette ist nicht offen');
 
       // Get all wagers
       const allWagers = await tx.select().from(wagersTable).where(eq(wagersTable.betId, betId));
@@ -630,7 +632,7 @@ export async function cancelBet(betId: string): Promise<Result<{ refunded: numbe
           userId: wager.userId,
           amount: wager.amount,
           type: 'refund',
-          description: `Refund from cancelled bet`,
+          description: `Erstattung von stornierter Wette`,
         });
       }
 
@@ -639,7 +641,7 @@ export async function cancelBet(betId: string): Promise<Result<{ refunded: numbe
 
     return { success: true, data: { refunded: totalRefunded } };
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Failed to cancel bet';
+    const message = e instanceof Error ? e.message : 'Stornierung fehlgeschlagen';
     return { success: false, error: message };
   }
 }
@@ -661,7 +663,7 @@ export async function getLeaderboard(): Promise<
 
     return { success: true, data: rows };
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Failed to get leaderboard';
+    const message = e instanceof Error ? e.message : 'Bestenliste konnte nicht geladen werden';
     return { success: false, error: message };
   }
 }
@@ -690,7 +692,8 @@ export async function getUserPointHistory(
 
     return { success: true, data: history };
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Failed to get point history';
+    const message =
+      e instanceof Error ? e.message : 'Punktestand-Verlauf konnte nicht geladen werden';
     return { success: false, error: message };
   }
 }
@@ -709,7 +712,7 @@ export async function searchUsers(
 
     return { success: true, data: users };
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Failed to search users';
+    const message = e instanceof Error ? e.message : 'Benutzersuche fehlgeschlagen';
     return { success: false, error: message };
   }
 }
@@ -778,7 +781,7 @@ export async function getBetChartData(
 
     return { success: true, data: { history, lineKeys } };
   } catch (e) {
-    const message = e instanceof Error ? e.message : 'Failed to fetch chart data';
+    const message = e instanceof Error ? e.message : 'Diagrammdaten konnten nicht geladen werden';
     return { success: false, error: message };
   }
 }

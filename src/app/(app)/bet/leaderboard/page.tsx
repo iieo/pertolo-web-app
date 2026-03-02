@@ -32,7 +32,7 @@ export default function LeaderboardPage() {
     <div className="mx-auto max-w-3xl px-4 pt-6">
       <div className="mb-6 flex items-center gap-2">
         <Trophy size={24} className="text-amber-400" />
-        <h1 className="text-2xl font-extrabold text-white">Leaderboard</h1>
+        <h1 className="text-2xl font-extrabold text-white">Bestenliste</h1>
       </div>
 
       <div className="space-y-2">

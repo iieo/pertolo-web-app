@@ -14,7 +14,7 @@ import { Plus, X, Send } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const createBetSchema = z.object({
-  title: z.string().min(3, 'Title must be at least 3 characters').max(200),
+  title: z.string().min(3, 'Titel muss mindestens 3 Zeichen lang sein').max(200),
   description: z.string().max(500).optional(),
 });
 
@@ -53,7 +53,7 @@ export function CreateBetForm() {
   async function onSubmit(data: CreateBetFormData) {
     const filledOptions = options.filter((o) => o.trim());
     if (filledOptions.length < 2) {
-      toast.error('At least 2 options required');
+      toast.error('Mindestens 2 Optionen erforderlich');
       return;
     }
 
@@ -71,10 +71,10 @@ export function CreateBetForm() {
         return;
       }
 
-      toast.success('Bet created!');
+      toast.success('Wette erstellt!');
       router.push(`/bet/${result.data.betId}`);
     } catch {
-      toast.error('Failed to create bet');
+      toast.error('Fehler beim Erstellen der Wette');
     } finally {
       setLoading(false);
     }
@@ -84,11 +84,11 @@ export function CreateBetForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-2">
         <Label htmlFor="title" className="text-white/70">
-          Question / Title
+          Frage / Titel
         </Label>
         <Input
           id="title"
-          placeholder="Will it rain tomorrow?"
+          placeholder="Regnet es morgen?"
           className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
           {...register('title')}
         />
@@ -97,18 +97,18 @@ export function CreateBetForm() {
 
       <div className="space-y-2">
         <Label htmlFor="description" className="text-white/70">
-          Description (optional)
+          Beschreibung (optional)
         </Label>
         <Input
           id="description"
-          placeholder="Additional context..."
+          placeholder="Zusätzlicher Kontext..."
           className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
           {...register('description')}
         />
       </div>
 
       <div className="space-y-3">
-        <Label className="text-white/70">Options</Label>
+        <Label className="text-white/70">Optionen</Label>
         {options.map((option, index) => (
           <div key={index} className="flex gap-2">
             <Input
@@ -138,15 +138,15 @@ export function CreateBetForm() {
             className="w-full border border-dashed border-white/10 text-white/40 hover:text-white/70"
           >
             <Plus size={16} className="mr-2" />
-            Add Option
+            Option hinzufügen
           </Button>
         )}
       </div>
 
       <div className="flex items-center justify-between rounded-xl border border-white/10 bg-white/5 p-4">
         <div>
-          <p className="text-sm font-medium text-white">Private Bet</p>
-          <p className="text-xs text-white/40">Restrict who can see this bet</p>
+          <p className="text-sm font-medium text-white">Private Wette</p>
+          <p className="text-xs text-white/40">Einschränken, wer diese Wette sehen kann</p>
         </div>
         <Switch checked={isPrivate} onCheckedChange={setIsPrivate} />
       </div>
@@ -157,7 +157,7 @@ export function CreateBetForm() {
         className="w-full bg-amber-500 text-black font-bold hover:bg-amber-400"
       >
         <Send size={18} className="mr-2" />
-        {loading ? 'Creating...' : 'Create Bet'}
+        {loading ? 'Wird erstellt...' : 'Wette erstellen'}
       </Button>
     </form>
   );

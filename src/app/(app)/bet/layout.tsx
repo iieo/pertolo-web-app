@@ -3,8 +3,8 @@ import { BetProvider } from './bet-provider';
 import { Navigation } from './components/navigation';
 
 export const metadata: Metadata = {
-  title: 'Pertolo — Bet',
-  description: 'Social betting with friends',
+  title: 'Pertolo — Wetten',
+  description: 'Wetten mit Freunden platzieren',
 };
 
 export default function BetLayout({ children }: { children: React.ReactNode }) {

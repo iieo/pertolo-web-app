@@ -14,8 +14,8 @@ import toast from 'react-hot-toast';
 import Link from 'next/link';
 
 const loginSchema = z.object({
-  email: z.string().email('Invalid email'),
-  password: z.string().min(1, 'Password is required'),
+  email: z.string().email('Ungültige E-Mail-Adresse'),
+  password: z.string().min(1, 'Passwort ist erforderlich'),
 });
 
 type LoginForm = z.infer<typeof loginSchema>;
@@ -42,13 +42,13 @@ export function LoginForm() {
         password: data.password,
       });
       if (result.error) {
-        toast.error(result.error.message ?? 'Login failed');
+        toast.error(result.error.message ?? 'Anmeldung fehlgeschlagen');
         return;
       }
       router.push(callbackUrl);
       router.refresh();
     } catch {
-      toast.error('Login failed');
+      toast.error('Anmeldung fehlgeschlagen');
     } finally {
       setLoading(false);
     }
@@ -58,7 +58,7 @@ export function LoginForm() {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       <div className="space-y-2">
         <Label htmlFor="email" className="text-white/70">
-          Email
+          E-Mail
         </Label>
         <Input
           id="email"
@@ -72,7 +72,7 @@ export function LoginForm() {
 
       <div className="space-y-2">
         <Label htmlFor="password" className="text-white/70">
-          Password
+          Passwort
         </Label>
         <Input
           id="password"
@@ -90,13 +90,13 @@ export function LoginForm() {
         className="w-full bg-amber-500 text-black font-bold hover:bg-amber-400"
       >
         <LogIn size={18} className="mr-2" />
-        {loading ? 'Signing in...' : 'Sign In'}
+        {loading ? 'Wird angemeldet...' : 'Anmelden'}
       </Button>
 
       <p className="text-center text-sm text-white/40">
-        Don&apos;t have an account?{' '}
+        Noch kein Konto?{' '}
         <Link href="/bet/register" className="text-amber-400 hover:underline">
-          Register
+          Registrieren
         </Link>
       </p>
     </form>

@@ -27,7 +27,7 @@ export function BetProvider({ children }: { children: ReactNode }) {
     // Check login bonus on mount
     checkLoginBonus().then((result) => {
       if (result.success && result.data.awarded) {
-        toast.success(`Welcome back! +${result.data.amount} points`);
+        toast.success(`Willkommen zurück! +${result.data.amount} Punkte`);
         refreshBalance();
       }
     });

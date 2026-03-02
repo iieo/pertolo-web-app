@@ -28,7 +28,7 @@ export function PointHistoryChart({ userId }: PointHistoryChartProps) {
   if (data.length === 0) {
     return (
       <div className="flex h-40 items-center justify-center rounded-xl border border-white/10 bg-white/5">
-        <p className="text-sm text-white/30">No history yet</p>
+        <p className="text-sm text-white/30">Noch kein Verlauf vorhanden</p>
       </div>
     );
   }
@@ -48,8 +48,8 @@ export function PointHistoryChart({ userId }: PointHistoryChartProps) {
               fontSize: '12px',
             }}
             formatter={(value: number | undefined) => [
-              `${(value ?? 0).toLocaleString()} pts`,
-              'Balance',
+              `${(value ?? 0).toLocaleString()} Pkte`,
+              'Kontostand',
             ]}
             labelFormatter={(label) => new Date(String(label)).toLocaleDateString()}
           />

@@ -7,9 +7,9 @@ import { cn } from '@/lib/utils';
 
 const navItems = [
   { href: '/bet', label: 'Feed', icon: List },
-  { href: '/bet/create', label: 'Create', icon: PlusCircle },
-  { href: '/bet/leaderboard', label: 'Ranks', icon: Trophy },
-  { href: '/bet/profile', label: 'Profile', icon: User },
+  { href: '/bet/create', label: 'Erstellen', icon: PlusCircle },
+  { href: '/bet/leaderboard', label: 'Ränge', icon: Trophy },
+  { href: '/bet/profile', label: 'Profil', icon: User },
 ];
 
 export function Navigation() {

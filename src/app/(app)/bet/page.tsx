@@ -49,7 +49,7 @@ export default function BetFeedPage() {
     <div className="mx-auto max-w-3xl px-4 pt-6">
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-extrabold text-white">Bets</h1>
+        <h1 className="text-2xl font-extrabold text-white">Wetten</h1>
         {balance !== null && (
           <div className="flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1">
             <Coins size={16} className="text-amber-400" />
@@ -64,19 +64,19 @@ export default function BetFeedPage() {
             value="open"
             className="flex-1 data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400"
           >
-            Open
+            Offen
           </TabsTrigger>
           <TabsTrigger
             value="resolved"
             className="flex-1 data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400"
           >
-            Resolved
+            Beendet
           </TabsTrigger>
           <TabsTrigger
             value="mine"
             className="flex-1 data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400"
           >
-            My Bets
+            Meine Wetten
           </TabsTrigger>
         </TabsList>
 
@@ -94,14 +94,14 @@ export default function BetFeedPage() {
             ) : (bets[tab] ?? []).length === 0 ? (
               <div className="flex flex-col items-center gap-4 py-16 text-center">
                 <p className="text-white/40">
-                  {tab === 'mine' ? "You haven't created any bets yet" : 'No bets here yet'}
+                  {tab === 'mine' ? "Du hast noch keine Wetten erstellt" : 'Hier gibt es noch keine Wetten'}
                 </p>
                 <Link
                   href="/bet/create"
                   className="flex items-center gap-2 rounded-xl bg-amber-500 px-4 py-2 text-sm font-bold text-black hover:bg-amber-400 transition-colors"
                 >
                   <PlusCircle size={16} />
-                  Create a Bet
+                  Wette erstellen
                 </Link>
               </div>
             ) : (
