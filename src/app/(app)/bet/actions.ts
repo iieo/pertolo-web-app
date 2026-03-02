@@ -284,7 +284,7 @@ export async function getBetDetail(betId: string): Promise<
     resolvedOptionId: string | null;
     totalPool: number;
     options: Array<{ id: string; label: string; totalPoints: number }>;
-    userWagers: Array<{ optionId: string; amount: number }>;
+    userWagers: Array<{ id: string; optionId: string; amount: number }>;
     createdAt: Date;
   }>
 > {
@@ -329,7 +329,11 @@ export async function getBetDetail(betId: string): Promise<
 
     const userWagers = userId
       ? await db
-          .select({ optionId: wagersTable.optionId, amount: wagersTable.amount })
+          .select({
+            id: wagersTable.id,
+            optionId: wagersTable.optionId,
+            amount: wagersTable.amount,
+          })
           .from(wagersTable)
           .where(and(eq(wagersTable.betId, betId), eq(wagersTable.userId, userId)))
       : [];
@@ -433,6 +437,80 @@ export async function placeWager(
     return { success: true, data: { wagerId } };
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Failed to place wager';
+    return { success: false, error: message };
+  }
+}
+
+export async function sellWager(wagerId: string): Promise<Result<{ cashout: number }>> {
+  try {
+    const session = await requireSession();
+    const userId = session.user.id;
+
+    let cashout = 0;
+    await db.transaction(async (tx) => {
+      // Get wager
+      const [wager] = await tx
+        .select()
+        .from(wagersTable)
+        .where(and(eq(wagersTable.id, wagerId), eq(wagersTable.userId, userId)));
+
+      if (!wager) throw new Error('Wager not found');
+
+      // Get bet
+      const [bet] = await tx.select().from(betsTable).where(eq(betsTable.id, wager.betId));
+      if (!bet || bet.status !== 'open') throw new Error('Bet is not open');
+
+      // Get all options
+      const options = await tx
+        .select()
+        .from(betOptionsTable)
+        .where(eq(betOptionsTable.betId, wager.betId));
+      const totalPool = options.reduce((sum, o) => sum + o.totalPoints, 0);
+
+      const targetOption = options.find((o) => o.id === wager.optionId);
+      if (!targetOption) throw new Error('Option not found');
+
+      if (targetOption.totalPoints === 0 || totalPool === 0)
+        throw new Error('Invalid option total');
+
+      // Calculate cashout exactly proportionally
+      cashout = Math.floor((wager.amount / targetOption.totalPoints) * totalPool);
+
+      const ratio = (totalPool - cashout) / totalPool;
+
+      // Update options
+      for (const opt of options) {
+        // We round down to avoid creating points
+        const newTotal = Math.floor(opt.totalPoints * ratio);
+        await tx
+          .update(betOptionsTable)
+          .set({ totalPoints: newTotal })
+          .where(eq(betOptionsTable.id, opt.id));
+      }
+
+      // Delete wager
+      await tx.delete(wagersTable).where(eq(wagersTable.id, wagerId));
+
+      // Add points to user
+      await tx
+        .update(userProfilesTable)
+        .set({
+          pointsBalance: sql`${userProfilesTable.pointsBalance} + ${cashout}`,
+        })
+        .where(eq(userProfilesTable.userId, userId));
+
+      // Add transaction
+      await tx.insert(pointTransactionsTable).values({
+        userId,
+        amount: cashout,
+        type: 'payout',
+        description: 'Sold wager at current odds',
+      });
+    });
+
+    return { success: true, data: { cashout } };
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Failed to sell wager';
     return { success: false, error: message };
   }
 }

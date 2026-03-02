@@ -11,11 +11,12 @@ import { cn } from '@/lib/utils';
 
 interface WagerFormProps {
   betId: string;
-  options: Array<{ id: string; label: string }>;
+  totalPool: number;
+  options: Array<{ id: string; label: string; totalPoints: number }>;
   onWagerPlaced: () => void;
 }
 
-export function WagerForm({ betId, options, onWagerPlaced }: WagerFormProps) {
+export function WagerForm({ betId, totalPool, options, onWagerPlaced }: WagerFormProps) {
   const { balance, refreshBalance } = useBet();
   const [selectedOption, setSelectedOption] = useState('');
   const [amount, setAmount] = useState('');
@@ -69,7 +70,7 @@ export function WagerForm({ betId, options, onWagerPlaced }: WagerFormProps) {
             className={cn(
               'justify-start text-left font-normal bg-white/5 border-white/10 hover:bg-white/10 hover:text-white text-white/80',
               selectedOption === opt.id &&
-                'bg-amber-500/20 border-amber-500/50 text-amber-400 hover:bg-amber-500/30 hover:text-amber-300',
+              'bg-amber-500/20 border-amber-500/50 text-amber-400 hover:bg-amber-500/30 hover:text-amber-300',
             )}
             onClick={() => setSelectedOption(opt.id)}
           >
@@ -111,6 +112,25 @@ export function WagerForm({ betId, options, onWagerPlaced }: WagerFormProps) {
           </Button>
         </div>
       </div>
+
+      {selectedOption && parseInt(amount) > 0 && (
+        <div className="rounded-xl bg-amber-500/10 border border-amber-500/20 p-3 flex justify-between items-center text-sm">
+          <span className="text-white/60">Potential return</span>
+          <div className="flex items-center gap-1 font-bold text-amber-400">
+            <Coins size={14} />
+            <span>
+              {(() => {
+                const opt = options.find((o) => o.id === selectedOption);
+                const w = parseInt(amount);
+                if (!opt || !w) return '0';
+                const newOptionTotal = opt.totalPoints + w;
+                const newTotalPool = totalPool + w;
+                return Math.floor((w / newOptionTotal) * newTotalPool).toLocaleString();
+              })()}
+            </span>
+          </div>
+        </div>
+      )}
 
       <Button
         type="submit"
