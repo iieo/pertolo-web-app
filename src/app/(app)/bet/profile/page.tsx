@@ -39,7 +39,7 @@ export default function ProfilePage() {
     );
   }
 
-  if (!session) {
+if (!session) {
     return null;
   }
 

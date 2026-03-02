@@ -90,7 +90,7 @@ export default function BetDetailPage() {
   if (error) {
     return (
       <div className="mx-auto max-w-3xl px-4 pt-6">
-        <p className="text-center text-red-400">{error}</p>
+        <p className="text-center text-red-400">Wette konnte nicht geladen werden.</p>
       </div>
     );
   }

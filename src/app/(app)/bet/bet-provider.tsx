@@ -1,8 +1,12 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useSession } from '@/lib/auth-client';
 import { getMyBalance, checkLoginBonus } from './actions';
 import toast from 'react-hot-toast';
+
+const PUBLIC_PATHS = ['/bet/login', '/bet/register'];
 
 interface BetContextType {
   balance: number | null;
@@ -12,7 +16,16 @@ interface BetContextType {
 const BetContext = createContext<BetContextType | null>(null);
 
 export function BetProvider({ children }: { children: ReactNode }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { data: session, isPending } = useSession();
   const [balance, setBalance] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (!isPending && !session && !PUBLIC_PATHS.includes(pathname)) {
+      router.replace('/bet/login');
+    }
+  }, [isPending, session, pathname, router]);
 
   const refreshBalance = useCallback(async () => {
     const result = await getMyBalance();

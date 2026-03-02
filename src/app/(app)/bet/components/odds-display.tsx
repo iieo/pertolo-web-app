@@ -13,10 +13,10 @@ export function OddsDisplay({ options, totalPool, resolvedOptionId }: OddsDispla
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-white/70">Odds</h3>
+        <h3 className="text-sm font-semibold text-white/70">Quoten</h3>
         <div className="flex items-center gap-1 text-amber-400">
           <Coins size={14} />
-          <span className="text-sm font-bold">{totalPool.toLocaleString()} pool</span>
+          <span className="text-sm font-bold">{totalPool.toLocaleString()} Pool</span>
         </div>
       </div>
 
@@ -33,16 +33,16 @@ export function OddsDisplay({ options, totalPool, resolvedOptionId }: OddsDispla
               isWinner ? 'border-green-500/40 bg-green-500/10' : 'border-white/10 bg-white/5',
             )}
           >
-            <div className="mb-2 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                {isWinner && <Trophy size={14} className="text-green-400" />}
-                <span className={cn('font-medium', isWinner ? 'text-green-400' : 'text-white')}>
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <div className="flex min-w-0 flex-1 items-center gap-2">
+                {isWinner && <Trophy size={14} className="shrink-0 text-green-400" />}
+                <span className={cn('truncate font-medium', isWinner ? 'text-green-400' : 'text-white')}>
                   {option.label}
                 </span>
               </div>
-              <div className="flex items-center gap-3 text-xs">
-                <span className="text-white/40">{option.totalPoints.toLocaleString()} pts</span>
-                <span className="font-mono text-amber-400">{odds}x</span>
+              <div className="flex shrink-0 items-center gap-2 text-xs sm:gap-3 sm:text-sm">
+                <span className="text-white/40">{option.totalPoints.toLocaleString()} Pkte</span>
+                <span className="rounded bg-amber-500/10 px-1.5 py-0.5 font-mono font-bold text-amber-400 sm:px-2">{odds}x</span>
               </div>
             </div>
             <div className="h-2 overflow-hidden rounded-full bg-white/10">
