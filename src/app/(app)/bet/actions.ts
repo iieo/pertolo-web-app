@@ -21,7 +21,7 @@ import { headers } from 'next/headers';
 export async function registerUser(
   name: string,
   email: string,
-  password: string
+  password: string,
 ): Promise<Result<{ userId: string }>> {
   try {
     const result = await auth.api.signUpEmail({
@@ -56,9 +56,7 @@ export async function registerUser(
   }
 }
 
-export async function checkLoginBonus(): Promise<
-  Result<{ awarded: boolean; amount: number }>
-> {
+export async function checkLoginBonus(): Promise<Result<{ awarded: boolean; amount: number }>> {
   try {
     const session = await getSession();
     if (!session) return { success: true, data: { awarded: false, amount: 0 } };
@@ -153,7 +151,7 @@ export async function createBet(input: CreateBetInput): Promise<Result<{ betId: 
         input.options.map((label) => ({
           betId: betId,
           label,
-        }))
+        })),
       );
 
       if (input.visibility === 'private' && input.blacklistedUserIds?.length) {
@@ -162,7 +160,7 @@ export async function createBet(input: CreateBetInput): Promise<Result<{ betId: 
             betId: betId,
             userId,
             type: 'blacklist' as const,
-          }))
+          })),
         );
       }
     });
@@ -174,9 +172,7 @@ export async function createBet(input: CreateBetInput): Promise<Result<{ betId: 
   }
 }
 
-export async function getBets(
-  filter?: 'open' | 'resolved' | 'mine'
-): Promise<
+export async function getBets(filter?: 'open' | 'resolved' | 'mine'): Promise<
   Result<
     Array<{
       id: string;
@@ -228,8 +224,8 @@ export async function getBets(
         .where(
           and(
             eq(betAccessControlTable.userId, userId),
-            eq(betAccessControlTable.type, 'blacklist')
-          )
+            eq(betAccessControlTable.type, 'blacklist'),
+          ),
         );
       const blacklistedIds = new Set(blacklisted.map((b) => b.betId));
       filteredBets = bets.filter((b) => !blacklistedIds.has(b.id));
@@ -239,10 +235,7 @@ export async function getBets(
     const betIds = filteredBets.map((b) => b.id);
     const options =
       betIds.length > 0
-        ? await db
-            .select()
-            .from(betOptionsTable)
-            .where(inArray(betOptionsTable.betId, betIds))
+        ? await db.select().from(betOptionsTable).where(inArray(betOptionsTable.betId, betIds))
         : [];
 
     const optionsByBet = new Map<
@@ -326,16 +319,13 @@ export async function getBetDetail(betId: string): Promise<
           and(
             eq(betAccessControlTable.betId, betId),
             eq(betAccessControlTable.userId, userId),
-            eq(betAccessControlTable.type, 'blacklist')
-          )
+            eq(betAccessControlTable.type, 'blacklist'),
+          ),
         );
       if (blocked) return { success: false, error: 'Access denied' };
     }
 
-    const options = await db
-      .select()
-      .from(betOptionsTable)
-      .where(eq(betOptionsTable.betId, betId));
+    const options = await db.select().from(betOptionsTable).where(eq(betOptionsTable.betId, betId));
 
     const userWagers = userId
       ? await db
@@ -376,7 +366,7 @@ export async function getBetDetail(betId: string): Promise<
 export async function placeWager(
   betId: string,
   optionId: string,
-  amount: number
+  amount: number,
 ): Promise<Result<{ wagerId: string }>> {
   try {
     const session = await requireSession();
@@ -449,17 +439,14 @@ export async function placeWager(
 
 export async function resolveBet(
   betId: string,
-  winningOptionId: string
+  winningOptionId: string,
 ): Promise<Result<{ payouts: number }>> {
   try {
     const session = await requireSession();
 
     let totalPayouts = 0;
     await db.transaction(async (tx) => {
-      const [bet] = await tx
-        .select()
-        .from(betsTable)
-        .where(eq(betsTable.id, betId));
+      const [bet] = await tx.select().from(betsTable).where(eq(betsTable.id, betId));
       if (!bet) throw new Error('Bet not found');
       if (bet.ownerId !== session.user.id) throw new Error('Only the owner can resolve');
       if (bet.status !== 'open') throw new Error('Bet is not open');
@@ -490,19 +477,14 @@ export async function resolveBet(
         const winningWagers = await tx
           .select()
           .from(wagersTable)
-          .where(
-            and(eq(wagersTable.betId, betId), eq(wagersTable.optionId, winningOptionId))
-          );
+          .where(and(eq(wagersTable.betId, betId), eq(wagersTable.optionId, winningOptionId)));
 
         for (const wager of winningWagers) {
           const payout = Math.floor((wager.amount / winningTotal) * totalPool);
           totalPayouts += payout;
 
           // Update wager payout
-          await tx
-            .update(wagersTable)
-            .set({ payout })
-            .where(eq(wagersTable.id, wager.id));
+          await tx.update(wagersTable).set({ payout }).where(eq(wagersTable.id, wager.id));
 
           // Credit user
           await tx
@@ -526,12 +508,7 @@ export async function resolveBet(
       await tx
         .update(wagersTable)
         .set({ payout: 0 })
-        .where(
-          and(
-            eq(wagersTable.betId, betId),
-            ne(wagersTable.optionId, winningOptionId)
-          )
-        );
+        .where(and(eq(wagersTable.betId, betId), ne(wagersTable.optionId, winningOptionId)));
     });
 
     return { success: true, data: { payouts: totalPayouts } };
@@ -547,19 +524,13 @@ export async function cancelBet(betId: string): Promise<Result<{ refunded: numbe
 
     let totalRefunded = 0;
     await db.transaction(async (tx) => {
-      const [bet] = await tx
-        .select()
-        .from(betsTable)
-        .where(eq(betsTable.id, betId));
+      const [bet] = await tx.select().from(betsTable).where(eq(betsTable.id, betId));
       if (!bet) throw new Error('Bet not found');
       if (bet.ownerId !== session.user.id) throw new Error('Only the owner can cancel');
       if (bet.status !== 'open') throw new Error('Bet is not open');
 
       // Get all wagers
-      const allWagers = await tx
-        .select()
-        .from(wagersTable)
-        .where(eq(wagersTable.betId, betId));
+      const allWagers = await tx.select().from(wagersTable).where(eq(wagersTable.betId, betId));
 
       // Refund each wager
       for (const wager of allWagers) {
@@ -585,10 +556,7 @@ export async function cancelBet(betId: string): Promise<Result<{ refunded: numbe
         });
       }
 
-      await tx
-        .update(betsTable)
-        .set({ status: 'cancelled' })
-        .where(eq(betsTable.id, betId));
+      await tx.update(betsTable).set({ status: 'cancelled' }).where(eq(betsTable.id, betId));
     });
 
     return { success: true, data: { refunded: totalRefunded } };
@@ -621,7 +589,7 @@ export async function getLeaderboard(): Promise<
 }
 
 export async function getUserPointHistory(
-  userId: string
+  userId: string,
 ): Promise<Result<Array<{ date: string; balance: number }>>> {
   try {
     const transactions = await db
@@ -650,11 +618,10 @@ export async function getUserPointHistory(
 }
 
 export async function searchUsers(
-  query: string
+  query: string,
 ): Promise<Result<Array<{ id: string; name: string; email: string }>>> {
   try {
-    if (!query || query.length < 2)
-      return { success: true, data: [] };
+    if (!query || query.length < 2) return { success: true, data: [] };
 
     const users = await db
       .select({ id: usersTable.id, name: usersTable.name, email: usersTable.email })
@@ -665,6 +632,75 @@ export async function searchUsers(
     return { success: true, data: users };
   } catch (e) {
     const message = e instanceof Error ? e.message : 'Failed to search users';
+    return { success: false, error: message };
+  }
+}
+
+export async function getBetChartData(
+  betId: string,
+): Promise<Result<{ history: Array<{ date: string; [key: string]: any }>; lineKeys: string[] }>> {
+  try {
+    const wagers = await db
+      .select({
+        amount: wagersTable.amount,
+        optionId: wagersTable.optionId,
+        createdAt: wagersTable.createdAt,
+      })
+      .from(wagersTable)
+      .where(eq(wagersTable.betId, betId))
+      .orderBy(wagersTable.createdAt);
+
+    const options = await db
+      .select({
+        id: betOptionsTable.id,
+        label: betOptionsTable.label,
+      })
+      .from(betOptionsTable)
+      .where(eq(betOptionsTable.betId, betId));
+
+    const history: Array<{ date: string; [key: string]: any }> = [];
+    const totals: Record<string, number> = {};
+    const lineKeys = options.map((o) => o.label);
+    lineKeys.forEach((key) => {
+      totals[key] = 0;
+    });
+
+    // Initial state with 50/50 starting odds
+    const initialPoint: { date: string; [key: string]: any } = {
+      date: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // fallback 1 day before, actual bet creation date would be better, but we don't fetch it here to save a query. Actually we can fetch it, but lets just use the earliest wager or now.
+    };
+    lineKeys.forEach((key) => {
+      initialPoint[key] = 0;
+    });
+    // Add initial empty point, but we could just start when wagers happen.
+
+    let globalTotal = 0;
+
+    for (const wager of wagers) {
+      const option = options.find((o) => o.id === wager.optionId);
+      if (!option) continue;
+
+      totals[option.label] = (totals[option.label] || 0) + wager.amount;
+      globalTotal += wager.amount;
+
+      const dataPoint: { date: string; [key: string]: any } = {
+        date:
+          new Date(wager.createdAt).toLocaleDateString() +
+          ' ' +
+          new Date(wager.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+
+      lineKeys.forEach((key) => {
+        dataPoint[key] = globalTotal > 0 ? Math.round(((totals[key] || 0) / globalTotal) * 100) : 0;
+      });
+
+      // Avoid multiple points on the exact same millisecond/second if we group by time, but here we just append sequentially.
+      history.push(dataPoint);
+    }
+
+    return { success: true, data: { history, lineKeys } };
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Failed to fetch chart data';
     return { success: false, error: message };
   }
 }

@@ -32,7 +32,7 @@ export default function ProfilePage() {
 
   if (isPending) {
     return (
-      <div className="mx-auto max-w-lg space-y-4 px-4 pt-6">
+      <div className="mx-auto max-w-3xl space-y-4 px-4 pt-6">
         <div className="h-8 w-48 animate-pulse rounded bg-white/10" />
         <div className="h-40 animate-pulse rounded-2xl bg-white/5" />
       </div>
@@ -44,7 +44,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="mx-auto max-w-lg space-y-6 px-4 pt-6">
+    <div className="mx-auto max-w-3xl space-y-6 px-4 pt-6">
       {/* User info */}
       <div className="flex items-center gap-4">
         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-500/20 text-2xl font-bold text-amber-400">

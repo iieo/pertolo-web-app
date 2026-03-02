@@ -1,5 +1,15 @@
 import Link from 'next/link';
-import { Gamepad2, Beer, Music, BookOpen, ChevronRight, Moon, Map, Skull, Coins } from 'lucide-react';
+import {
+  Gamepad2,
+  Beer,
+  Music,
+  BookOpen,
+  ChevronRight,
+  Moon,
+  Map,
+  Skull,
+  Coins,
+} from 'lucide-react';
 
 export default function Home() {
   return (

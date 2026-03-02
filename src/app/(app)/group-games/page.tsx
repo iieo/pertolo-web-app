@@ -23,7 +23,8 @@ const GROUPS = [
     id: 1,
     task: 'Schwurbler',
     emoji: '🕵️‍♂️',
-    description: 'Erstellt eine Präsentation über ausgedachte/existierende Verschwörungstheorien. Sucht euch Essen für die Gruppe aus und holt es oder kocht selbst etwas. Wenn Zeit: Erstellt ein Geräusche raten quiz. ',
+    description:
+      'Erstellt eine Präsentation über ausgedachte/existierende Verschwörungstheorien. Sucht euch Essen für die Gruppe aus und holt es oder kocht selbst etwas. Wenn Zeit: Erstellt ein Geräusche raten quiz. ',
     colorA: '#f97316',
     colorB: '#ef4444',
   },
@@ -47,10 +48,11 @@ const GROUPS = [
     id: 4,
     task: 'Minigames',
     emoji: '🎯',
-    description: 'Erstellt ein cooles Quiz für die Gruppe. Bereitet Minispiele wie auf einem Jahrmarkt vor welche die anderen danach absolvieren müssen.',
+    description:
+      'Erstellt ein cooles Quiz für die Gruppe. Bereitet Minispiele wie auf einem Jahrmarkt vor welche die anderen danach absolvieren müssen.',
     colorA: '#eab308',
     colorB: '#f97316',
-  }
+  },
 ];
 
 const ASSIGNMENTS: Record<string, number> = {
@@ -230,9 +232,9 @@ export default function GroupGamesPage() {
                   style={
                     isClaimed && group
                       ? {
-                        background: `linear-gradient(135deg, ${group.colorA}28, ${group.colorB}28)`,
-                        borderColor: `${group.colorA}70`,
-                      }
+                          background: `linear-gradient(135deg, ${group.colorA}28, ${group.colorB}28)`,
+                          borderColor: `${group.colorA}70`,
+                        }
                       : undefined
                   }
                   className={[

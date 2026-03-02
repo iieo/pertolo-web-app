@@ -2,17 +2,11 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { resolveBet, cancelBet } from '../actions';
 import { useBet } from '../bet-provider';
 import { CheckCircle, XCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { cn } from '@/lib/utils';
 
 interface ResolveFormProps {
   betId: string;
@@ -69,18 +63,23 @@ export function ResolveForm({ betId, options, onResolved }: ResolveFormProps) {
     <div className="space-y-4 rounded-2xl border border-orange-500/20 bg-orange-500/5 p-4">
       <h3 className="text-sm font-semibold text-orange-400">Resolve Bet (Owner)</h3>
 
-      <Select value={selectedOption} onValueChange={setSelectedOption}>
-        <SelectTrigger className="border-white/10 bg-white/5 text-white">
-          <SelectValue placeholder="Pick the winner" />
-        </SelectTrigger>
-        <SelectContent className="border-white/10 bg-gray-900">
-          {options.map((opt) => (
-            <SelectItem key={opt.id} value={opt.id} className="text-white">
-              {opt.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <div className="flex flex-col gap-2">
+        {options.map((opt) => (
+          <Button
+            key={opt.id}
+            type="button"
+            variant="outline"
+            className={cn(
+              'justify-start text-left font-normal bg-white/5 border-white/10 hover:bg-white/10 hover:text-white text-white/80',
+              selectedOption === opt.id &&
+                'bg-orange-500/20 border-orange-500/50 text-orange-400 hover:bg-orange-500/30 hover:text-orange-300',
+            )}
+            onClick={() => setSelectedOption(opt.id)}
+          >
+            {opt.label}
+          </Button>
+        ))}
+      </div>
 
       <div className="flex gap-2">
         <Button

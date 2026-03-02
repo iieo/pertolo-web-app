@@ -22,8 +22,7 @@ export function OddsDisplay({ options, totalPool, resolvedOptionId }: OddsDispla
 
       {options.map((option) => {
         const pct = totalPool > 0 ? (option.totalPoints / totalPool) * 100 : 0;
-        const odds =
-          option.totalPoints > 0 ? (totalPool / option.totalPoints).toFixed(2) : '—';
+        const odds = option.totalPoints > 0 ? (totalPool / option.totalPoints).toFixed(2) : '—';
         const isWinner = resolvedOptionId === option.id;
 
         return (
@@ -31,9 +30,7 @@ export function OddsDisplay({ options, totalPool, resolvedOptionId }: OddsDispla
             key={option.id}
             className={cn(
               'rounded-xl border p-3 transition-all',
-              isWinner
-                ? 'border-green-500/40 bg-green-500/10'
-                : 'border-white/10 bg-white/5'
+              isWinner ? 'border-green-500/40 bg-green-500/10' : 'border-white/10 bg-white/5',
             )}
           >
             <div className="mb-2 flex items-center justify-between">
@@ -44,9 +41,7 @@ export function OddsDisplay({ options, totalPool, resolvedOptionId }: OddsDispla
                 </span>
               </div>
               <div className="flex items-center gap-3 text-xs">
-                <span className="text-white/40">
-                  {option.totalPoints.toLocaleString()} pts
-                </span>
+                <span className="text-white/40">{option.totalPoints.toLocaleString()} pts</span>
                 <span className="font-mono text-amber-400">{odds}x</span>
               </div>
             </div>
@@ -54,7 +49,7 @@ export function OddsDisplay({ options, totalPool, resolvedOptionId }: OddsDispla
               <div
                 className={cn(
                   'h-full rounded-full transition-all duration-500',
-                  isWinner ? 'bg-green-500/70' : 'bg-amber-500/60'
+                  isWinner ? 'bg-green-500/70' : 'bg-amber-500/60',
                 )}
                 style={{ width: `${Math.max(pct, 1)}%` }}
               />

@@ -41,7 +41,7 @@ export function BetCard({ id, title, status, ownerName, totalPool, options }: Be
               const pct = totalPool > 0 ? (option.totalPoints / totalPool) * 100 : 0;
               return (
                 <div key={option.id} className="flex items-center gap-2">
-                  <span className="w-24 truncate text-xs text-white/50">{option.label}</span>
+                  <span className="w-24 md:w-32 truncate text-xs text-white/50">{option.label}</span>
                   <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/10">
                     <div
                       className="h-full rounded-full bg-amber-500/60 transition-all"

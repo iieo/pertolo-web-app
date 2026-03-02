@@ -7,6 +7,7 @@ import { useSession } from '@/lib/auth-client';
 import { OddsDisplay } from '../components/odds-display';
 import { WagerForm } from '../components/wager-form';
 import { ResolveForm } from '../components/resolve-form';
+import { BetChart } from '../components/bet-chart';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Coins } from 'lucide-react';
 import Link from 'next/link';
@@ -47,7 +48,7 @@ export default function BetDetailPage() {
 
   if (error) {
     return (
-      <div className="mx-auto max-w-lg px-4 pt-6">
+      <div className="mx-auto max-w-3xl px-4 pt-6">
         <p className="text-center text-red-400">{error}</p>
       </div>
     );
@@ -55,7 +56,7 @@ export default function BetDetailPage() {
 
   if (!bet) {
     return (
-      <div className="mx-auto max-w-lg space-y-4 px-4 pt-6">
+      <div className="mx-auto max-w-3xl space-y-4 px-4 pt-6">
         <div className="h-8 w-48 animate-pulse rounded bg-white/10" />
         <div className="h-40 animate-pulse rounded-2xl border border-white/10 bg-white/5" />
       </div>
@@ -72,9 +73,12 @@ export default function BetDetailPage() {
   }[bet.status];
 
   return (
-    <div className="mx-auto max-w-lg space-y-5 px-4 pt-6">
+    <div className="mx-auto max-w-3xl space-y-5 px-4 pt-6">
       {/* Back link */}
-      <Link href="/bet" className="flex items-center gap-1 text-sm text-white/40 hover:text-white/70 transition-colors">
+      <Link
+        href="/bet"
+        className="flex items-center gap-1 text-sm text-white/40 hover:text-white/70 transition-colors"
+      >
         <ArrowLeft size={16} />
         Back to feed
       </Link>
@@ -91,6 +95,9 @@ export default function BetDetailPage() {
         {bet.description && <p className="mt-1 text-sm text-white/50">{bet.description}</p>}
       </div>
 
+      {/* Chart */}
+      <BetChart betId={bet.id} />
+
       {/* Odds */}
       <OddsDisplay
         options={bet.options}
@@ -103,7 +110,9 @@ export default function BetDetailPage() {
         <div className="flex items-center gap-2 rounded-xl border border-amber-500/20 bg-amber-500/5 p-3">
           <Coins size={16} className="text-amber-400" />
           <span className="text-sm text-white/70">
-            You wagered <span className="font-bold text-amber-400">{userTotalWagered.toLocaleString()}</span> points
+            You wagered{' '}
+            <span className="font-bold text-amber-400">{userTotalWagered.toLocaleString()}</span>{' '}
+            points
           </span>
         </div>
       )}

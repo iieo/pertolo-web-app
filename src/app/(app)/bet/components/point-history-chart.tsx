@@ -51,17 +51,9 @@ export function PointHistoryChart({ userId }: PointHistoryChartProps) {
               `${(value ?? 0).toLocaleString()} pts`,
               'Balance',
             ]}
-            labelFormatter={(label) =>
-              new Date(String(label)).toLocaleDateString()
-            }
+            labelFormatter={(label) => new Date(String(label)).toLocaleDateString()}
           />
-          <Line
-            type="monotone"
-            dataKey="balance"
-            stroke="#f59e0b"
-            strokeWidth={2}
-            dot={false}
-          />
+          <Line type="monotone" dataKey="balance" stroke="#f59e0b" strokeWidth={2} dot={false} />
         </LineChart>
       </ResponsiveContainer>
     </div>

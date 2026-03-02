@@ -3,17 +3,11 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { placeWager } from '../actions';
 import { useBet } from '../bet-provider';
 import { Coins } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { cn } from '@/lib/utils';
 
 interface WagerFormProps {
   betId: string;
@@ -60,21 +54,29 @@ export function WagerForm({ betId, options, onWagerPlaced }: WagerFormProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-4">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-4"
+    >
       <h3 className="text-sm font-semibold text-white/70">Place a Wager</h3>
 
-      <Select value={selectedOption} onValueChange={setSelectedOption}>
-        <SelectTrigger className="border-white/10 bg-white/5 text-white">
-          <SelectValue placeholder="Pick an option" />
-        </SelectTrigger>
-        <SelectContent className="border-white/10 bg-gray-900">
-          {options.map((opt) => (
-            <SelectItem key={opt.id} value={opt.id} className="text-white">
-              {opt.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <div className="flex flex-col gap-2">
+        {options.map((opt) => (
+          <Button
+            key={opt.id}
+            type="button"
+            variant="outline"
+            className={cn(
+              'justify-start text-left font-normal bg-white/5 border-white/10 hover:bg-white/10 hover:text-white text-white/80',
+              selectedOption === opt.id &&
+                'bg-amber-500/20 border-amber-500/50 text-amber-400 hover:bg-amber-500/30 hover:text-amber-300',
+            )}
+            onClick={() => setSelectedOption(opt.id)}
+          >
+            {opt.label}
+          </Button>
+        ))}
+      </div>
 
       <div className="space-y-2">
         <Input

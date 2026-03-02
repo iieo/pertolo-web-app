@@ -46,7 +46,7 @@ export default function BetFeedPage() {
   }, []);
 
   return (
-    <div className="mx-auto max-w-lg px-4 pt-6">
+    <div className="mx-auto max-w-3xl px-4 pt-6">
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-extrabold text-white">Bets</h1>
@@ -60,13 +60,22 @@ export default function BetFeedPage() {
 
       <Tabs defaultValue="open">
         <TabsList className="mb-4 w-full bg-white/5 border border-white/10">
-          <TabsTrigger value="open" className="flex-1 data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400">
+          <TabsTrigger
+            value="open"
+            className="flex-1 data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400"
+          >
             Open
           </TabsTrigger>
-          <TabsTrigger value="resolved" className="flex-1 data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400">
+          <TabsTrigger
+            value="resolved"
+            className="flex-1 data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400"
+          >
             Resolved
           </TabsTrigger>
-          <TabsTrigger value="mine" className="flex-1 data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400">
+          <TabsTrigger
+            value="mine"
+            className="flex-1 data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400"
+          >
             My Bets
           </TabsTrigger>
         </TabsList>
