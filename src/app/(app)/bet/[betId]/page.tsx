@@ -64,7 +64,7 @@ type BetDetail = {
   resolvedOptionId: string | null;
   totalPool: number;
   options: Array<{ id: string; label: string; totalPoints: number }>;
-  userWagers: Array<{ id: string; optionId: string; amount: number }>;
+  userWagers: Array<{ id: string; optionId: string; amount: number; purchaseOdds: number | null }>;
   createdAt: Date;
 };
 
@@ -161,7 +161,11 @@ export default function BetDetailPage() {
               const opt = bet.options.find((o) => o.id === wager.optionId);
               if (!opt) return null;
 
-              const currentVal = Math.floor((wager.amount / opt.totalPoints) * bet.totalPool);
+              const currentOdds = bet.totalPool > 0 ? opt.totalPoints / bet.totalPool : 0;
+              const purchaseOdds = wager.purchaseOdds ?? currentOdds;
+              const currentVal = purchaseOdds > 0
+                ? Math.floor(wager.amount * (currentOdds / purchaseOdds))
+                : wager.amount;
 
               return (
                 <div key={wager.id} className="flex flex-col gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 p-3 sm:flex-row sm:items-center sm:justify-between">

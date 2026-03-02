@@ -284,7 +284,7 @@ export async function getBetDetail(betId: string): Promise<
     resolvedOptionId: string | null;
     totalPool: number;
     options: Array<{ id: string; label: string; totalPoints: number }>;
-    userWagers: Array<{ id: string; optionId: string; amount: number }>;
+    userWagers: Array<{ id: string; optionId: string; amount: number; purchaseOdds: number | null }>;
     createdAt: Date;
   }>
 > {
@@ -333,6 +333,7 @@ export async function getBetDetail(betId: string): Promise<
             id: wagersTable.id,
             optionId: wagersTable.optionId,
             amount: wagersTable.amount,
+            purchaseOdds: wagersTable.purchaseOdds,
           })
           .from(wagersTable)
           .where(and(eq(wagersTable.betId, betId), eq(wagersTable.userId, userId)))
@@ -409,14 +410,6 @@ export async function placeWager(
         })
         .where(eq(userProfilesTable.userId, userId));
 
-      // Insert wager
-      const [wager] = await tx
-        .insert(wagersTable)
-        .values({ betId, optionId, userId, amount })
-        .returning({ id: wagersTable.id });
-      if (!wager) throw new Error('Einsatz fehlgeschlagen');
-      wagerId = wager.id;
-
       // Update option total
       await tx
         .update(betOptionsTable)
@@ -424,6 +417,23 @@ export async function placeWager(
           totalPoints: sql`${betOptionsTable.totalPoints} + ${amount}`,
         })
         .where(eq(betOptionsTable.id, optionId));
+
+      // Compute purchase odds (option probability after this wager)
+      const updatedOptions = await tx
+        .select({ totalPoints: betOptionsTable.totalPoints })
+        .from(betOptionsTable)
+        .where(eq(betOptionsTable.betId, betId));
+      const newPool = updatedOptions.reduce((s, o) => s + o.totalPoints, 0);
+      const newOptionTotal = option.totalPoints + amount;
+      const purchaseOdds = newPool > 0 ? newOptionTotal / newPool : 1;
+
+      // Insert wager
+      const [wager] = await tx
+        .insert(wagersTable)
+        .values({ betId, optionId, userId, amount, purchaseOdds })
+        .returning({ id: wagersTable.id });
+      if (!wager) throw new Error('Einsatz fehlgeschlagen');
+      wagerId = wager.id;
 
       // Record transaction
       await tx.insert(pointTransactionsTable).values({
@@ -473,19 +483,37 @@ export async function sellWager(wagerId: string): Promise<Result<{ cashout: numb
       if (targetOption.totalPoints === 0 || totalPool === 0)
         throw new Error('Ungültiger Options-Gesamtwert');
 
-      // Calculate cashout exactly proportionally
-      cashout = Math.floor((wager.amount / targetOption.totalPoints) * totalPool);
+      // Calculate cashout based on odds change since purchase
+      const currentOdds = targetOption.totalPoints / totalPool;
+      const purchaseOdds = wager.purchaseOdds ?? currentOdds;
+      cashout = Math.floor(wager.amount * (currentOdds / purchaseOdds));
+      if (cashout < 0) cashout = 0;
 
-      const ratio = (totalPool - cashout) / totalPool;
+      // Remove wager amount from the option
+      const poolAfterRemove = totalPool - wager.amount;
 
-      // Update options
-      for (const opt of options) {
-        // We round down to avoid creating points
-        const newTotal = Math.floor(opt.totalPoints * ratio);
-        await tx
-          .update(betOptionsTable)
-          .set({ totalPoints: newTotal })
-          .where(eq(betOptionsTable.id, opt.id));
+      // Scale all options so their sum matches the actual remaining pool
+      const remainingPool = totalPool - cashout;
+      if (poolAfterRemove > 0 && remainingPool > 0) {
+        const scaleFactor = remainingPool / poolAfterRemove;
+        for (const opt of options) {
+          const base = opt.id === wager.optionId
+            ? opt.totalPoints - wager.amount
+            : opt.totalPoints;
+          const newTotal = Math.max(0, Math.floor(base * scaleFactor));
+          await tx
+            .update(betOptionsTable)
+            .set({ totalPoints: newTotal })
+            .where(eq(betOptionsTable.id, opt.id));
+        }
+      } else {
+        // Pool is empty after sell, zero out everything
+        for (const opt of options) {
+          await tx
+            .update(betOptionsTable)
+            .set({ totalPoints: 0 })
+            .where(eq(betOptionsTable.id, opt.id));
+        }
       }
 
       // Delete wager

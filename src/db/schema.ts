@@ -8,6 +8,7 @@ import {
   json,
   boolean,
   integer,
+  doublePrecision,
   pgEnum,
 } from 'drizzle-orm/pg-core';
 
@@ -236,6 +237,7 @@ export const wagersTable = pgTable('wagers', {
     .notNull()
     .references(() => usersTable.id),
   amount: integer('amount').notNull(),
+  purchaseOdds: doublePrecision('purchase_odds'),
   payout: integer('payout'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
