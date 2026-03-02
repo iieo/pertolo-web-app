@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import Head from 'next/head';
 import Footer from '@/components/footer';
+import { Toaster } from 'react-hot-toast';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -23,8 +24,9 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </Head>
       <body className={`${inter.className} bg-black`}>
+        <Toaster position="top-left" toastOptions={{ duration: 3000 }} />
         {children}
-        <Footer className="h-[2rem]" />
+        <Footer className="h-8" />
       </body>
     </html>
   );

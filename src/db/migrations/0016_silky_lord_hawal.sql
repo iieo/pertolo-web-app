@@ -1,0 +1,1 @@
+ALTER TABLE "wagers" ADD COLUMN "purchase_odds" double precision;
