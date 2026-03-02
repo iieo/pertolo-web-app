@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { placeWager } from '../actions';
+import { placeWager } from '../[betId]/actions';
 import { useBet } from '../bet-provider';
 import { Coins } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -13,10 +14,10 @@ interface WagerFormProps {
   betId: string;
   totalPool: number;
   options: Array<{ id: string; label: string; totalPoints: number }>;
-  onWagerPlaced: () => void;
 }
 
-export function WagerForm({ betId, totalPool, options, onWagerPlaced }: WagerFormProps) {
+export function WagerForm({ betId, totalPool, options }: WagerFormProps) {
+  const router = useRouter();
   const { balance, refreshBalance } = useBet();
   const [selectedOption, setSelectedOption] = useState('');
   const [amount, setAmount] = useState('');
@@ -46,7 +47,7 @@ export function WagerForm({ betId, totalPool, options, onWagerPlaced }: WagerFor
       toast.success('Einsatz platziert!');
       setAmount('');
       await refreshBalance();
-      onWagerPlaced();
+      router.refresh();
     } catch {
       toast.error('Einsatz fehlgeschlagen');
     } finally {

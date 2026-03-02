@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { resolveBet, cancelBet } from '../actions';
+import { resolveBet, cancelBet } from '../[betId]/actions';
 import { useBet } from '../bet-provider';
 import { CheckCircle, XCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -11,10 +12,10 @@ import { cn } from '@/lib/utils';
 interface ResolveFormProps {
   betId: string;
   options: Array<{ id: string; label: string }>;
-  onResolved: () => void;
 }
 
-export function ResolveForm({ betId, options, onResolved }: ResolveFormProps) {
+export function ResolveForm({ betId, options }: ResolveFormProps) {
+  const router = useRouter();
   const { refreshBalance } = useBet();
   const [selectedOption, setSelectedOption] = useState('');
   const [loading, setLoading] = useState(false);
@@ -33,7 +34,7 @@ export function ResolveForm({ betId, options, onResolved }: ResolveFormProps) {
       }
       toast.success(`Wette beendet! ${result.data.payouts.toLocaleString()} Punkte wurden verteilt`);
       await refreshBalance();
-      onResolved();
+      router.refresh();
     } catch {
       toast.error('Auswertung fehlgeschlagen');
     } finally {
@@ -51,7 +52,7 @@ export function ResolveForm({ betId, options, onResolved }: ResolveFormProps) {
       }
       toast.success(`Wette storniert. ${result.data.refunded.toLocaleString()} Punkte wurden erstattet`);
       await refreshBalance();
-      onResolved();
+      router.refresh();
     } catch {
       toast.error('Stornierung fehlgeschlagen');
     } finally {

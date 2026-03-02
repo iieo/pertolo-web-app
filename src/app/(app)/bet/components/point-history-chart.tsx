@@ -5,21 +5,21 @@ import { LineChart, Line, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'rec
 import { getUserPointHistory } from '../actions';
 
 interface PointHistoryChartProps {
-  userId: string;
+  userId?: string;
+  initialData?: Array<{ date: string; balance: number }>;
 }
 
-export function PointHistoryChart({ userId }: PointHistoryChartProps) {
-  const [data, setData] = useState<Array<{ date: string; balance: number }>>([]);
-  const [loading, setLoading] = useState(true);
+export function PointHistoryChart({ userId, initialData }: PointHistoryChartProps) {
+  const [data, setData] = useState<Array<{ date: string; balance: number }>>(initialData ?? []);
+  const [loading, setLoading] = useState(initialData === undefined && !!userId);
 
   useEffect(() => {
+    if (initialData !== undefined || !userId) return;
     getUserPointHistory(userId).then((result) => {
-      if (result.success) {
-        setData(result.data);
-      }
+      if (result.success) setData(result.data);
       setLoading(false);
     });
-  }, [userId]);
+  }, [userId, initialData]);
 
   if (loading) {
     return <div className="h-40 animate-pulse rounded-xl bg-white/5" />;

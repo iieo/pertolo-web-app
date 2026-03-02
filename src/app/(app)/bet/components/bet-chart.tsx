@@ -1,7 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { getBetChartData } from '../actions';
 import {
   LineChart,
   Line,
@@ -13,7 +11,8 @@ import {
 } from 'recharts';
 
 interface BetChartProps {
-  betId: string;
+  data: Array<{ date: string; [key: string]: any }>;
+  lineKeys: string[];
 }
 
 const COLORS = [
@@ -25,34 +24,10 @@ const COLORS = [
   '#ec4899', // pink-500
 ];
 
-export function BetChart({ betId }: BetChartProps) {
-  const [data, setData] = useState<{ date: string;[key: string]: any }[]>([]);
-  const [lineKeys, setLineKeys] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function load() {
-      const result = await getBetChartData(betId);
-      if (result.success) {
-        setData(result.data.history);
-        setLineKeys(result.data.lineKeys);
-      }
-      setLoading(false);
-    }
-    load();
-  }, [betId]);
-
-  if (loading) {
-    return (
-      <div className="h-64 flex items-center justify-center animate-pulse rounded-2xl border border-white/10 bg-white/5">
-        <span className="text-white/40">Diagramm wird geladen...</span>
-      </div>
-    );
-  }
-
+export function BetChart({ data, lineKeys }: BetChartProps) {
   if (data.length === 0) {
     return (
-      <div className="h-64 flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-sm text-white/40">
+      <div className="flex h-64 items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-sm text-white/40">
         Noch keine Einsatzhistorie vorhanden
       </div>
     );
