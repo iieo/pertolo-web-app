@@ -24,7 +24,7 @@ const GROUPS = [
     task: 'Schwurbler',
     emoji: '🕵️‍♂️',
     description:
-      'Erstellt eine Präsentation über ausgedachte/existierende Verschwörungstheorien. Sucht euch Essen für die Gruppe aus und holt es oder kocht selbst etwas. Wenn Zeit: Erstellt ein Geräusche raten quiz. ',
+      'Entwerft eure eigenen Verschwörungstheorien und inszeniert diese anschließend in einem packenden Theaterstück. Sucht euch eine Mahlzeit aus, die entweder geholt oder selbst gekocht werden soll.',
     colorA: '#f97316',
     colorB: '#ef4444',
   },
@@ -56,20 +56,20 @@ const GROUPS = [
 ];
 
 const ASSIGNMENTS: Record<string, number> = {
+  Alex: 1,
   Bäda: 3,
   Cici: 3,
-  Laura: 1,
   Jakob: 2,
+  Johanna: 2,
   Lars: 2,
-  Leo: 4,
+  Laura: 1,
+  Leo: 1,
   Loui: 4,
   Riedl: 2,
   Sammer: 3,
   Steff: 4,
-  Tania: 1,
-  Tom: 1,
-  Alex: 1,
-  Johanna: 2,
+  Tania: 4,
+  Tom: 3
 };
 
 // Pseudo-random-looking cycle order for the fast spin phase (22 frames)
@@ -232,9 +232,9 @@ export default function GroupGamesPage() {
                   style={
                     isClaimed && group
                       ? {
-                          background: `linear-gradient(135deg, ${group.colorA}28, ${group.colorB}28)`,
-                          borderColor: `${group.colorA}70`,
-                        }
+                        background: `linear-gradient(135deg, ${group.colorA}28, ${group.colorB}28)`,
+                        borderColor: `${group.colorA}70`,
+                      }
                       : undefined
                   }
                   className={[
