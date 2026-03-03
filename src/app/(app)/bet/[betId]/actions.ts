@@ -26,7 +26,13 @@ export async function getBetDetail(betId: string): Promise<
     resolvedOptionId: string | null;
     totalPool: number;
     options: Array<{ id: string; label: string; totalPoints: number }>;
-    userWagers: Array<{ id: string; optionId: string; amount: number }>;
+    userWagers: Array<{
+      id: string;
+      optionId: string;
+      amount: number;
+      currentValue: number;
+      creatorFee: number;
+    }>;
     createdAt: Date;
   }>
 > {
@@ -68,18 +74,39 @@ export async function getBetDetail(betId: string): Promise<
 
     const options = await db.select().from(betOptionsTable).where(eq(betOptionsTable.betId, betId));
 
-    const userWagers = userId
+    const userWagersRaw = userId
       ? await db
           .select({
             id: wagersTable.id,
             optionId: wagersTable.optionId,
             amount: wagersTable.amount,
+            purchaseOdds: wagersTable.purchaseOdds,
           })
           .from(wagersTable)
           .where(and(eq(wagersTable.betId, betId), eq(wagersTable.userId, userId)))
       : [];
 
     const totalPool = options.reduce((sum, o) => sum + o.totalPoints, 0);
+
+    const userWagers = userWagersRaw.map((wager) => {
+      const targetOption = options.find((o) => o.id === wager.optionId);
+      const currentOdds = targetOption && totalPool > 0 ? targetOption.totalPoints / totalPool : 0;
+
+      let kurswert = wager.amount;
+      if (wager.purchaseOdds && wager.purchaseOdds > 0 && currentOdds > 0) {
+        kurswert = Math.floor(wager.amount * (currentOdds / wager.purchaseOdds));
+      }
+
+      const creatorFee = bet.ownerId === userId ? 0 : Math.floor(kurswert * 0.1);
+
+      return {
+        id: wager.id,
+        optionId: wager.optionId,
+        amount: wager.amount,
+        currentValue: kurswert,
+        creatorFee,
+      };
+    });
 
     return {
       success: true,
@@ -133,6 +160,16 @@ export async function placeWager(
         .where(and(eq(betOptionsTable.id, optionId), eq(betOptionsTable.betId, betId)));
       if (!option) throw new Error('Ungültige Option');
 
+      const options = await tx
+        .select()
+        .from(betOptionsTable)
+        .where(eq(betOptionsTable.betId, betId));
+
+      const totalPoolBefore = options.reduce((sum, o) => sum + o.totalPoints, 0);
+      const totalPoolAfter = totalPoolBefore + amount;
+      const optionTotalAfter = option.totalPoints + amount;
+      const purchaseOdds = totalPoolAfter > 0 ? optionTotalAfter / totalPoolAfter : 1;
+
       const [profile] = await tx
         .select()
         .from(userProfilesTable)
@@ -146,7 +183,7 @@ export async function placeWager(
 
       const [wager] = await tx
         .insert(wagersTable)
-        .values({ betId, optionId, userId, amount })
+        .values({ betId, optionId, userId, amount, purchaseOdds })
         .returning({ id: wagersTable.id });
       if (!wager) throw new Error('Einsatz fehlgeschlagen');
       wagerId = wager.id;
@@ -197,7 +234,16 @@ export async function sellWager(wagerId: string): Promise<Result<{ cashout: numb
       if (!targetOption) throw new Error('Option nicht gefunden');
       if (targetOption.totalPoints === 0) throw new Error('Ungültiger Options-Gesamtwert');
 
-      cashout = wager.amount;
+      const totalPool = options.reduce((sum, o) => sum + o.totalPoints, 0);
+      const currentOdds = totalPool > 0 ? targetOption.totalPoints / totalPool : 0;
+
+      let kurswert = wager.amount;
+      if (wager.purchaseOdds && wager.purchaseOdds > 0 && currentOdds > 0) {
+        kurswert = Math.floor(wager.amount * (currentOdds / wager.purchaseOdds));
+      }
+
+      const creatorFee = bet.ownerId === userId ? 0 : Math.floor(kurswert * 0.1);
+      cashout = kurswert - creatorFee;
 
       await tx
         .update(betOptionsTable)
@@ -217,6 +263,20 @@ export async function sellWager(wagerId: string): Promise<Result<{ cashout: numb
         type: 'payout',
         description: 'Einsatz zu aktuellen Quoten verkauft',
       });
+
+      if (creatorFee > 0) {
+        await tx
+          .update(userProfilesTable)
+          .set({ pointsBalance: sql`${userProfilesTable.pointsBalance} + ${creatorFee}` })
+          .where(eq(userProfilesTable.userId, bet.ownerId));
+
+        await tx.insert(pointTransactionsTable).values({
+          userId: bet.ownerId,
+          amount: creatorFee,
+          type: 'payout',
+          description: 'Provision aus verkauftem Einsatz',
+        });
+      }
     });
 
     return { success: true, data: { cashout } };

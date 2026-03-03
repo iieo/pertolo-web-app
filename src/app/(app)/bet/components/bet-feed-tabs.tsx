@@ -15,6 +15,7 @@ type BetSummary = {
   totalPool: number;
   options: Array<{ id: string; label: string; totalPoints: number }>;
   createdAt: Date;
+  hasWagered: boolean;
 };
 
 interface BetFeedTabsProps {

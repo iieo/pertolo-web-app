@@ -8,6 +8,7 @@ import {
   betOptionsTable,
   pointTransactionsTable,
   betAccessControlTable,
+  wagersTable,
 } from '@/db/schema';
 import { eq, desc, sql, and, ne, inArray } from 'drizzle-orm';
 import { Result } from '@/util/types';
@@ -82,6 +83,7 @@ export async function getBets(filter?: 'open' | 'resolved' | 'mine'): Promise<
       totalPool: number;
       options: Array<{ id: string; label: string; totalPoints: number }>;
       createdAt: Date;
+      hasWagered: boolean;
     }>
   >
 > {
@@ -148,6 +150,15 @@ export async function getBets(filter?: 'open' | 'resolved' | 'mine'): Promise<
       });
     }
 
+    const userWageredBetIds = new Set<string>();
+    if (userId && betIds.length > 0) {
+      const wagers = await db
+        .select({ betId: wagersTable.betId })
+        .from(wagersTable)
+        .where(and(inArray(wagersTable.betId, betIds), eq(wagersTable.userId, userId)));
+      wagers.forEach((w) => userWageredBetIds.add(w.betId));
+    }
+
     const result = filteredBets.map((b) => {
       const opts = optionsByBet.get(b.id) ?? [];
       return {
@@ -159,6 +170,7 @@ export async function getBets(filter?: 'open' | 'resolved' | 'mine'): Promise<
         totalPool: opts.reduce((sum, o) => sum + o.totalPoints, 0),
         options: opts,
         createdAt: b.createdAt,
+        hasWagered: userWageredBetIds.has(b.id),
       };
     });
 

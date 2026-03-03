@@ -102,10 +102,15 @@ export default async function BetDetailPage({
                       </span>
                       <div className="flex items-center gap-1 font-bold text-amber-400">
                         <Coins size={14} />
-                        <span>{wager.amount.toLocaleString()}</span>
+                        <span>{(wager.currentValue - wager.creatorFee).toLocaleString()}</span>
                       </div>
+                      {wager.creatorFee > 0 && (
+                        <span className="mt-0.5 text-[10px] text-white/40">
+                          -10% Ersteller-Fee
+                        </span>
+                      )}
                     </div>
-                    <SellButton wagerId={wager.id} cashout={wager.amount} />
+                    <SellButton wagerId={wager.id} cashout={wager.currentValue - wager.creatorFee} />
                   </div>
                 </div>
               );

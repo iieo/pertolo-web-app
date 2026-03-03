@@ -11,9 +11,10 @@ interface BetCardProps {
   ownerName: string;
   totalPool: number;
   options: Array<{ id: string; label: string; totalPoints: number }>;
+  hasWagered: boolean;
 }
 
-export function BetCard({ id, title, status, ownerName, totalPool, options }: BetCardProps) {
+export function BetCard({ id, title, status, ownerName, totalPool, options, hasWagered }: BetCardProps) {
   const statusColor = {
     open: 'bg-green-500/20 text-green-400 border-green-500/30',
     resolved: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
@@ -33,10 +34,15 @@ export function BetCard({ id, title, status, ownerName, totalPool, options }: Be
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <div className="mb-2 flex items-center gap-2">
+          <div className="mb-2 flex flex-wrap items-center gap-2">
             <Badge variant="outline" className={statusColor}>
               {statusLabel}
             </Badge>
+            {hasWagered && (
+              <Badge variant="outline" className="bg-amber-500/10 text-amber-500 border-amber-500/20">
+                Wette platziert
+              </Badge>
+            )}
             <span className="truncate text-xs text-white/40">von {ownerName}</span>
           </div>
           <h3 className="mb-3 text-lg font-bold text-white">{title}</h3>
