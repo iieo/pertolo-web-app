@@ -58,18 +58,34 @@ export async function getBetDetail(betId: string): Promise<
 
     if (!bet) return { success: false, error: 'Wette nicht gefunden' };
 
-    if (userId && bet.visibility === 'private') {
-      const [blocked] = await db
-        .select()
-        .from(betAccessControlTable)
-        .where(
-          and(
-            eq(betAccessControlTable.betId, betId),
-            eq(betAccessControlTable.userId, userId),
-            eq(betAccessControlTable.type, 'blacklist'),
-          ),
-        );
-      if (blocked) return { success: false, error: 'Zugriff verweigert' };
+    if (userId !== bet.ownerId) {
+      if (bet.visibility === 'private') {
+        if (!userId) return { success: false, error: 'Zugriff verweigert' };
+
+        const [allowed] = await db
+          .select()
+          .from(betAccessControlTable)
+          .where(
+            and(
+              eq(betAccessControlTable.betId, betId),
+              eq(betAccessControlTable.userId, userId),
+              eq(betAccessControlTable.type, 'whitelist'),
+            ),
+          );
+        if (!allowed) return { success: false, error: 'Zugriff verweigert' };
+      } else if (bet.visibility === 'public' && userId) {
+        const [blocked] = await db
+          .select()
+          .from(betAccessControlTable)
+          .where(
+            and(
+              eq(betAccessControlTable.betId, betId),
+              eq(betAccessControlTable.userId, userId),
+              eq(betAccessControlTable.type, 'blacklist'),
+            ),
+          );
+        if (blocked) return { success: false, error: 'Zugriff verweigert' };
+      }
     }
 
     const options = await db.select().from(betOptionsTable).where(eq(betOptionsTable.betId, betId));

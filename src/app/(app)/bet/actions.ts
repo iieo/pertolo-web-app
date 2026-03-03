@@ -118,17 +118,27 @@ export async function getBets(filter?: 'open' | 'resolved' | 'mine'): Promise<
 
     let filteredBets = bets;
     if (userId) {
-      const blacklisted = await db
-        .select({ betId: betAccessControlTable.betId })
+      const accessControlRows = await db
+        .select({ betId: betAccessControlTable.betId, type: betAccessControlTable.type })
         .from(betAccessControlTable)
-        .where(
-          and(
-            eq(betAccessControlTable.userId, userId),
-            eq(betAccessControlTable.type, 'blacklist'),
-          ),
-        );
-      const blacklistedIds = new Set(blacklisted.map((b) => b.betId));
-      filteredBets = bets.filter((b) => !blacklistedIds.has(b.id));
+        .where(eq(betAccessControlTable.userId, userId));
+
+      const blacklistedIds = new Set(
+        accessControlRows.filter((r) => r.type === 'blacklist').map((r) => r.betId),
+      );
+      const whitelistedIds = new Set(
+        accessControlRows.filter((r) => r.type === 'whitelist').map((r) => r.betId),
+      );
+
+      filteredBets = bets.filter((b) => {
+        if (b.ownerId === userId) return true;
+        if (b.visibility === 'private') {
+          return whitelistedIds.has(b.id);
+        }
+        return !blacklistedIds.has(b.id);
+      });
+    } else {
+      filteredBets = bets.filter((b) => b.visibility === 'public');
     }
 
     const betIds = filteredBets.map((b) => b.id);

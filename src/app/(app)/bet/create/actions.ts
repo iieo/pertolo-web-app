@@ -1,13 +1,8 @@
 'use server';
 
 import { db } from '@/db';
-import {
-  usersTable,
-  betsTable,
-  betOptionsTable,
-  betAccessControlTable,
-} from '@/db/schema';
-import { ilike } from 'drizzle-orm';
+import { usersTable, betsTable, betOptionsTable, betAccessControlTable } from '@/db/schema';
+import { ilike, or } from 'drizzle-orm';
 import { Result } from '@/util/types';
 import { requireSession } from '@/lib/auth-server';
 
@@ -17,6 +12,7 @@ interface CreateBetInput {
   options: string[];
   visibility: 'public' | 'private';
   blacklistedUserIds?: string[];
+  allowedUserIds?: string[];
 }
 
 export async function createBet(input: CreateBetInput): Promise<Result<{ betId: string }>> {
@@ -42,11 +38,17 @@ export async function createBet(input: CreateBetInput): Promise<Result<{ betId: 
       if (!bet) throw new Error('Wette konnte nicht erstellt werden');
       betId = bet.id;
 
-      await tx.insert(betOptionsTable).values(
-        input.options.map((label) => ({ betId, label })),
-      );
+      await tx.insert(betOptionsTable).values(input.options.map((label) => ({ betId, label })));
 
-      if (input.visibility === 'private' && input.blacklistedUserIds?.length) {
+      if (input.visibility === 'private' && input.allowedUserIds?.length) {
+        await tx.insert(betAccessControlTable).values(
+          input.allowedUserIds.map((userId) => ({
+            betId,
+            userId,
+            type: 'whitelist' as const,
+          })),
+        );
+      } else if (input.visibility === 'public' && input.blacklistedUserIds?.length) {
         await tx.insert(betAccessControlTable).values(
           input.blacklistedUserIds.map((userId) => ({
             betId,
@@ -73,7 +75,7 @@ export async function searchUsers(
     const users = await db
       .select({ id: usersTable.id, name: usersTable.name, email: usersTable.email })
       .from(usersTable)
-      .where(ilike(usersTable.name, `%${query}%`))
+      .where(or(ilike(usersTable.name, `%${query}%`), ilike(usersTable.email, `%${query}%`)))
       .limit(20);
 
     return { success: true, data: users };
