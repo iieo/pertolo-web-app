@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
-import { Maximize, Minimize, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { X } from 'lucide-react';
 
 import {
   Dialog,
@@ -12,12 +12,7 @@ import {
 } from '@/components/ui/dialog';
 import { cn } from '@/lib/utils';
 
-import {
-  enterFullscreen,
-  exitFullscreen,
-  getFullscreenElement,
-  isFullscreenSupported,
-} from '../fullscreen';
+import { exitFullscreen } from '../fullscreen';
 import { useTwoHundredQuestionsGame } from '../game-provider';
 
 const TAP_LOCK_MS = 300;
@@ -129,9 +124,9 @@ export function TapScreen({
         onClick={handleClick}
         className="absolute inset-0 block h-full w-full cursor-pointer text-left outline-none focus-visible:outline-2 focus-visible:-outline-offset-8 focus-visible:outline-current"
       >
-        <span className="mx-auto flex h-full w-full max-w-2xl flex-col px-6 pt-[calc(env(safe-area-inset-top)+4rem)] pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-          <span className="flex min-h-0 flex-1 flex-col justify-center gap-6">{children}</span>
-          <span className="block pt-6 text-sm">{hint}</span>
+        <span className="mx-auto flex h-full w-full max-w-2xl flex-col justify-center px-6 pt-[calc(env(safe-area-inset-top)+4rem)] pb-[max(1.5rem,env(safe-area-inset-bottom))]">
+          {children}
+          <span className="sr-only">{hint}</span>
         </span>
       </button>
       <GameHeader />
@@ -139,48 +134,13 @@ export function TapScreen({
   );
 }
 
-function subscribeFullscreen(onChange: () => void) {
-  document.addEventListener('fullscreenchange', onChange);
-  document.addEventListener('webkitfullscreenchange', onChange);
-  return () => {
-    document.removeEventListener('fullscreenchange', onChange);
-    document.removeEventListener('webkitfullscreenchange', onChange);
-  };
-}
-
-function FullscreenToggle() {
-  const { t } = useTwoHundredQuestionsGame();
-  const supported = useSyncExternalStore(subscribeFullscreen, isFullscreenSupported, () => false);
-  const active = useSyncExternalStore(
-    subscribeFullscreen,
-    () => getFullscreenElement() !== null,
-    () => false,
-  );
-  if (!supported) return null;
-
-  return (
-    <button
-      type="button"
-      onClick={(e) => {
-        e.stopPropagation();
-        if (active) exitFullscreen();
-        else enterFullscreen();
-      }}
-      className="pointer-events-auto -mr-2 flex min-h-12 min-w-12 items-center justify-center rounded-xl outline-none focus-visible:outline-2 focus-visible:outline-current"
-      aria-label={active ? t.fullscreenExit : t.fullscreenEnter}
-    >
-      {active ? <Minimize size={20} /> : <Maximize size={20} />}
-    </button>
-  );
-}
-
 function GameHeader() {
-  const { currentIndex, deck, backToSetup, locale, t } = useTwoHundredQuestionsGame();
+  const { backToSetup, locale, t } = useTwoHundredQuestionsGame();
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   return (
     <div className="pointer-events-none absolute inset-x-0 top-0">
-      <div className="mx-auto flex w-full max-w-2xl items-center justify-between gap-4 px-4 pt-[calc(env(safe-area-inset-top)+0.5rem)]">
+      <div className="mx-auto flex w-full max-w-2xl items-center px-4 pt-[calc(env(safe-area-inset-top)+0.5rem)]">
         <button
           type="button"
           onClick={(e) => {
@@ -192,12 +152,6 @@ function GameHeader() {
           <X size={20} aria-hidden />
           {t.quit}
         </button>
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium tabular-nums">
-            {currentIndex + 1} / {deck.length}
-          </span>
-          <FullscreenToggle />
-        </div>
       </div>
 
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>

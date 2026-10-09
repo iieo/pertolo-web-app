@@ -18,8 +18,6 @@ type GameContextType = {
   toggleCategory: (key: CategoryKey) => void;
   countByCategory: Record<CategoryKey, number>;
   availableCount: number;
-  drinkEnabled: boolean;
-  setDrinkEnabled: (enabled: boolean) => void;
   deck: Question[];
   currentIndex: number;
   currentQuestion: Question | null;
@@ -62,7 +60,6 @@ export const GameProvider = ({
   const [phase, setPhase] = useState<GamePhase>('setup');
   const [mixed, setMixed] = useState(true);
   const [selectedCategories, setSelectedCategories] = useState<CategoryKey[]>([]);
-  const [drinkEnabled, setDrinkEnabled] = useState(true);
   const [deck, setDeck] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -144,8 +141,6 @@ export const GameProvider = ({
         toggleCategory,
         countByCategory,
         availableCount,
-        drinkEnabled,
-        setDrinkEnabled,
         deck,
         currentIndex,
         currentQuestion,

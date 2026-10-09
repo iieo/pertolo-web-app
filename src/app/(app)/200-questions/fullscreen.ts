@@ -4,17 +4,10 @@ type WebkitElement = HTMLElement & {
 
 type WebkitDocument = Document & {
   webkitFullscreenElement?: Element | null;
-  webkitFullscreenEnabled?: boolean;
   webkitExitFullscreen?: () => Promise<void> | void;
 };
 
-export function isFullscreenSupported() {
-  if (typeof document === 'undefined') return false;
-  const doc = document as WebkitDocument;
-  return Boolean(doc.fullscreenEnabled || doc.webkitFullscreenEnabled);
-}
-
-export function getFullscreenElement() {
+function getFullscreenElement() {
   const doc = document as WebkitDocument;
   return doc.fullscreenElement ?? doc.webkitFullscreenElement ?? null;
 }

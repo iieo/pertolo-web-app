@@ -10,7 +10,6 @@ export function ReadPhase() {
 
   return (
     <TapScreen color={questionColor(currentIndex)} hint={t.readHint} onAdvance={passOn}>
-      <span className="block text-base leading-relaxed">{t.readPrompt}</span>
       <QuestionText text={currentQuestionText} />
     </TapScreen>
   );

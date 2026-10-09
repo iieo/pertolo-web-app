@@ -5,7 +5,7 @@ import { questionColor } from '../palette';
 import { QuestionText, TapScreen } from './game-shell';
 
 export function RevealPhase() {
-  const { currentQuestionText, currentIndex, drinkEnabled, isLastQuestion, nextQuestion, t } =
+  const { currentQuestionText, currentIndex, isLastQuestion, nextQuestion, t } =
     useTwoHundredQuestionsGame();
   if (currentQuestionText === null) return null;
 
@@ -15,11 +15,7 @@ export function RevealPhase() {
       hint={isLastQuestion ? t.revealHintLast : t.revealHintNext}
       onAdvance={nextQuestion}
     >
-      <span className="block text-base leading-relaxed">{t.revealPrompt}</span>
       <QuestionText text={currentQuestionText} />
-      {drinkEnabled && (
-        <span className="block text-base leading-relaxed font-semibold">{t.revealDrink}</span>
-      )}
     </TapScreen>
   );
 }

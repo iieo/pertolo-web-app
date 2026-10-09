@@ -4,7 +4,6 @@ import { Fragment, useState } from 'react';
 import { Check } from 'lucide-react';
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 
 import { CATEGORY_KEYS, MAX_QUESTIONS, MIXED_CATEGORIES } from '../categories';
@@ -21,8 +20,6 @@ export function SetupPhase() {
     toggleCategory,
     countByCategory,
     availableCount,
-    drinkEnabled,
-    setDrinkEnabled,
     startGame,
     locale,
     setLocale,
@@ -115,20 +112,6 @@ export function SetupPhase() {
           />
         ))}
       </section>
-
-      <label className="mt-12 flex min-h-16 cursor-pointer items-center justify-between gap-4 rounded-xl border border-white/10 px-4 py-4">
-        <span className="min-w-0">
-          <span className="block text-base font-semibold">{t.drinkTitle}</span>
-          <span className="block text-base leading-relaxed text-white/60">
-            {t.drinkDescription}
-          </span>
-        </span>
-        <Switch
-          checked={drinkEnabled}
-          onCheckedChange={setDrinkEnabled}
-          className="focus-visible:ring-white focus-visible:ring-offset-black data-[state=checked]:bg-sky-400 data-[state=unchecked]:bg-white/20"
-        />
-      </label>
 
       <Dialog open={rulesOpen} onOpenChange={setRulesOpen}>
         <DialogContent
