@@ -1,33 +1,25 @@
 'use client';
 
 import { useTwoHundredQuestionsGame } from '../game-provider';
-import { CategoryBadge, GameHeader, GlowButton, PhaseShell, QuestionText } from './game-shell';
+import { questionColor } from '../palette';
+import { QuestionText, TapScreen } from './game-shell';
 
 export function RevealPhase() {
-  const { currentQuestion, drinkEnabled, isLastQuestion, nextQuestion } =
+  const { currentQuestionText, currentIndex, drinkEnabled, isLastQuestion, nextQuestion, t } =
     useTwoHundredQuestionsGame();
-  if (!currentQuestion) return null;
+  if (currentQuestionText === null) return null;
 
   return (
-    <PhaseShell
-      gradient="from-sky-950 via-black to-cyan-950"
-      header={<GameHeader />}
-      footer={
-        <GlowButton onClick={nextQuestion}>
-          {isLastQuestion ? 'Spiel beenden' : 'Nächste Frage'}
-        </GlowButton>
-      }
+    <TapScreen
+      color={questionColor(currentIndex)}
+      hint={isLastQuestion ? t.revealHintLast : t.revealHintNext}
+      onAdvance={nextQuestion}
     >
-      <CategoryBadge category={currentQuestion.category} />
-      <QuestionText text={currentQuestion.question} />
-      <p className="text-sky-300/80 text-sm font-semibold text-center max-w-xs leading-relaxed">
-        Lies die Frage laut vor
-      </p>
+      <span className="block text-base leading-relaxed">{t.revealPrompt}</span>
+      <QuestionText text={currentQuestionText} />
       {drinkEnabled && (
-        <div className="px-5 py-3 rounded-2xl bg-amber-500/15 border border-amber-400/40 text-amber-200 font-bold text-center">
-          🍺 Trink einen Schluck
-        </div>
+        <span className="block text-base leading-relaxed font-semibold">{t.revealDrink}</span>
       )}
-    </PhaseShell>
+    </TapScreen>
   );
 }

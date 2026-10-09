@@ -1,0 +1,1 @@
+ALTER TABLE "two_hundred_questions" ADD COLUMN "question_en" text;

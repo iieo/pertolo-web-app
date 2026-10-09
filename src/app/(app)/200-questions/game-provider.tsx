@@ -3,9 +3,14 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 
 import { MAX_QUESTIONS, MIXED_CATEGORIES } from './categories';
+import { DICTIONARIES, Dictionary, Locale } from './i18n';
+import { setLocale, useLocale } from './locale';
 import { CategoryKey, GamePhase, Question } from './types';
 
 type GameContextType = {
+  locale: Locale;
+  setLocale: (locale: Locale) => void;
+  t: Dictionary;
   phase: GamePhase;
   mixed: boolean;
   selectMixed: () => void;
@@ -18,6 +23,7 @@ type GameContextType = {
   deck: Question[];
   currentIndex: number;
   currentQuestion: Question | null;
+  currentQuestionText: string | null;
   isLastQuestion: boolean;
   startGame: () => void;
   passOn: () => void;
@@ -52,6 +58,7 @@ export const GameProvider = ({
   children: React.ReactNode;
   questions: Question[];
 }) => {
+  const locale = useLocale();
   const [phase, setPhase] = useState<GamePhase>('setup');
   const [mixed, setMixed] = useState(true);
   const [selectedCategories, setSelectedCategories] = useState<CategoryKey[]>([]);
@@ -117,9 +124,19 @@ export const GameProvider = ({
     setPhase('setup');
   }, []);
 
+  const currentQuestion = deck[currentIndex] ?? null;
+  const currentQuestionText = currentQuestion
+    ? locale === 'en'
+      ? (currentQuestion.questionEn ?? currentQuestion.question)
+      : currentQuestion.question
+    : null;
+
   return (
     <GameContext.Provider
       value={{
+        locale,
+        setLocale,
+        t: DICTIONARIES[locale],
         phase,
         mixed,
         selectMixed,
@@ -131,7 +148,8 @@ export const GameProvider = ({
         setDrinkEnabled,
         deck,
         currentIndex,
-        currentQuestion: deck[currentIndex] ?? null,
+        currentQuestion,
+        currentQuestionText,
         isLastQuestion: currentIndex === deck.length - 1,
         startGame,
         passOn,

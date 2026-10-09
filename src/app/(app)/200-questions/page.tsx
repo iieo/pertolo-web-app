@@ -9,6 +9,7 @@ export default async function TwoHundredQuestionsGame() {
     .select({
       id: twoHundredQuestionsTable.id,
       question: twoHundredQuestionsTable.question,
+      questionEn: twoHundredQuestionsTable.questionEn,
       category: twoHundredQuestionsTable.category,
     })
     .from(twoHundredQuestionsTable);

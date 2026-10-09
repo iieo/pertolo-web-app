@@ -2,34 +2,32 @@
 
 import Link from 'next/link';
 
+import { exitFullscreen } from '../fullscreen';
 import { useTwoHundredQuestionsGame } from '../game-provider';
-import { GlowButton, PhaseShell } from './game-shell';
+import { PageShell, primaryButtonClass, secondaryButtonClass } from './game-shell';
 
 export function EndPhase() {
-  const { deck, backToSetup } = useTwoHundredQuestionsGame();
+  const { deck, backToSetup, t } = useTwoHundredQuestionsGame();
 
   return (
-    <PhaseShell
-      gradient="from-sky-950 via-black to-indigo-950"
+    <PageShell
       footer={
-        <div className="flex flex-col gap-3">
-          <GlowButton onClick={backToSetup}>Nochmal</GlowButton>
-          <Link
-            href="/"
-            className="w-full min-h-14 flex items-center justify-center rounded-2xl border border-white/20 bg-white/10 hover:bg-white/15 font-bold text-white text-lg transition-all active:scale-[0.98]"
-          >
-            Zur Startseite
+        <div className="flex flex-col gap-2">
+          <button type="button" className={primaryButtonClass} onClick={backToSetup}>
+            {t.playAgain}
+          </button>
+          <Link href="/" className={secondaryButtonClass} onClick={() => exitFullscreen()}>
+            {t.backHome}
           </Link>
         </div>
       }
     >
-      <div className="text-7xl" aria-hidden>
-        🎉
+      <div className="flex flex-1 flex-col justify-center gap-4">
+        <h1 className="text-4xl font-bold tracking-tight">{t.endTitle}</h1>
+        <p className="text-base leading-relaxed text-white/60 tabular-nums">
+          {t.questionsPlayed(deck.length)}
+        </p>
       </div>
-      <h1 className="text-white font-black text-center text-[clamp(2rem,10vw,3rem)] leading-tight drop-shadow-[0_0_20px_rgba(14,165,233,0.4)]">
-        Alle Fragen durch!
-      </h1>
-      <p className="text-white/50 text-center tabular-nums">{deck.length} Fragen gespielt</p>
-    </PhaseShell>
+    </PageShell>
   );
 }

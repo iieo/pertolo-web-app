@@ -7,12 +7,6 @@ export type CategoryKey = TwoHundredQuestionCategory;
 export type Question = {
   id: string;
   question: string;
+  questionEn: string | null;
   category: CategoryKey;
-};
-
-export type CategoryMeta = {
-  key: CategoryKey;
-  name: string;
-  emoji: string;
-  description: string;
 };

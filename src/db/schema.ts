@@ -94,6 +94,7 @@ export const twoHundredQuestionCategoryEnum = pgEnum('two_hundred_question_categ
 export const twoHundredQuestionsTable = pgTable('two_hundred_questions', {
   id: uuid('id').primaryKey().defaultRandom(),
   question: text('question').notNull().unique(),
+  questionEn: text('question_en'),
   category: twoHundredQuestionCategoryEnum('category').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at')

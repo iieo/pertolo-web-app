@@ -1,15 +1,17 @@
 'use client';
 
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { Check } from 'lucide-react';
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 
-import { CATEGORIES, MAX_QUESTIONS, MIXED } from '../categories';
+import { CATEGORY_KEYS, MAX_QUESTIONS, MIXED_CATEGORIES } from '../categories';
+import { enterFullscreen } from '../fullscreen';
 import { useTwoHundredQuestionsGame } from '../game-provider';
-import { GlowButton, PhaseShell } from './game-shell';
+import { LOCALES } from '../i18n';
+import { PageShell, primaryButtonClass, secondaryButtonClass } from './game-shell';
 
 export function SetupPhase() {
   const {
@@ -22,133 +24,150 @@ export function SetupPhase() {
     drinkEnabled,
     setDrinkEnabled,
     startGame,
+    locale,
+    setLocale,
+    t,
   } = useTwoHundredQuestionsGame();
   const [rulesOpen, setRulesOpen] = useState(false);
 
   const roundSize = Math.min(availableCount, MAX_QUESTIONS);
+  const mixedCount = MIXED_CATEGORIES.reduce((sum, key) => sum + (countByCategory[key] ?? 0), 0);
 
   return (
-    <PhaseShell
-      gradient="from-sky-950 via-black to-indigo-950"
-      header={
-        <header className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <h1 className="text-white font-black tracking-tight text-[clamp(2rem,10vw,3rem)] leading-none drop-shadow-[0_0_20px_rgba(14,165,233,0.4)]">
-              200 Questions
-            </h1>
-            <p className="text-white/50 text-sm mt-2">Auf wen trifft es am meisten zu?</p>
-          </div>
-          <button
-            onClick={() => setRulesOpen(true)}
-            className="shrink-0 w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white font-black text-lg hover:bg-white/20 transition-colors active:scale-95"
-            aria-label="Spielregeln"
-          >
-            ?
-          </button>
-        </header>
-      }
+    <PageShell
       footer={
-        <>
-          <p className="text-center text-white/50 text-sm mb-3 tabular-nums">
-            {availableCount === 0
-              ? 'Wähle mindestens eine Kategorie'
-              : `${availableCount} Fragen verfügbar, ${roundSize} pro Runde`}
+        <div className="flex flex-col gap-4">
+          <p className="text-center text-sm text-white/60 tabular-nums">
+            {availableCount === 0 ? t.selectAtLeastOne : t.questionsPerRound(roundSize)}
           </p>
-          <GlowButton onClick={startGame} disabled={availableCount === 0}>
-            Starten
-          </GlowButton>
-        </>
+          <button
+            type="button"
+            className={primaryButtonClass}
+            disabled={availableCount === 0}
+            onClick={() => {
+              enterFullscreen();
+              startGame();
+            }}
+          >
+            {t.start}
+          </button>
+        </div>
       }
     >
-      <div className="w-full grid grid-cols-2 gap-3">
-        <CategoryCard
-          className="col-span-2"
-          emoji={MIXED.emoji}
-          name={MIXED.name}
-          description={MIXED.description}
+      <header className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <h1 className="text-4xl font-bold tracking-tight">200 Questions</h1>
+          <p className="mt-2 text-base leading-relaxed text-white/60">{t.subtitle}</p>
+        </div>
+        <div className="-mr-2 flex shrink-0 flex-col items-end">
+          <button
+            type="button"
+            onClick={() => setRulesOpen(true)}
+            className="flex min-h-12 items-center rounded-xl px-2 text-base font-medium text-sky-400 outline-none hover:text-sky-300 focus-visible:outline-2 focus-visible:outline-white"
+          >
+            {t.rules}
+          </button>
+          <div role="group" aria-label={t.language} className="flex items-center text-sm">
+            {LOCALES.map((option, i) => (
+              <Fragment key={option}>
+                {i > 0 && (
+                  <span className="text-white/40" aria-hidden>
+                    /
+                  </span>
+                )}
+                <button
+                  type="button"
+                  lang={option}
+                  onClick={() => setLocale(option)}
+                  aria-pressed={locale === option}
+                  className={cn(
+                    'flex min-h-12 min-w-10 items-center justify-center rounded-xl px-2 outline-none transition-colors duration-150 motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-white',
+                    locale === option
+                      ? 'font-semibold text-white'
+                      : 'font-medium text-white/40 hover:text-white/70',
+                  )}
+                >
+                  {option.toUpperCase()}
+                </button>
+              </Fragment>
+            ))}
+          </div>
+        </div>
+      </header>
+
+      <section className="mt-12 flex flex-col gap-2" aria-label={t.categoriesLabel}>
+        <CategoryRow
+          name={t.mixed.name}
+          description={t.mixed.description}
+          countLabel={t.questionCount(mixedCount)}
           selected={mixed}
           onClick={selectMixed}
         />
-        {CATEGORIES.map((category) => (
-          <CategoryCard
-            key={category.key}
-            emoji={category.emoji}
-            name={category.name}
-            description={category.description}
-            count={countByCategory[category.key] ?? 0}
-            selected={!mixed && selectedCategories.includes(category.key)}
-            onClick={() => toggleCategory(category.key)}
+        <p className="mt-6 mb-2 text-base font-semibold">{t.chooseIndividually}</p>
+        {CATEGORY_KEYS.map((key) => (
+          <CategoryRow
+            key={key}
+            name={t.categories[key].name}
+            description={t.categories[key].description}
+            countLabel={t.questionCount(countByCategory[key] ?? 0)}
+            selected={!mixed && selectedCategories.includes(key)}
+            onClick={() => toggleCategory(key)}
           />
         ))}
-      </div>
+      </section>
 
-      <label className="w-full min-h-16 flex items-center justify-between gap-4 rounded-2xl bg-white/5 border border-white/10 px-4 py-3 cursor-pointer">
+      <label className="mt-12 flex min-h-16 cursor-pointer items-center justify-between gap-4 rounded-xl border border-white/10 px-4 py-4">
         <span className="min-w-0">
-          <span className="block text-white font-bold">🍺 Strafschluck</span>
-          <span className="block text-white/50 text-sm">
-            Wer die Frage bekommt, trinkt einen Schluck
+          <span className="block text-base font-semibold">{t.drinkTitle}</span>
+          <span className="block text-base leading-relaxed text-white/60">
+            {t.drinkDescription}
           </span>
         </span>
         <Switch
           checked={drinkEnabled}
           onCheckedChange={setDrinkEnabled}
-          className="data-[state=checked]:bg-sky-500 data-[state=unchecked]:bg-white/20"
+          className="focus-visible:ring-white focus-visible:ring-offset-black data-[state=checked]:bg-sky-400 data-[state=unchecked]:bg-white/20"
         />
       </label>
 
       <Dialog open={rulesOpen} onOpenChange={setRulesOpen}>
-        <DialogContent className="bg-[#0e0e14] border border-white/10 text-white rounded-3xl max-w-[calc(100%-2rem)] sm:max-w-sm p-6 max-h-[90dvh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="text-white text-2xl font-black text-center">
-              Spielregeln
-            </DialogTitle>
+        <DialogContent
+          lang={locale}
+          className="max-h-[90dvh] max-w-[calc(100%-2rem)] gap-8 overflow-y-auto rounded-xl border border-white/10 bg-neutral-950 p-6 text-white sm:max-w-md"
+        >
+          <DialogHeader className="text-left sm:text-left">
+            <DialogTitle className="text-xl font-semibold text-white">{t.rulesTitle}</DialogTitle>
           </DialogHeader>
-
-          <div className="space-y-4 mt-2">
-            <RuleStep number="1">
-              Wer das Handy hat, liest die Frage still. Niemand sonst darf mitlesen.
-            </RuleStep>
-            <RuleStep number="2">
-              Überleg dir, auf wen in der Gruppe die Frage am besten zutrifft.
-            </RuleStep>
-            <RuleStep number="3">
-              Tippe auf <strong>&quot;Weitergeben&quot;</strong> und gib das Handy verdeckt an diese
-              Person.
-            </RuleStep>
-            <RuleStep number="4">
-              Die Person deckt auf und liest die Frage laut vor. Mit Strafschluck trinkt sie einen
-              Schluck.
-            </RuleStep>
-            <RuleStep number="5">
-              Danach liest sie still die nächste Frage und das Spiel geht weiter.
-            </RuleStep>
-          </div>
-
-          <GlowButton className="mt-4 text-base py-4" onClick={() => setRulesOpen(false)}>
-            Verstanden!
-          </GlowButton>
+          <ol className="flex list-decimal flex-col gap-4 pl-6 text-base leading-relaxed text-white/80">
+            {t.rulesList.map((rule) => (
+              <li key={rule}>{rule}</li>
+            ))}
+          </ol>
+          <button
+            type="button"
+            className={secondaryButtonClass}
+            onClick={() => setRulesOpen(false)}
+          >
+            {t.rulesConfirm}
+          </button>
         </DialogContent>
       </Dialog>
-    </PhaseShell>
+    </PageShell>
   );
 }
 
-function CategoryCard({
-  emoji,
+function CategoryRow({
   name,
   description,
-  count,
+  countLabel,
   selected,
   onClick,
-  className,
 }: {
-  emoji: string;
   name: string;
   description: string;
-  count?: number;
+  countLabel: string;
   selected: boolean;
   onClick: () => void;
-  className?: string;
 }) {
   return (
     <button
@@ -156,38 +175,26 @@ function CategoryCard({
       onClick={onClick}
       aria-pressed={selected}
       className={cn(
-        'relative min-w-0 min-h-28 flex flex-col items-start gap-1 rounded-2xl border p-3 text-left transition-all active:scale-[0.97]',
-        selected
-          ? 'bg-sky-500/20 border-sky-400/70 shadow-[0_0_24px_-6px_rgba(14,165,233,0.6)]'
-          : 'bg-white/5 border-white/10 hover:bg-white/10',
-        className,
+        'flex min-h-16 w-full items-center gap-4 rounded-xl border px-4 py-4 text-left transition-colors duration-150 outline-none motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white',
+        selected ? 'border-sky-400 bg-sky-400/10' : 'border-white/10 hover:bg-white/5',
       )}
     >
+      <span className="min-w-0 flex-1">
+        <span className="block text-base font-semibold wrap-break-word">{name}</span>
+        <span className="block text-base leading-relaxed text-white/60 wrap-break-word">
+          {description}
+        </span>
+        <span className="mt-1 block text-sm text-white/60 tabular-nums">{countLabel}</span>
+      </span>
       <span
         className={cn(
-          'absolute top-2.5 right-2.5 w-6 h-6 rounded-full border flex items-center justify-center transition-colors',
-          selected ? 'bg-sky-500 border-sky-400 text-white' : 'border-white/20 text-transparent',
+          'flex h-6 w-6 shrink-0 items-center justify-center rounded-full border',
+          selected ? 'border-sky-400 bg-sky-400 text-black' : 'border-white/20',
         )}
+        aria-hidden
       >
-        <Check size={14} strokeWidth={3} />
+        {selected && <Check size={16} strokeWidth={3} />}
       </span>
-      <span className="text-3xl leading-none">{emoji}</span>
-      <span className="text-white font-bold leading-tight pr-7 wrap-break-word">{name}</span>
-      <span className="text-white/50 text-xs leading-snug wrap-break-word">{description}</span>
-      {count !== undefined && (
-        <span className="mt-auto pt-1 text-white/30 text-xs tabular-nums">{count} Fragen</span>
-      )}
     </button>
-  );
-}
-
-function RuleStep({ number, children }: { number: string; children: React.ReactNode }) {
-  return (
-    <div className="flex items-start gap-3">
-      <span className="min-w-7 h-7 rounded-full bg-white/10 flex items-center justify-center text-white font-black text-sm shrink-0">
-        {number}
-      </span>
-      <p className="text-white/80 text-sm leading-relaxed pt-0.5">{children}</p>
-    </div>
   );
 }

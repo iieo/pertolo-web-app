@@ -4,6 +4,17 @@ import { count, notInArray, sql } from 'drizzle-orm';
 import { exit } from 'process';
 
 import { coworkersQuestions } from './coworkers';
+import { coworkersQuestionsEn } from './en/coworkers';
+import { crazyQuestionsEn } from './en/crazy';
+import { deepQuestionsEn } from './en/deep';
+import { exposedQuestionsEn } from './en/exposed';
+import { friendlyQuestionsEn } from './en/friendly';
+import { futureQuestionsEn } from './en/future';
+import { interactiveQuestionsEn } from './en/interactive';
+import { normalQuestionsEn } from './en/normal';
+import { partyQuestionsEn } from './en/party';
+import { roastQuestionsEn } from './en/roast';
+import { sexualQuestionsEn } from './en/sexual';
 import { crazyQuestions } from './crazy';
 import { deepQuestions } from './deep';
 import { exposedQuestions } from './exposed';
@@ -29,10 +40,47 @@ const questionsByCategory: Record<TwoHundredQuestionCategory, string[]> = {
   sexual: sexualQuestions,
 };
 
+const questionsEnByCategory: Record<TwoHundredQuestionCategory, string[]> = {
+  normal: normalQuestionsEn,
+  friendly: friendlyQuestionsEn,
+  coworkers: coworkersQuestionsEn,
+  interactive: interactiveQuestionsEn,
+  crazy: crazyQuestionsEn,
+  party: partyQuestionsEn,
+  roast: roastQuestionsEn,
+  exposed: exposedQuestionsEn,
+  future: futureQuestionsEn,
+  deep: deepQuestionsEn,
+  sexual: sexualQuestionsEn,
+};
+
 const BATCH_SIZE = 500;
 
+function validateTranslations() {
+  const mismatches = (Object.keys(questionsByCategory) as TwoHundredQuestionCategory[])
+    .filter(
+      (category) => questionsEnByCategory[category].length !== questionsByCategory[category].length,
+    )
+    .map(
+      (category) =>
+        `${category}: ${questionsByCategory[category].length} deutsch, ${questionsEnByCategory[category].length} englisch`,
+    );
+
+  if (mismatches.length > 0) {
+    throw new Error(
+      `Anzahl der englischen Fragen passt nicht zu den deutschen, Sync abgebrochen:\n${mismatches.join('\n')}`,
+    );
+  }
+}
+
 function collectRows() {
-  const rows: { question: string; category: TwoHundredQuestionCategory }[] = [];
+  validateTranslations();
+
+  const rows: {
+    question: string;
+    questionEn: string;
+    category: TwoHundredQuestionCategory;
+  }[] = [];
   const seen = new Map<string, TwoHundredQuestionCategory>();
   const duplicates: string[] = [];
 
@@ -41,14 +89,15 @@ function collectRows() {
     string[],
   ][]) {
     console.log(`${category}: ${questions.length} in Dateien`);
-    for (const question of questions) {
+    const questionsEn = questionsEnByCategory[category];
+    for (const [index, question] of questions.entries()) {
       const existing = seen.get(question);
       if (existing) {
         duplicates.push(`"${question}" (${existing} und ${category})`);
         continue;
       }
       seen.set(question, category);
-      rows.push({ question, category });
+      rows.push({ question, questionEn: questionsEn[index]!, category });
     }
   }
 
@@ -73,7 +122,10 @@ async function seedTwoHundredQuestions() {
         .values(rows.slice(i, i + BATCH_SIZE))
         .onConflictDoUpdate({
           target: twoHundredQuestionsTable.question,
-          set: { category: sql`excluded.category` },
+          set: {
+            category: sql`excluded.category`,
+            questionEn: sql`excluded.question_en`,
+          },
         });
     }
 
