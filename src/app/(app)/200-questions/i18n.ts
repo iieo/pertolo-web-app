@@ -21,11 +21,8 @@ export type Dictionary = {
   questionsPerRound: (count: number) => string;
   selectAtLeastOne: string;
   start: string;
-  readHint: string;
-  handoverText: string;
-  handoverHint: string;
-  revealHintNext: string;
-  revealHintLast: string;
+  nextQuestionHint: string;
+  lastQuestionHint: string;
   quit: string;
   quitTitle: string;
   quitDescription: string;
@@ -43,14 +40,14 @@ const de: Dictionary = {
   rulesList: [
     'Wer das Handy hat, liest die Frage still. Niemand sonst darf mitlesen.',
     'Überleg dir, auf wen in der Gruppe die Frage am besten zutrifft.',
-    'Tippe auf den Bildschirm und gib das Handy verdeckt an diese Person.',
-    'Die Person tippt, deckt auf und liest die Frage laut vor.',
-    'Danach liest sie still die nächste Frage und das Spiel geht weiter.',
+    'Gib das Handy an diese Person.',
+    'Die Person liest die Frage laut vor.',
+    'Dann tippt sie für die nächste Frage, liest sie still und das Spiel geht weiter.',
   ],
   rulesConfirm: 'Verstanden',
   language: 'Sprache',
   categoriesLabel: 'Kategorien',
-  mixed: { name: 'Mixed', description: 'Alles gemischt, ohne 18+' },
+  mixed: { name: 'Mixed', description: 'Alles gemischt, ohne Sexual' },
   categories: {
     normal: { name: 'Normal', description: 'Harmlos, passt in jede Gruppe' },
     friendly: { name: 'Friendly', description: 'Nette Fragen und Komplimente' },
@@ -62,18 +59,15 @@ const de: Dictionary = {
     exposed: { name: 'Exposed', description: 'Peinliche Geschichten und Geständnisse' },
     future: { name: 'Zukunft', description: 'Wer heiratet zuerst, wird reich oder berühmt?' },
     deep: { name: 'Deep', description: 'Persönlich und nachdenklich' },
-    sexual: { name: 'Sexual 18+', description: 'Dating, Flirt und Sex' },
+    sexual: { name: 'Sexual', description: 'Dating, Flirt und Sex' },
   },
   chooseIndividually: 'Oder einzeln wählen',
   questionCount: (count) => `${count} ${count === 1 ? 'Frage' : 'Fragen'}`,
   questionsPerRound: (count) => `${count} ${count === 1 ? 'Frage' : 'Fragen'} pro Runde`,
   selectAtLeastOne: 'Wähle mindestens eine Kategorie.',
   start: 'Starten',
-  readHint: 'Tippen zum Weitergeben',
-  handoverText: 'Gib das Handy verdeckt weiter.',
-  handoverHint: 'Tippen zum Aufdecken',
-  revealHintNext: 'Tippen für die nächste Frage',
-  revealHintLast: 'Tippen zum Beenden',
+  nextQuestionHint: 'Tippen für die nächste Frage',
+  lastQuestionHint: 'Tippen zum Beenden',
   quit: 'Beenden',
   quitTitle: 'Spiel beenden?',
   quitDescription: 'Ihr landet wieder in der Auswahl. Der Fortschritt dieser Runde geht verloren.',
@@ -91,14 +85,14 @@ const en: Dictionary = {
   rulesList: [
     'Whoever holds the phone reads the question silently. Nobody else gets to look.',
     'Think about who in the group it fits best.',
-    'Tap the screen and hand the phone face down to that person.',
-    'They tap to reveal and read the question out loud.',
-    'Then they silently read the next question and the game goes on.',
+    'Hand the phone to that person.',
+    'They read the question out loud.',
+    'Then they tap for the next question, read it silently and the game goes on.',
   ],
   rulesConfirm: 'Got it',
   language: 'Language',
   categoriesLabel: 'Categories',
-  mixed: { name: 'Mixed', description: 'A bit of everything, no 18+' },
+  mixed: { name: 'Mixed', description: 'Everything mixed, except Sexual' },
   categories: {
     normal: { name: 'Normal', description: 'Harmless, works with any group' },
     friendly: { name: 'Friendly', description: 'Kind questions and compliments' },
@@ -110,18 +104,15 @@ const en: Dictionary = {
     exposed: { name: 'Exposed', description: 'Embarrassing stories and confessions' },
     future: { name: 'Future', description: 'Who marries first, gets rich or famous?' },
     deep: { name: 'Deep', description: 'Personal and thoughtful' },
-    sexual: { name: 'Sexual 18+', description: 'Dating, flirting and sex' },
+    sexual: { name: 'Sexual', description: 'Dating, flirting and sex' },
   },
   chooseIndividually: 'Or pick your own',
   questionCount: (count) => `${count} ${count === 1 ? 'question' : 'questions'}`,
   questionsPerRound: (count) => `${count} ${count === 1 ? 'question' : 'questions'} per round`,
   selectAtLeastOne: 'Pick at least one category.',
   start: 'Start',
-  readHint: 'Tap to pass on',
-  handoverText: 'Pass the phone face down.',
-  handoverHint: 'Tap to reveal',
-  revealHintNext: 'Tap for the next question',
-  revealHintLast: 'Tap to finish',
+  nextQuestionHint: 'Tap for the next question',
+  lastQuestionHint: 'Tap to finish',
   quit: 'Quit',
   quitTitle: 'Quit game?',
   quitDescription: "You'll go back to the setup. Progress from this round will be lost.",

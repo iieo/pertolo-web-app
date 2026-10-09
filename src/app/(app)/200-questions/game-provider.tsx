@@ -24,8 +24,6 @@ type GameContextType = {
   currentQuestionText: string | null;
   isLastQuestion: boolean;
   startGame: () => void;
-  passOn: () => void;
-  reveal: () => void;
   nextQuestion: () => void;
   backToSetup: () => void;
 };
@@ -100,11 +98,8 @@ export const GameProvider = ({
     if (pool.length === 0) return;
     setDeck(shuffle(pool).slice(0, MAX_QUESTIONS));
     setCurrentIndex(0);
-    setPhase('read');
+    setPhase('question');
   }, [questions, activeCategories]);
-
-  const passOn = useCallback(() => setPhase('handover'), []);
-  const reveal = useCallback(() => setPhase('reveal'), []);
 
   const nextQuestion = useCallback(() => {
     if (currentIndex + 1 >= deck.length) {
@@ -112,7 +107,6 @@ export const GameProvider = ({
       return;
     }
     setCurrentIndex(currentIndex + 1);
-    setPhase('read');
   }, [currentIndex, deck.length]);
 
   const backToSetup = useCallback(() => {
@@ -147,8 +141,6 @@ export const GameProvider = ({
         currentQuestionText,
         isLastQuestion: currentIndex === deck.length - 1,
         startGame,
-        passOn,
-        reveal,
         nextQuestion,
         backToSetup,
       }}

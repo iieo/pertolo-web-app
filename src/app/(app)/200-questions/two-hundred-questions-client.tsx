@@ -3,9 +3,7 @@
 import { useEffect } from 'react';
 
 import { EndPhase } from './components/end-phase';
-import { HandoverPhase } from './components/handover-phase';
-import { ReadPhase } from './components/read-phase';
-import { RevealPhase } from './components/reveal-phase';
+import { QuestionPhase } from './components/question-phase';
 import { SetupPhase } from './components/setup-phase';
 import { GameProvider, useTwoHundredQuestionsGame } from './game-provider';
 import { GamePhase, Question } from './types';
@@ -24,12 +22,8 @@ function renderPhase(phase: GamePhase) {
   switch (phase) {
     case 'setup':
       return <SetupPhase />;
-    case 'read':
-      return <ReadPhase />;
-    case 'handover':
-      return <HandoverPhase />;
-    case 'reveal':
-      return <RevealPhase />;
+    case 'question':
+      return <QuestionPhase />;
     case 'end':
       return <EndPhase />;
   }

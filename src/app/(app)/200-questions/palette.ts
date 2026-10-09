@@ -1,3 +1,5 @@
+import type { CategoryKey } from './types';
+
 const INK = '#111111';
 const WHITE = '#FFFFFF';
 
@@ -19,8 +21,25 @@ const QUESTION_COLORS = [
 
 export type QuestionColor = (typeof QUESTION_COLORS)[number];
 
-export const NEUTRAL_COLOR = { bg: '#000000', fg: WHITE };
-
 export function questionColor(index: number): QuestionColor {
   return QUESTION_COLORS[index % QUESTION_COLORS.length]!;
+}
+
+const CATEGORY_COLOR_INDEX: Record<CategoryKey | 'mixed', number> = {
+  mixed: 2,
+  normal: 8,
+  friendly: 3,
+  coworkers: 6,
+  interactive: 1,
+  crazy: 4,
+  party: 5,
+  roast: 9,
+  exposed: 7,
+  future: 11,
+  deep: 10,
+  sexual: 0,
+};
+
+export function categoryColor(key: CategoryKey | 'mixed'): QuestionColor {
+  return questionColor(CATEGORY_COLOR_INDEX[key]);
 }

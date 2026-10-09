@@ -10,6 +10,7 @@ import { CATEGORY_KEYS, MAX_QUESTIONS, MIXED_CATEGORIES } from '../categories';
 import { enterFullscreen } from '../fullscreen';
 import { useTwoHundredQuestionsGame } from '../game-provider';
 import { LOCALES } from '../i18n';
+import { categoryColor, type QuestionColor } from '../palette';
 import { PageShell, primaryButtonClass, secondaryButtonClass } from './game-shell';
 
 export function SetupPhase() {
@@ -39,7 +40,7 @@ export function SetupPhase() {
           </p>
           <button
             type="button"
-            className={primaryButtonClass}
+            className={cn(primaryButtonClass, 'bg-white hover:bg-white/85')}
             disabled={availableCount === 0}
             onClick={() => {
               enterFullscreen();
@@ -60,7 +61,7 @@ export function SetupPhase() {
           <button
             type="button"
             onClick={() => setRulesOpen(true)}
-            className="flex min-h-12 items-center rounded-xl px-2 text-base font-medium text-sky-400 outline-none hover:text-sky-300 focus-visible:outline-2 focus-visible:outline-white"
+            className="flex min-h-12 items-center rounded-xl px-2 text-base font-medium text-white underline decoration-white/40 underline-offset-4 outline-none hover:decoration-white focus-visible:outline-2 focus-visible:outline-white"
           >
             {t.rules}
           </button>
@@ -93,24 +94,28 @@ export function SetupPhase() {
       </header>
 
       <section className="mt-12 flex flex-col gap-2" aria-label={t.categoriesLabel}>
-        <CategoryRow
+        <CategoryTile
           name={t.mixed.name}
           description={t.mixed.description}
           countLabel={t.questionCount(mixedCount)}
+          color={categoryColor('mixed')}
           selected={mixed}
           onClick={selectMixed}
         />
         <p className="mt-6 mb-2 text-base font-semibold">{t.chooseIndividually}</p>
-        {CATEGORY_KEYS.map((key) => (
-          <CategoryRow
-            key={key}
-            name={t.categories[key].name}
-            description={t.categories[key].description}
-            countLabel={t.questionCount(countByCategory[key] ?? 0)}
-            selected={!mixed && selectedCategories.includes(key)}
-            onClick={() => toggleCategory(key)}
-          />
-        ))}
+        <div className="grid grid-cols-1 gap-2 min-[360px]:grid-cols-2">
+          {CATEGORY_KEYS.map((key) => (
+            <CategoryTile
+              key={key}
+              name={t.categories[key].name}
+              description={t.categories[key].description}
+              countLabel={t.questionCount(countByCategory[key] ?? 0)}
+              color={categoryColor(key)}
+              selected={!mixed && selectedCategories.includes(key)}
+              onClick={() => toggleCategory(key)}
+            />
+          ))}
+        </div>
       </section>
 
       <Dialog open={rulesOpen} onOpenChange={setRulesOpen}>
@@ -139,45 +144,42 @@ export function SetupPhase() {
   );
 }
 
-function CategoryRow({
+function CategoryTile({
   name,
   description,
   countLabel,
+  color,
   selected,
   onClick,
 }: {
   name: string;
   description: string;
   countLabel: string;
+  color: QuestionColor;
   selected: boolean;
   onClick: () => void;
 }) {
+  // Unselected tiles dim only the background and switch to white text, because dimming the
+  // whole tile would drop dark text below WCAG AA on the lighter colors.
   return (
     <button
       type="button"
       onClick={onClick}
       aria-pressed={selected}
-      className={cn(
-        'flex min-h-16 w-full items-center gap-4 rounded-xl border px-4 py-4 text-left transition-colors duration-150 outline-none motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white',
-        selected ? 'border-sky-400 bg-sky-400/10' : 'border-white/10 hover:bg-white/5',
-      )}
+      className="flex min-h-16 w-full flex-col gap-1 rounded-xl p-4 text-left transition-colors duration-150 outline-none motion-reduce:transition-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+      style={{
+        backgroundColor: selected ? color.bg : `color-mix(in srgb, ${color.bg} 45%, black)`,
+        color: selected ? color.fg : '#FFFFFF',
+      }}
     >
-      <span className="min-w-0 flex-1">
-        <span className="block text-base font-semibold wrap-break-word">{name}</span>
-        <span className="block text-base leading-relaxed text-white/60 wrap-break-word">
-          {description}
+      <span className="flex items-start justify-between gap-2">
+        <span className="min-w-0 text-base font-semibold wrap-break-word hyphens-auto">{name}</span>
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center" aria-hidden>
+          {selected && <Check size={20} strokeWidth={3} />}
         </span>
-        <span className="mt-1 block text-sm text-white/60 tabular-nums">{countLabel}</span>
       </span>
-      <span
-        className={cn(
-          'flex h-6 w-6 shrink-0 items-center justify-center rounded-full border',
-          selected ? 'border-sky-400 bg-sky-400 text-black' : 'border-white/20',
-        )}
-        aria-hidden
-      >
-        {selected && <Check size={16} strokeWidth={3} />}
-      </span>
+      <span className="text-sm leading-snug wrap-break-word hyphens-auto">{description}</span>
+      <span className="mt-auto pt-2 text-sm font-medium tabular-nums">{countLabel}</span>
     </button>
   );
 }

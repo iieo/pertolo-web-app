@@ -1,6 +1,6 @@
 import type { TwoHundredQuestionCategory } from '@/db/schema';
 
-export type GamePhase = 'setup' | 'read' | 'handover' | 'reveal' | 'end';
+export type GamePhase = 'setup' | 'question' | 'end';
 
 export type CategoryKey = TwoHundredQuestionCategory;
 
