@@ -77,6 +77,34 @@ export const bluffWordsTable = pgTable('bluff_words', {
 
 export type BluffWordModel = typeof bluffWordsTable.$inferSelect;
 
+export const twoHundredQuestionCategoryEnum = pgEnum('two_hundred_question_category', [
+  'normal',
+  'friendly',
+  'coworkers',
+  'interactive',
+  'crazy',
+  'party',
+  'roast',
+  'exposed',
+  'future',
+  'deep',
+  'sexual',
+]);
+
+export const twoHundredQuestionsTable = pgTable('two_hundred_questions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  question: text('question').notNull().unique(),
+  category: twoHundredQuestionCategoryEnum('category').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export type TwoHundredQuestionModel = typeof twoHundredQuestionsTable.$inferSelect;
+export type TwoHundredQuestionCategory = (typeof twoHundredQuestionCategoryEnum.enumValues)[number];
+
 export const werewolfGamesTable = pgTable('werewolf_games', {
   id: varchar('id', { length: 20 }).primaryKey(), // Simple join code
   ownerSessionId: varchar('owner_session_id', { length: 255 }).notNull(),

@@ -7,7 +7,7 @@
     "dev:noturbo": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "types": "tsc",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -16,7 +16,8 @@
     "db:studio": "pnpm drizzle-kit studio --config=src/db/drizzle.config.ts",
     "db:introspect": "dotenv -e .env -- drizzle-kit studio --config=src/db/drizzle.config.ts",
     "seed:imposter": "dotenv -e .env -- tsx ./src/db/seed/imposter-words.ts",
-    "seed:bluff-words": "dotenv -e .env -- tsx ./src/db/seed/bluff-words.ts"
+    "seed:bluff-words": "dotenv -e .env -- tsx ./src/db/seed/bluff-words.ts",
+    "seed:two-hundred-questions": "dotenv -e .env -- tsx ./src/db/seed/two-hundred-questions/index.ts"
   },
   "packageManager": "pnpm@10.27.0",
   "dependencies": {
