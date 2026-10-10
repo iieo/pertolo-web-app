@@ -435,3 +435,117 @@ export const hotPotatoPromptsTable = pgTable('hot_potato_prompts', {
 
 export type HotPotatoPromptModel = typeof hotPotatoPromptsTable.$inferSelect;
 export type HotPotatoCategory = (typeof hotPotatoCategoryEnum.enumValues)[number];
+
+export const neverHaveIEverCategoryEnum = pgEnum('never_have_i_ever_category', [
+  'normal',
+  'party',
+  'travel',
+  'love',
+  'food',
+  'embarrassing',
+  'school',
+  'crazy',
+  'deep',
+  'sexual',
+]);
+
+export const neverHaveIEverTable = pgTable('never_have_i_ever', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  statement: text('statement').notNull().unique(),
+  statementEn: text('statement_en').notNull(),
+  category: neverHaveIEverCategoryEnum('category').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export type NeverHaveIEverModel = typeof neverHaveIEverTable.$inferSelect;
+export type NeverHaveIEverCategory = (typeof neverHaveIEverCategoryEnum.enumValues)[number];
+
+export const mostLikelyToCategoryEnum = pgEnum('most_likely_to_category', [
+  'normal',
+  'party',
+  'friends',
+  'work',
+  'love',
+  'crazy',
+  'future',
+  'roast',
+  'sexual',
+]);
+
+export const mostLikelyToTable = pgTable('most_likely_to', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  question: text('question').notNull().unique(),
+  questionEn: text('question_en').notNull(),
+  category: mostLikelyToCategoryEnum('category').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export type MostLikelyToModel = typeof mostLikelyToTable.$inferSelect;
+export type MostLikelyToCategory = (typeof mostLikelyToCategoryEnum.enumValues)[number];
+
+export const wavelengthCategoryEnum = pgEnum('wavelength_category', [
+  'normal',
+  'food',
+  'popculture',
+  'people',
+  'abstract',
+  'party',
+  'sexual',
+]);
+
+export const wavelengthSpectrumsTable = pgTable(
+  'wavelength_spectrums',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    left: text('left').notNull(),
+    right: text('right').notNull(),
+    leftEn: text('left_en').notNull(),
+    rightEn: text('right_en').notNull(),
+    category: wavelengthCategoryEnum('category').notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [unique('wavelength_spectrums_unique').on(table.left, table.right)],
+);
+
+export type WavelengthSpectrumModel = typeof wavelengthSpectrumsTable.$inferSelect;
+export type WavelengthCategory = (typeof wavelengthCategoryEnum.enumValues)[number];
+
+export const codenamesCategoryEnum = pgEnum('codenames_category', [
+  'classic',
+  'places',
+  'food',
+  'popculture',
+  'nature',
+  'sexual',
+]);
+
+export const codenamesWordsTable = pgTable(
+  'codenames_words',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    word: text('word').notNull(),
+    wordEn: text('word_en').notNull(),
+    category: codenamesCategoryEnum('category').notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [unique('codenames_words_unique').on(table.word, table.category)],
+);
+
+export type CodenamesWordModel = typeof codenamesWordsTable.$inferSelect;
+export type CodenamesCategory = (typeof codenamesCategoryEnum.enumValues)[number];

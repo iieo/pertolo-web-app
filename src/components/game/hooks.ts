@@ -57,3 +57,28 @@ export function useScrollLock() {
     };
   }, []);
 }
+
+export function useWakeLock() {
+  useEffect(() => {
+    if (!('wakeLock' in navigator)) return;
+    let sentinel: WakeLockSentinel | null = null;
+    let disposed = false;
+
+    const request = async () => {
+      if (document.visibilityState !== 'visible' || (sentinel && !sentinel.released)) return;
+      try {
+        const lock = await navigator.wakeLock.request('screen');
+        if (disposed) lock.release().catch(() => {});
+        else sentinel = lock;
+      } catch {}
+    };
+
+    request();
+    document.addEventListener('visibilitychange', request);
+    return () => {
+      disposed = true;
+      document.removeEventListener('visibilitychange', request);
+      sentinel?.release().catch(() => {});
+    };
+  }, []);
+}

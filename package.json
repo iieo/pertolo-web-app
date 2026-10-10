@@ -22,6 +22,10 @@
     "seed:heads-up": "dotenv -e .env -- tsx ./src/db/seed/heads-up/index.ts",
     "seed:hot-takes": "dotenv -e .env -- tsx ./src/db/seed/hot-takes/index.ts",
     "seed:hot-potato": "dotenv -e .env -- tsx ./src/db/seed/hot-potato/index.ts",
+    "seed:never-have-i-ever": "dotenv -e .env -- tsx ./src/db/seed/never-have-i-ever/index.ts",
+    "seed:most-likely-to": "dotenv -e .env -- tsx ./src/db/seed/most-likely-to/index.ts",
+    "seed:wavelength": "dotenv -e .env -- tsx ./src/db/seed/wavelength/index.ts",
+    "seed:codenames": "dotenv -e .env -- tsx ./src/db/seed/codenames/index.ts",
     "seed:drink": "dotenv -e .env -- tsx ./src/db/seed/drink/index.ts"
   },
   "packageManager": "pnpm@10.27.0",

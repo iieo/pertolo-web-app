@@ -55,6 +55,48 @@ const GAMES: Tile[] = [
     fg: WHITE,
   },
   {
+    href: '/most-likely-to',
+    title: 'Most Likely To',
+    description: 'Point at who would do it.',
+    bg: '#F15BB5',
+    fg: INK,
+  },
+  {
+    href: '/never-have-i-ever',
+    title: 'Never Have I Ever',
+    description: 'Done it? Drink or put a finger down.',
+    bg: '#4338CA',
+    fg: WHITE,
+  },
+  {
+    href: '/codenames',
+    title: 'Codenames',
+    description: 'Two teams, one word, many clues.',
+    bg: '#4CC9F0',
+    fg: INK,
+  },
+  {
+    href: '/spin-the-bottle',
+    title: 'Spin the Bottle',
+    description: 'Spin it or let the fingers decide.',
+    bg: '#2D6A4F',
+    fg: WHITE,
+  },
+  {
+    href: '/bluff',
+    title: 'Bluff',
+    description: 'Real definition or made up?',
+    bg: '#06D6A0',
+    fg: INK,
+  },
+  {
+    href: '/wavelength',
+    title: 'Wavelength',
+    description: 'One clue, one scale.',
+    bg: '#0077B6',
+    fg: WHITE,
+  },
+  {
     href: '/imposter',
     title: 'Imposter',
     description: 'Find the secret agents.',
@@ -66,20 +108,6 @@ const GAMES: Tile[] = [
     title: 'Drink',
     description: 'Tasks and dares for the whole group.',
     bg: '#7B2CBF',
-    fg: WHITE,
-  },
-  {
-    href: '/bluff',
-    title: 'Bluff',
-    description: 'Real definition or made up?',
-    bg: '#06D6A0',
-    fg: INK,
-  },
-  {
-    href: '/werewolf',
-    title: 'Werewolf',
-    description: 'Find the werewolves among you.',
-    bg: '#0077B6',
     fg: WHITE,
   },
   {
@@ -102,6 +130,13 @@ const GAMES: Tile[] = [
     description: 'Find the hidden path in the dark.',
     bg: '#E76F51',
     fg: INK,
+  },
+  {
+    href: '/werewolf',
+    title: 'Werewolf',
+    description: 'Find the werewolves among you.',
+    bg: '#0077B6',
+    fg: WHITE,
   },
 ];
 

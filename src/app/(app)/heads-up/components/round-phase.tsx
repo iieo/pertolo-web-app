@@ -3,10 +3,11 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import { GameShell } from '@/components/game/game-shell';
+import { useWakeLock } from '@/components/game/hooks';
 import type { GameColor } from '@/components/game/palette';
 import { cn } from '@/lib/utils';
 
-import { unlockOrientation, useIsLandscape, useTilt, useWakeLock, vibrate } from '../device';
+import { unlockOrientation, useIsLandscape, useTilt, vibrate } from '../device';
 import { useHeadsUpGame } from '../game-provider';
 import { CORRECT_COLOR, PASS_COLOR, TIME_UP_COLOR, wordColor } from '../palette';
 
