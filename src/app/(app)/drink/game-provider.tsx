@@ -1,79 +1,120 @@
 'use client';
-import { DrinkCategoryModel, DrinkTaskModel } from '@/db/schema';
-import { replaceNames } from '@/util/tasks';
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+
+import { createContext, useCallback, useContext, useRef, useState, type ReactNode } from 'react';
+
+import { countPlayerSlots, replaceNames, shuffle } from '@/util/tasks';
+
+import { DrinkCategory } from './categories';
+import { getDrinkTasks } from './game/actions';
+import { usePlayers } from './players';
+
+type StartResult = { ok: true } | { ok: false; error: string };
 
 type GameContextType = {
-  players: string[];
-  setPlayers: React.Dispatch<React.SetStateAction<string[]>>;
-  category: DrinkCategoryModel | null;
-  setCategory: React.Dispatch<React.SetStateAction<DrinkCategoryModel | null>>;
-  tasks: DrinkTaskModel[];
-  setTasks: React.Dispatch<React.SetStateAction<DrinkTaskModel[]>>;
-  showNextTask: () => void;
-  currentTask: DrinkTaskModel | null;
-  gradient: string | undefined;
-  replacePlayerNames: (content: string) => string;
+  category: DrinkCategory | null;
+  deck: string[];
+  currentIndex: number;
+  currentTask: string | null;
+  finished: boolean;
+  startGame: (category: DrinkCategory) => Promise<StartResult>;
+  nextTask: () => void;
+  restart: () => void;
+  endGame: () => void;
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
-export const GameProvider = ({ children }: { children: ReactNode }) => {
-  const getRandomGradient = React.useCallback(() => {
-    const gradients = [
-      'from-purple-950 via-purple-900 to-gray-900',
-      'from-pink-900 via-fuchsia-900 to-indigo-900',
-      'from-blue-900 via-cyan-900 to-teal-900',
-      'from-emerald-900 via-green-900 to-lime-900',
-      'from-yellow-900 via-orange-900 to-red-900',
-    ];
-    return gradients[Math.floor(Math.random() * gradients.length)];
-  }, []);
-  const [players, setPlayers] = useState<string[]>([]);
-  const [category, setCategory] = useState<DrinkCategoryModel | null>(null);
-  const [tasks, setTasks] = useState<DrinkTaskModel[]>([]);
-  const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
-  const [gradient, setGradient] = useState<string | undefined>(undefined);
 
-  React.useEffect(() => {
-    setGradient(getRandomGradient());
-  }, [getRandomGradient]);
+function buildDeck(tasks: string[], players: string[]) {
+  const playable = tasks.filter((task) => countPlayerSlots(task) <= players.length);
+  return shuffle(playable).map((task) => replaceNames(task, players));
+}
 
-  const currentTask = currentTaskIndex < tasks.length ? (tasks[currentTaskIndex] ?? null) : null;
+export function GameProvider({ children }: { children: ReactNode }) {
+  const players = usePlayers();
+  const [category, setCategory] = useState<DrinkCategory | null>(null);
+  const [deck, setDeck] = useState<string[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [finished, setFinished] = useState(false);
+  const taskCache = useRef(new Map<string, string[]>());
 
-  const replacePlayerNames = React.useCallback(
-    (content: string) => replaceNames(content, players),
+  const startGame = useCallback(
+    async (next: DrinkCategory): Promise<StartResult> => {
+      if (!players) return { ok: false, error: 'Spieler werden noch geladen.' };
+
+      let tasks = taskCache.current.get(next.id);
+      if (!tasks) {
+        try {
+          const result = await getDrinkTasks(next.id);
+          if (!result.success) {
+            return { ok: false, error: 'Die Aufgaben konnten nicht geladen werden.' };
+          }
+          tasks = result.data;
+          taskCache.current.set(next.id, tasks);
+        } catch {
+          return { ok: false, error: 'Keine Verbindung. Bitte versuche es noch einmal.' };
+        }
+      }
+
+      const nextDeck = buildDeck(tasks, players);
+      if (nextDeck.length === 0) {
+        return { ok: false, error: `In „${next.name}“ gibt es keine passenden Aufgaben.` };
+      }
+
+      setCategory(next);
+      setDeck(nextDeck);
+      setCurrentIndex(0);
+      setFinished(false);
+      return { ok: true };
+    },
     [players],
   );
 
-  const showNextTask = React.useCallback(() => {
-    setCurrentTaskIndex((current) => current + 1);
-    setGradient(getRandomGradient());
-  }, [getRandomGradient]);
+  const nextTask = useCallback(() => {
+    if (currentIndex + 1 >= deck.length) {
+      setFinished(true);
+      return;
+    }
+    setCurrentIndex(currentIndex + 1);
+  }, [currentIndex, deck.length]);
+
+  const restart = useCallback(() => {
+    const tasks = category && taskCache.current.get(category.id);
+    if (!tasks || !players) return;
+    setDeck(buildDeck(tasks, players));
+    setCurrentIndex(0);
+    setFinished(false);
+  }, [category, players]);
+
+  const endGame = useCallback(() => {
+    setCategory(null);
+    setDeck([]);
+    setCurrentIndex(0);
+    setFinished(false);
+  }, []);
 
   return (
     <GameContext.Provider
       value={{
-        gradient,
-        players,
-        setPlayers,
         category,
-        setCategory,
-        tasks,
-        setTasks,
-        currentTask,
-        showNextTask,
-        replacePlayerNames,
+        deck,
+        currentIndex,
+        currentTask: deck[currentIndex] ?? null,
+        finished,
+        startGame,
+        nextTask,
+        restart,
+        endGame,
       }}
     >
       {children}
     </GameContext.Provider>
   );
-};
+}
 
-export const useDrinkGame = () => {
+export function useDrinkGame() {
   const context = useContext(GameContext);
   if (context === undefined) {
-    throw new Error('useGame must be used within a GameProvider');
+    throw new Error('useDrinkGame must be used within a GameProvider');
   }
   return context;
-};
+}

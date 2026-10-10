@@ -1,31 +1,25 @@
-export function replaceNames(text: string, players: string[]): string {
-  const playerRegex = /\{\{player\}\}/g;
+const PLAYER_PLACEHOLDER = /\{\{player\}\}/g;
 
-  // Create a copy of the players array to avoid modifying the original
-  const availablePlayers = [...players];
+export function shuffle<T>(items: readonly T[]): T[] {
+  const result = [...items];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j]!, result[i]!];
+  }
+  return result;
+}
 
-  // Create a simple hash of the text to use as seed
-  const textHash =
-    text.split('').reduce((hash, char) => {
-      return (hash << 5) - hash + char.charCodeAt(0);
-    }, 0) >>> 0; // Convert to unsigned 32-bit integer
+export function countPlayerSlots(text: string): number {
+  return text.match(PLAYER_PLACEHOLDER)?.length ?? 0;
+}
 
-  // Counter for deterministic selection
-  let counter = textHash;
-
-  return text.replace(playerRegex, () => {
-    // If we've used all players, refill the available players
-    if (availablePlayers.length === 0) {
-      availablePlayers.push(...players);
-    }
-
-    // Use counter to get deterministic index
-    const index = counter % availablePlayers.length;
-    counter = (counter * 31 + 7) >>> 0; // Simple PRNG formula
-
-    // Remove and return the player at the index
-    const name = availablePlayers.splice(index, 1)[0];
-
-    return name || '{{player}}'; // Fallback to {{player}} if no name is available
+// Every {{player}} in a task stands for a different person, so names are drawn without
+// repetition. Only when a task has more slots than players do names start to repeat.
+export function replaceNames(text: string, players: readonly string[]): string {
+  if (players.length === 0) return text;
+  let pool: string[] = [];
+  return text.replace(PLAYER_PLACEHOLDER, () => {
+    if (pool.length === 0) pool = shuffle(players);
+    return pool.pop()!;
   });
 }
