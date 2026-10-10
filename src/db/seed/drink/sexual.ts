@@ -1,4 +1,4 @@
-export const spicyTasks: string[] = [
+export const sexualTasks: string[] = [
   'Ich hab noch nie jemanden beim ersten Date geküsst. Wer schon, trinkt 2 Schlucke.',
   'Ich hab noch nie einen Anmachspruch benutzt, der tatsächlich funktioniert hat. Wer schon, trinkt 2 Schlucke.',
   'Ich hab noch nie in einem Club mit einer fremden Person rumgeknutscht. Wer schon, trinkt 3 Schlucke.',

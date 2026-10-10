@@ -1,10 +1,8 @@
 import type { Metadata, Viewport } from 'next';
 
-import { GameProvider } from './game-provider';
-
 export const metadata: Metadata = {
   title: 'Drink',
-  description: 'Das Trinkspiel für eure Runde: Namen eintragen, Kategorie wählen, losspielen.',
+  description: 'Das Trinkspiel für eure Runde: Namen eintragen, Kategorien wählen, losspielen.',
   appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'Drink' },
 };
 
@@ -14,5 +12,5 @@ export const viewport: Viewport = {
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <GameProvider>{children}</GameProvider>;
+  return <div>{children}</div>;
 }

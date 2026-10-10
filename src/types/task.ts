@@ -1,6 +1,38 @@
+export const DRINK_TASK_KINDS = [
+  'task',
+  'versus',
+  'vote',
+  'never',
+  'group',
+  'question',
+  'rule',
+  'curse',
+  'category',
+  'timer',
+  'roulette',
+  'double',
+] as const;
+
+/**
+ * - versus: the first two {{player}} are the opponents
+ * - never: content is only the continuation, the UI adds "Ich hab noch nie"
+ * - rule, curse: last for `rounds` cards, then an automatic end card follows
+ * - timer: countdown of `seconds`
+ * - roulette: the game picks one random player, content has exactly one {{player}}
+ */
+export type DrinkTaskKind = (typeof DRINK_TASK_KINDS)[number];
+
 export type DefaultTask = {
   type: 'default';
   content: string;
+  contentEn?: string;
+  /** Missing means 'task'. */
+  kind?: DrinkTaskKind;
+  rounds?: number;
+  seconds?: number;
+  /** Text for the automatic "rule over" card. */
+  endContent?: string;
+  endContentEn?: string;
 };
 // z.b. jeder muss sein glas schenller als in 10 sekunden austrinkt darf 3 Schlucke verteilen
 export type ChallengeTask = {

@@ -1,37 +1,24 @@
-import { questionColor, type QuestionColor } from '@/app/(app)/200-questions/palette';
+import { CategoryKey, DrinkCategory } from './types';
 
-export type DrinkCategory = {
-  id: string;
-  name: string;
-  description: string | null;
-};
-
-// Index into the shared palette, so every category keeps its own color.
-const CATEGORY_ORDER: { name: string; color: number }[] = [
-  { name: 'Normal', color: 8 },
-  { name: 'Party', color: 5 },
-  { name: 'Duell', color: 2 },
-  { name: 'Wahrheit', color: 3 },
-  { name: 'Chaos', color: 4 },
-  { name: 'Wild', color: 0 },
-  { name: 'Spicy', color: 7 },
+export const CATEGORY_KEYS: CategoryKey[] = [
+  'Normal',
+  'Party',
+  'Duell',
+  'Wahrheit',
+  'Chaos',
+  'Wild',
+  'Sexual',
 ];
 
-function orderIndex(name: string) {
-  const index = CATEGORY_ORDER.findIndex((entry) => entry.name === name);
-  return index === -1 ? CATEGORY_ORDER.length : index;
+export const MIXED_CATEGORIES: CategoryKey[] = CATEGORY_KEYS.filter((key) => key !== 'Sexual');
+
+export function isCategoryKey(name: string): name is CategoryKey {
+  return (CATEGORY_KEYS as string[]).includes(name);
 }
 
-export function sortCategories<T extends { name: string }>(categories: T[]): T[] {
-  return [...categories].sort(
-    (a, b) => orderIndex(a.name) - orderIndex(b.name) || a.name.localeCompare(b.name, 'de'),
+export function playableCount(category: DrinkCategory, playerCount: number) {
+  return category.slotCounts.reduce(
+    (sum, { slots, count }) => (slots <= playerCount ? sum + count : sum),
+    0,
   );
-}
-
-export function categoryColorIndex(name: string, fallback: number) {
-  return CATEGORY_ORDER.find((entry) => entry.name === name)?.color ?? fallback;
-}
-
-export function categoryColor(name: string, fallback: number): QuestionColor {
-  return questionColor(categoryColorIndex(name, fallback));
 }
