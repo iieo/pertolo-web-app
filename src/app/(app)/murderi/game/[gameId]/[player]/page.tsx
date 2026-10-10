@@ -1,35 +1,22 @@
-import { dbGetVictim } from '../../../actions';
-import PlayerGameView from './player-game-view';
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
+import { getClaimToken, getPlayerByToken } from '../../../data';
+import { gamePath, isValidCode, normalizeCode } from '../../../limits';
+import PlayerGameView from './player-game-view';
+
+// The [player] segment is only cosmetic. Who you are comes from the claim cookie.
 export default async function PlayerPage({
   params,
 }: {
   params: Promise<{ gameId: string; player: string }>;
 }) {
-  const { gameId, player } = await params;
-  const decodedPlayer = decodeURIComponent(player);
-  const orders = await dbGetVictim(gameId, decodedPlayer);
-  const order = orders[0];
+  const { gameId: raw } = await params;
+  const gameId = normalizeCode(raw);
+  if (!isValidCode(gameId)) redirect('/murderi');
 
-  if (!order) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center p-4">
-        <div className="text-center space-y-4">
-          <p className="text-[#888] text-lg">Player not found in this game.</p>
-          <Link href="/murderi" className="text-[#dc2626] font-semibold hover:underline">
-            Back to home
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  const token = await getClaimToken(gameId);
+  const me = token ? await getPlayerByToken(gameId, token) : null;
+  if (!me || me.victim === null) redirect(gamePath(gameId));
 
-  // Dead — redirect to overview
-  if (order.victim == null) {
-    redirect(`/murderi/game/${gameId}`);
-  }
-
-  return <PlayerGameView gameId={gameId} player={decodedPlayer} initialVictim={order.victim} />;
+  return <PlayerGameView gameId={gameId} name={me.killer} initialTarget={me.victim} />;
 }

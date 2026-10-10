@@ -164,6 +164,20 @@
       "breakpoints": true
     },
     {
+      "idx": 23,
+      "version": "7",
+      "when": 1791627183821,
+      "tag": "0023_werewolf_rewrite",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1791627227358,
+      "tag": "0024_murderi_claim_token",
+      "breakpoints": true
+    },
+    {
       "idx": 25,
       "version": "7",
       "when": 1791630551660,

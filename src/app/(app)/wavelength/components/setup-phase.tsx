@@ -1,7 +1,7 @@
 'use client';
 
+import { BackLink } from '@/components/game/back-link';
 import { sumCounts } from '@/components/game/category-selection';
-import { enterFullscreen } from '@/components/game/fullscreen';
 import {
   CategoryGrid,
   LanguageToggle,
@@ -45,6 +45,7 @@ export function SetupPhase() {
     <SetupScreen
       title={t.title}
       subtitle={t.subtitle}
+      back={<BackLink locale={locale} />}
       rules={
         <RulesLink
           label={t.rules}
@@ -82,7 +83,6 @@ export function SetupPhase() {
           }
           disabled={availableCount === 0}
           onClick={() => {
-            enterFullscreen();
             startGame();
           }}
         />

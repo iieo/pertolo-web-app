@@ -1,6 +1,6 @@
 'use client';
 
-import { enterFullscreen } from '@/components/game/fullscreen';
+import { BackLink } from '@/components/game/back-link';
 import { SetupScreen, StartButton } from '@/components/game/setup';
 
 const RULES = [
@@ -17,11 +17,11 @@ export function StartPhase({ onStart }: { onStart: () => void }) {
     <SetupScreen
       title="Bluff"
       subtitle="Wahrheit oder Bluff: Erkennen deine Freunde den Unterschied?"
+      back={<BackLink locale="de" />}
       footer={
         <StartButton
           label="Starten"
           onClick={() => {
-            enterFullscreen();
             onStart();
           }}
         />

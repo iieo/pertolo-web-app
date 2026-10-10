@@ -13,6 +13,7 @@ import {
 import { cn } from '@/lib/utils';
 
 import { exitFullscreen } from './fullscreen';
+import { FullscreenButton } from './fullscreen-button';
 import { useScrollLock, useThemeColor } from './hooks';
 import { dialogContentClass, primaryButtonClass, secondaryButtonClass } from './page-shell';
 import type { GameColor } from './palette';
@@ -25,8 +26,9 @@ export type QuitLabels = {
 };
 
 /**
- * Fullscreen game surface that never scrolls. Syncs the theme-color meta and renders the Quit
- * button, which inherits the surface text color, with its confirm dialog.
+ * Fullscreen game surface that never scrolls. Syncs the theme-color meta and renders the header
+ * with the Quit button and its confirm dialog plus the fullscreen toggle. Both inherit the surface
+ * text color.
  */
 export function GameShell({
   color,
@@ -35,6 +37,8 @@ export function GameShell({
   labels,
   onQuit,
   showQuit = true,
+  onEnterFullscreen,
+  headerEnd,
   className,
   surfaceRef,
   children,
@@ -46,6 +50,9 @@ export function GameShell({
   /** Runs after fullscreen was exited. */
   onQuit: () => void;
   showQuit?: boolean;
+  onEnterFullscreen?: () => void;
+  /** Sits left of the fullscreen toggle. Interactive elements need `pointer-events-auto`. */
+  headerEnd?: React.ReactNode;
   className?: string;
   surfaceRef?: React.Ref<HTMLDivElement>;
   children: React.ReactNode;
@@ -63,7 +70,19 @@ export function GameShell({
       style={{ backgroundColor: color.bg, color: color.fg }}
     >
       {children}
-      {showQuit && <QuitButton lang={lang} labels={labels} onQuit={onQuit} />}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
+        <div className="flex w-full items-center justify-between pt-[calc(env(safe-area-inset-top)+0.5rem)] pr-[max(1rem,env(safe-area-inset-right))] pl-[max(1rem,env(safe-area-inset-left))]">
+          {showQuit ? <QuitButton lang={lang} labels={labels} onQuit={onQuit} /> : <span />}
+          <div className="flex items-center gap-1">
+            {headerEnd}
+            <FullscreenButton
+              lang={lang}
+              onEnter={onEnterFullscreen}
+              className="pointer-events-auto"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -80,20 +99,18 @@ function QuitButton({
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   return (
-    <div className="pointer-events-none absolute inset-x-0 top-0 z-20">
-      <div className="flex w-full items-center pt-[calc(env(safe-area-inset-top)+0.5rem)] pr-4 pl-[max(1rem,env(safe-area-inset-left))]">
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            setConfirmOpen(true);
-          }}
-          className="pointer-events-auto flex min-h-12 items-center gap-2 rounded-xl px-2 text-sm font-medium outline-none focus-visible:outline-2 focus-visible:outline-current"
-        >
-          <X size={20} aria-hidden />
-          {labels.quit}
-        </button>
-      </div>
+    <>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          setConfirmOpen(true);
+        }}
+        className="pointer-events-auto flex min-h-12 items-center gap-2 rounded-xl px-2 text-sm font-medium outline-none focus-visible:outline-2 focus-visible:outline-current"
+      >
+        <X size={20} aria-hidden />
+        {labels.quit}
+      </button>
 
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <DialogContent lang={lang} className={cn(dialogContentClass, 'sm:max-w-sm')}>
@@ -127,6 +144,6 @@ function QuitButton({
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 }

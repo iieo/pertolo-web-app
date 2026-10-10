@@ -1,6 +1,6 @@
 'use client';
 
-import { enterFullscreen } from '@/components/game/fullscreen';
+import { BackLink } from '@/components/game/back-link';
 import {
   CategoryGrid,
   LanguageToggle,
@@ -12,7 +12,6 @@ import {
 } from '@/components/game/setup';
 
 import { CATEGORY_KEYS, ROUND_LENGTHS, type RoundLength } from '../categories';
-import { lockLandscape } from '../device';
 import { useHeadsUpGame } from '../game-provider';
 import { categoryColor } from '../palette';
 
@@ -37,6 +36,7 @@ export function SetupPhase() {
     <SetupScreen
       title={t.title}
       subtitle={t.subtitle}
+      back={<BackLink locale={locale} />}
       rules={
         <RulesLink
           label={t.rules}
@@ -68,7 +68,6 @@ export function SetupPhase() {
           onClick={() => {
             // Permission first: iOS only shows its prompt while the tap still counts as a gesture.
             startGame();
-            enterFullscreen().then(lockLandscape);
           }}
         />
       }

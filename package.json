@@ -15,7 +15,7 @@
     "db:migrate": "pnpm drizzle-kit migrate --config=./src/db/drizzle.config.ts",
     "db:studio": "pnpm drizzle-kit studio --config=src/db/drizzle.config.ts",
     "db:introspect": "dotenv -e .env -- drizzle-kit studio --config=src/db/drizzle.config.ts",
-    "seed:imposter": "dotenv -e .env -- tsx ./src/db/seed/imposter-words.ts",
+    "seed:imposter": "dotenv -e .env -- tsx ./src/db/seed/imposter/index.ts",
     "seed:bluff-words": "dotenv -e .env -- tsx ./src/db/seed/bluff-words.ts",
     "seed:two-hundred-questions": "dotenv -e .env -- tsx ./src/db/seed/two-hundred-questions/index.ts",
     "seed:would-you-rather": "dotenv -e .env -- tsx ./src/db/seed/would-you-rather/index.ts",

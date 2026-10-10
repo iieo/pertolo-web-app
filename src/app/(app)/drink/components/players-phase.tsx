@@ -3,6 +3,7 @@
 import { useRef, useState } from 'react';
 import { X } from 'lucide-react';
 
+import { BackLink } from '@/components/game/back-link';
 import { secondaryButtonClass } from '@/components/game/page-shell';
 import {
   LanguageToggle,
@@ -50,6 +51,7 @@ export function PlayersPhase() {
     <SetupScreen
       title={t.title}
       subtitle={t.playersSubtitle}
+      back={<BackLink locale={locale} />}
       rules={
         <RulesLink
           label={t.rules}

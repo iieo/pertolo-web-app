@@ -12,7 +12,7 @@ import { HIDDEN_CARD, ROLE_COLORS, TEAM_COLORS } from '../palette';
 import type { Card, Team } from '../types';
 
 const headerButtonClass =
-  'flex min-h-12 items-center rounded-xl px-2 text-sm font-medium outline-none focus-visible:outline-2 focus-visible:outline-current sm:px-3 md:text-base';
+  'pointer-events-auto flex min-h-12 items-center rounded-xl px-2 text-sm font-medium outline-none focus-visible:outline-2 focus-visible:outline-current sm:px-3 md:text-base';
 
 // Sized against the card itself (size container): long words get smaller and may wrap, the
 // block size cap keeps short words from overflowing flat landscape cards.
@@ -63,10 +63,8 @@ export function BoardPhase() {
       lang={locale}
       labels={t}
       onQuit={backToSetup}
-      className="flex flex-col transition-colors duration-300 motion-reduce:transition-none"
-    >
-      <header className="flex shrink-0 justify-end pt-[calc(env(safe-area-inset-top)+0.5rem)] pr-[max(1rem,env(safe-area-inset-right))] pb-2 pl-24">
-        <div className="flex items-center gap-1">
+      headerEnd={
+        <>
           <button
             type="button"
             aria-label={t.keyLabel}
@@ -98,8 +96,12 @@ export function BoardPhase() {
           >
             {t.endTurn}
           </button>
-        </div>
-      </header>
+        </>
+      }
+      className="flex flex-col transition-colors duration-300 motion-reduce:transition-none"
+    >
+      {/* Keeps the board clear of the header overlay. */}
+      <div aria-hidden className="h-[calc(env(safe-area-inset-top)+4rem)] shrink-0" />
 
       <div className="min-h-0 flex-1 bg-black pt-1 pr-[max(0.25rem,env(safe-area-inset-right))] pb-[max(0.25rem,env(safe-area-inset-bottom))] pl-[max(0.25rem,env(safe-area-inset-left))] sm:pt-2 sm:pr-[max(0.5rem,env(safe-area-inset-right))] sm:pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:pl-[max(0.5rem,env(safe-area-inset-left))] md:p-4">
         <div

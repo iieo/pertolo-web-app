@@ -7,7 +7,7 @@ import { useWakeLock } from '@/components/game/hooks';
 import type { GameColor } from '@/components/game/palette';
 import { cn } from '@/lib/utils';
 
-import { unlockOrientation, useIsLandscape, useTilt, vibrate } from '../device';
+import { lockLandscape, unlockOrientation, useIsLandscape, useTilt, vibrate } from '../device';
 import { useHeadsUpGame } from '../game-provider';
 import { CORRECT_COLOR, PASS_COLOR, TIME_UP_COLOR, wordColor } from '../palette';
 
@@ -130,6 +130,25 @@ export function RoundPhase() {
         backToSetup();
       }}
       showQuit={view !== 'timeUp'}
+      onEnterFullscreen={lockLandscape}
+      headerEnd={
+        phase === 'playing' &&
+        !timeUp &&
+        landscape && (
+          <div
+            role="timer"
+            aria-label={t.secondsLeft(remaining)}
+            className={cn(
+              'flex min-h-12 items-center px-2 tabular-nums',
+              finalSeconds
+                ? 'text-2xl font-bold animate-pulse motion-reduce:animate-none'
+                : 'text-sm font-semibold opacity-80',
+            )}
+          >
+            {remaining}
+          </div>
+        )
+      }
     >
       {view === 'timeUp' && <Message text={t.timeUp} />}
 
@@ -175,21 +194,6 @@ export function RoundPhase() {
             />
           </div>
         </>
-      )}
-
-      {phase === 'playing' && !timeUp && landscape && (
-        <div
-          role="timer"
-          aria-label={t.secondsLeft(remaining)}
-          className={cn(
-            'pointer-events-none absolute top-[calc(env(safe-area-inset-top)+0.5rem)] right-[max(1rem,env(safe-area-inset-right))] z-20 flex min-h-12 items-center tabular-nums',
-            finalSeconds
-              ? 'text-2xl font-bold animate-pulse motion-reduce:animate-none'
-              : 'text-sm font-semibold opacity-80',
-          )}
-        >
-          {remaining}
-        </div>
       )}
     </GameShell>
   );

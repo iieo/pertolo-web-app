@@ -1,133 +1,107 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Users, ArrowRight, Loader2 } from 'lucide-react';
+
+import { dbFindGame } from './actions';
+import {
+  PageShell,
+  inputClass,
+  primaryButtonClass,
+  secondaryButtonClass,
+} from './components/shell';
+import { errorMessage } from './i18n';
+import { CODE_LENGTH, gamePath, normalizeCode } from './limits';
+import { useT } from './locale';
 
 export default function MurderiHome() {
-  const [gameId, setGameId] = useState('');
-  const [joining, setJoining] = useState(false);
-  const [creating, setCreating] = useState(false);
+  const { t } = useT();
   const router = useRouter();
+  const [code, setCode] = useState('');
+  const [joining, setJoining] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleJoin = () => {
-    const code = gameId.trim().toUpperCase();
-    if (code.length < 4) return;
+  const handleJoin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (code.length !== CODE_LENGTH || joining) return;
     setJoining(true);
-    router.push(`/murderi/game/${code}`);
+    setError(null);
+    try {
+      const result = await dbFindGame(code);
+      if (!result.success) {
+        setError(result.error);
+        setJoining(false);
+        return;
+      }
+      router.push(gamePath(result.data.gameId));
+    } catch {
+      setError('unknown');
+      setJoining(false);
+    }
   };
 
   return (
-    <div className="min-h-[100dvh] w-full bg-black flex flex-col p-4 sm:p-6 md:max-w-md md:mx-auto relative overflow-hidden">
-      {/* Background Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[50dvh] bg-gradient-to-b from-[#dc2626]/20 to-transparent pointer-events-none" />
+    <PageShell backHref="/">
+      <h1 className="text-4xl font-bold tracking-tight md:text-5xl">{t.title}</h1>
+      <p className="mt-2 text-base leading-relaxed text-white/60">{t.subtitle}</p>
 
-      <div className="flex-1 flex flex-col justify-between space-y-8 z-10 py-8">
-        {/* Hero Section */}
-        <div className="space-y-6">
-          <div className="relative aspect-[4/5] w-full rounded-3xl overflow-hidden border border-[#222] shadow-2xl shadow-red-900/10">
-            <Image
-              src="/murderi/hero.png"
-              alt="Murderi Hero Illustration"
-              fill
-              className="object-cover"
-              priority
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
-
-            {/* Logo Overlay */}
-            <div className="absolute bottom-6 left-6 right-6">
-              <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-4xl font-black text-white tracking-tighter uppercase italic">
-                  Murderi
-                </h1>
-              </div>
-              <p className="text-[#ccc] text-sm font-medium max-w-[240px] leading-relaxed">
-                A high-stakes social assassination game. Hunter or Prey?
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Actions Section */}
-        <div className="space-y-6">
-          {/* Join Game */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between px-1">
-              <p className="text-[10px] font-black text-[#666] uppercase tracking-[0.2em]">
-                Active Mission
-              </p>
-              <div className="flex items-center gap-1.5">
-                <div className="w-1 h-1 rounded-full bg-[#dc2626] animate-pulse" />
-                <span className="text-[10px] font-bold text-[#444] uppercase tracking-widest">
-                  Live
-                </span>
-              </div>
-            </div>
-            <div className="bg-[#111]/80 backdrop-blur-sm rounded-2xl border border-[#222] p-4 space-y-3">
-              <div className="relative">
-                <Input
-                  placeholder="ENTER ACCESS CODE"
-                  value={gameId}
-                  onChange={(e) => setGameId(e.target.value.toUpperCase())}
-                  onKeyDown={(e) => e.key === 'Enter' && handleJoin()}
-                  maxLength={6}
-                  className="bg-[#1a1a1a] border-[#333] text-white placeholder:text-[#333] text-lg font-black tracking-[0.3em] uppercase text-center rounded-xl h-14 focus-visible:ring-[#dc2626] focus-visible:border-[#dc2626]/50 transition-all"
-                />
-              </div>
-              <Button
-                onClick={handleJoin}
-                disabled={gameId.trim().length < 4 || joining}
-                className="w-full h-14 text-sm font-black uppercase tracking-widest rounded-xl bg-[#dc2626] hover:bg-[#b91c1c] text-white disabled:opacity-20 shadow-lg shadow-red-600/10 transition-all flex items-center justify-center gap-2 group"
-              >
-                {joining ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <>
-                    Assemble Team
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                  </>
-                )}
-              </Button>
-            </div>
-          </div>
-
-          {/* Divider */}
-          <div className="flex items-center gap-4 py-2">
-            <div className="flex-1 h-[1px] bg-[#222]" />
-            <span className="text-[#444] text-[10px] font-black uppercase tracking-[0.3em]">
-              Operational Status
-            </span>
-            <div className="flex-1 h-[1px] bg-[#222]" />
-          </div>
-
-          {/* Create Game */}
-          <Button
-            onClick={() => {
-              setCreating(true);
-              router.push('/murderi/create');
+      <form onSubmit={handleJoin} className="mt-12 flex flex-col gap-4" noValidate>
+        <h2 className="text-xl font-semibold">{t.joinTitle}</h2>
+        <div className="flex flex-col gap-2">
+          <label htmlFor="murderi-code" className="text-sm font-medium text-white/60">
+            {t.codeLabel}
+          </label>
+          <input
+            id="murderi-code"
+            value={code}
+            onChange={(e) => {
+              setCode(normalizeCode(e.target.value));
+              setError(null);
             }}
-            disabled={creating}
-            variant="outline"
-            className="w-full h-14 text-sm font-black uppercase tracking-widest rounded-xl bg-transparent border-[#333] hover:bg-[#111] text-[#888] hover:text-white transition-all flex items-center justify-center gap-2 group disabled:opacity-50"
-          >
-            {creating ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <>
-                <Users className="w-4 h-4 group-hover:text-[#dc2626] transition-colors" />
-                Initialize Agency
-              </>
-            )}
-          </Button>
+            inputMode="text"
+            autoCapitalize="characters"
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
+            maxLength={CODE_LENGTH}
+            placeholder="ABCD"
+            aria-describedby="murderi-code-hint murderi-code-error"
+            aria-invalid={error !== null}
+            className={`${inputClass} text-center text-2xl font-bold tracking-widest uppercase`}
+          />
+          <p id="murderi-code-hint" className="text-sm leading-relaxed text-white/60">
+            {t.codeHint}
+          </p>
+          <p id="murderi-code-error" role="alert" className="text-sm text-[#f87171]">
+            {error ? errorMessage(t, error) : null}
+          </p>
         </div>
+        <button
+          type="submit"
+          className={primaryButtonClass}
+          disabled={code.length !== CODE_LENGTH || joining}
+        >
+          {joining ? t.joining : t.join}
+        </button>
+      </form>
+
+      <div className="mt-8">
+        <Link href="/murderi/create" className={secondaryButtonClass}>
+          {t.createGame}
+        </Link>
       </div>
 
-      {/* Footer Decoration */}
-      <div className="absolute bottom-[-100px] left-1/2 -translate-x-1/2 w-[200%] h-[200px] bg-[#dc2626]/5 blur-[120px] pointer-events-none" />
-    </div>
+      <section className="mt-12 flex flex-col gap-4" aria-labelledby="murderi-rules">
+        <h2 id="murderi-rules" className="text-xl font-semibold">
+          {t.rulesTitle}
+        </h2>
+        <ol className="flex list-decimal flex-col gap-2 pl-6 text-base leading-relaxed text-white/80">
+          {t.rulesList.map((rule) => (
+            <li key={rule}>{rule}</li>
+          ))}
+        </ol>
+      </section>
+    </PageShell>
   );
 }

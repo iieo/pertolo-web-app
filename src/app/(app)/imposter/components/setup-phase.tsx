@@ -3,7 +3,7 @@
 import { useId } from 'react';
 import { Minus, Plus } from 'lucide-react';
 
-import { enterFullscreen } from '@/components/game/fullscreen';
+import { BackLink } from '@/components/game/back-link';
 import { focusRingClass } from '@/components/game/page-shell';
 import {
   CategoryTile,
@@ -49,6 +49,7 @@ export const SetupPhase = () => {
     <SetupScreen
       title="Imposter"
       subtitle="Everyone shares a secret word. Except the imposters."
+      back={<BackLink locale="en" />}
       rules={
         <RulesLink
           label="Rules"
@@ -94,7 +95,6 @@ export const SetupPhase = () => {
             }`}
             disabled={loading || playerCount < MIN_PLAYERS}
             onClick={() => {
-              enterFullscreen();
               startGame();
             }}
           />

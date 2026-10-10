@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { BackLink } from '@/components/game/back-link';
 import { cn } from '@/lib/utils';
 import { BetCard } from './bet-card';
 import { useBet } from '../bet-provider';
@@ -42,7 +43,8 @@ export function BetFeedTabs({ openBets, resolvedBets, mineBets }: BetFeedTabsPro
 
   return (
     <div className={pageClass}>
-      <header className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+      <BackLink locale="de" />
+      <header className="mt-8 flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
         <h1 className={pageTitleClass}>Wetten</h1>
         {balance !== null && (
           <p className="flex flex-col items-start sm:items-end">

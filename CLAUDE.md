@@ -73,10 +73,10 @@ New games are built on the shared kit in `src/components/game/`. It covers the s
 - **Spacing** follows a fixed scale: 4, 8, 16, 24, 32, 48, 64, 96 px.
 - **One font**, hierarchy through size and weight only.
 - **Color:** neutral chrome (black, white, grays) plus one accent for actions. Bold, solid, full-bleed colors are used as content backgrounds (one color per question or card, colored setup tiles), always with AA contrast for the text on them.
-- **Game screens show only the content.** No progress, no counters, no hints, no next button. Tap anywhere to advance, with a short double-tap guard. The only control is the Quit button in the header. Game screens never scroll (`h-dvh overflow-hidden`, `touch-manipulation`, `select-none`).
+- **Game screens show only the content.** No progress, no counters, no hints, no next button. Tap anywhere to advance, with a short double-tap guard. The only controls are the Quit button and the fullscreen toggle in the header. Game screens never scroll (`h-dvh overflow-hidden`, `touch-manipulation`, `select-none`).
 - **Flow:** setup, then the game directly, then an end screen. No handover or "pass the phone" interstitial screens.
-- **Setup screen:** colorful category tiles, Mixed as default (all categories except sexual, exclusive with single picks, multi-select allowed), DE/EN toggle, rules link, one Start button that enters fullscreen.
-- **Fullscreen and mobile:** request fullscreen on Start (with webkit fallback), `appleWebApp` metadata and `viewportFit: 'cover'`, respect safe-area insets, sync the `theme-color` meta to the current background. Mobile first, works at phone width with no horizontal scroll.
+- **Setup screen:** colorful category tiles, Mixed as default (all categories except sexual, exclusive with single picks, multi-select allowed), DE/EN toggle, rules link, one Start button.
+- **Fullscreen and mobile:** never enter fullscreen automatically. `GameShell` shows a toggle icon (enter and exit, webkit fallback, hidden where unsupported), `appleWebApp` metadata and `viewportFit: 'cover'`, respect safe-area insets, sync the `theme-color` meta to the current background. Mobile first, works at phone width with no horizontal scroll.
 - **i18n:** every game supports German and English. All UI strings live in the game's `i18n.ts`, content is stored in both languages in the DB, and the locale is persisted in localStorage with the browser language as fallback.
 - **Content:** questions come in random order (Fisher-Yates per round). Content lives in seed files per category under `src/db/seed/<game>/` and is synced to the DB by an idempotent seed script.
 - **Accessibility:** aria-labels on tap areas, visible focus, respect `prefers-reduced-motion`.

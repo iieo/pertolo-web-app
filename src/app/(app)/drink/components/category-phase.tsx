@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-import { enterFullscreen, exitFullscreen } from '@/components/game/fullscreen';
+import { BackLink } from '@/components/game/back-link';
 import { focusRingClass } from '@/components/game/page-shell';
 import {
   CategoryGrid,
@@ -54,6 +54,7 @@ export function CategoryPhase() {
     <SetupScreen
       title={t.title}
       subtitle={t.withPlayers(names)}
+      back={<BackLink locale={locale} />}
       rules={
         <div className="flex flex-wrap items-center gap-x-4">
           <RulesLink
@@ -91,12 +92,7 @@ export function CategoryPhase() {
             label={starting ? t.loading : t.start}
             detail={availableCount === 0 ? t.selectAtLeastOne : t.tasksPerRound(availableCount)}
             disabled={availableCount === 0 || starting}
-            onClick={() => {
-              enterFullscreen();
-              startGame().then((ok) => {
-                if (!ok) exitFullscreen();
-              });
-            }}
+            onClick={() => startGame()}
           />
         </div>
       }

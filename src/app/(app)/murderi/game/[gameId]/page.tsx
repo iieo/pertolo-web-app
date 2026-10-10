@@ -1,19 +1,19 @@
-import { dbGetPlayers } from '../../actions';
-import { notFound } from 'next/navigation';
-import PlayerSelect from './player-select';
+import { redirect } from 'next/navigation';
 
-export default async function GamePlayers({ params }: { params: Promise<{ gameId: string }> }) {
-  const { gameId } = await params;
-  const orders = await dbGetPlayers(gameId);
+import { NotFoundView } from '../../components/shell';
+import { buildOverview, getClaimToken, getGameRows } from '../../data';
+import { gamePath, isValidCode, normalizeCode } from '../../limits';
+import GameOverview from './overview';
 
-  if (orders.length === 0) {
-    notFound();
-  }
+export default async function GamePage({ params }: { params: Promise<{ gameId: string }> }) {
+  const { gameId: raw } = await params;
+  const gameId = normalizeCode(raw);
+  if (!isValidCode(gameId)) return <NotFoundView />;
+  if (gameId !== raw) redirect(gamePath(gameId));
 
-  const initialPlayers = orders.map((o) => ({
-    name: o.killer,
-    isAlive: o.victim !== null,
-  }));
+  const rows = await getGameRows(gameId);
+  if (rows.length === 0) return <NotFoundView />;
 
-  return <PlayerSelect gameId={gameId} initialPlayers={initialPlayers} />;
+  const token = await getClaimToken(gameId);
+  return <GameOverview initial={buildOverview(gameId, rows, token)} />;
 }

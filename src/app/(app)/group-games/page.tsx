@@ -4,6 +4,8 @@ export const dynamic = 'force-dynamic';
 
 import { useEffect, useState } from 'react';
 
+import { BackLink } from '@/components/game/back-link';
+
 const INK = '#111111';
 const WHITE = '#FFFFFF';
 
@@ -179,7 +181,10 @@ export default function GroupGamesPage() {
       `}</style>
 
       <div className="min-h-dvh w-full bg-black pr-[max(1rem,env(safe-area-inset-right))] pl-[max(1rem,env(safe-area-inset-left))] text-white sm:pr-[max(2rem,env(safe-area-inset-right))] sm:pl-[max(2rem,env(safe-area-inset-left))]">
-        <main className="mx-auto w-full max-w-lg pt-[max(3rem,env(safe-area-inset-top))] pb-16 sm:max-w-2xl sm:pt-16 lg:max-w-5xl lg:pt-24 lg:pb-24">
+        <main className="mx-auto w-full max-w-lg pt-[calc(env(safe-area-inset-top)+0.5rem)] pb-16 sm:max-w-2xl lg:max-w-5xl lg:pb-24">
+          <div className="mb-8 sm:mb-12 lg:mb-16">
+            <BackLink locale="de" />
+          </div>
           <header>
             <h1 className="text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
               Gruppenspiele

@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
+import { BackLink } from '@/components/game/back-link';
 import { getBetDetail, getBetChartData } from './actions';
 import { getSession } from '@/lib/auth-server';
 import { OddsDisplay } from '../components/odds-display';
@@ -30,12 +30,7 @@ export default async function BetDetailPage({ params }: { params: Promise<{ betI
 
   return (
     <div className={`${pageClass} max-w-3xl`}>
-      <Link
-        href="/bet"
-        className="-ml-2 inline-flex min-h-12 items-center rounded-xl px-2 text-base font-medium text-white/60 underline decoration-white/30 underline-offset-4 outline-none hover:text-white hover:decoration-white focus-visible:outline-2 focus-visible:outline-white"
-      >
-        Zurück zum Feed
-      </Link>
+      <BackLink href="/bet" locale="de" label="Zurück zum Feed" />
 
       <header className="mt-8">
         <p className="text-sm text-white/60">

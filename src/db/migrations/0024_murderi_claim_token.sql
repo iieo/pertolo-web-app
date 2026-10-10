@@ -1,0 +1,1 @@
+ALTER TABLE "murderi_orders" ADD COLUMN "claim_token" text;

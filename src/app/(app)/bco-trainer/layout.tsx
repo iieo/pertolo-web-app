@@ -2,12 +2,13 @@ import type { Metadata, Viewport } from 'next';
 
 export const metadata: Metadata = {
   title: 'BCO Trainer',
-  description: 'Train your rhythm reading.',
+  description: 'Rhythmen hören, lesen und erkennen. Mit Einzählen, Metronom und Quiz.',
+  appleWebApp: { capable: true, statusBarStyle: 'black-translucent', title: 'BCO Trainer' },
 };
 
 export const viewport: Viewport = {
-  themeColor: '#000000',
   viewportFit: 'cover',
+  themeColor: '#000000',
 };
 
 export default function Layout({ children }: { children: React.ReactNode }) {

@@ -2,21 +2,53 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { X } from 'lucide-react';
+
+import { cn } from '@/lib/utils';
+
 import { dbCreateGame } from '../actions';
-import { Plus, Trash2, Play, Loader2 } from 'lucide-react';
-import { toast } from 'react-hot-toast';
+import {
+  PageShell,
+  inputClass,
+  primaryButtonClass,
+  secondaryButtonClass,
+} from '../components/shell';
+import { errorMessage } from '../i18n';
+import {
+  ErrorKey,
+  gamePath,
+  isReservedName,
+  MAX_NAME_LENGTH,
+  MAX_PLAYERS,
+  MIN_PLAYERS,
+  nameKey,
+  normalizeName,
+} from '../limits';
+import { useT } from '../locale';
 
 const STORAGE_KEY = 'murderi_saved_players';
 
 function loadSavedPlayers(): string[] {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return [];
-    const parsed: unknown = JSON.parse(saved);
+    const parsed: unknown = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '[]');
     if (!Array.isArray(parsed)) return [];
-    return parsed.filter((item): item is string => typeof item === 'string');
+    const seen = new Set<string>();
+    const result: string[] = [];
+    for (const item of parsed) {
+      if (typeof item !== 'string') continue;
+      const name = normalizeName(item);
+      if (
+        !name ||
+        name.length > MAX_NAME_LENGTH ||
+        isReservedName(name) ||
+        seen.has(nameKey(name))
+      ) {
+        continue;
+      }
+      seen.add(nameKey(name));
+      result.push(name);
+    }
+    return result.slice(0, MAX_PLAYERS);
   } catch {
     return [];
   }
@@ -25,147 +57,161 @@ function loadSavedPlayers(): string[] {
 function savePlayers(players: string[]) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(players));
-  } catch {
-    // localStorage may be full or unavailable
-  }
+  } catch {}
 }
 
 export default function CreateGame() {
-  const [players, setPlayers] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [playerName, setPlayerName] = useState('');
-  const inputRef = useRef<HTMLInputElement>(null);
+  const { t } = useT();
   const router = useRouter();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [players, setPlayers] = useState<string[]>([]);
+  const [loaded, setLoaded] = useState(false);
+  const [playerName, setPlayerName] = useState('');
+  const [error, setError] = useState<ErrorKey | 'max' | null>(null);
+  const [creating, setCreating] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
 
   useEffect(() => {
-    const saved = loadSavedPlayers();
-    if (saved.length > 0) {
-      setPlayers(saved);
-    }
+    setPlayers(loadSavedPlayers());
+    setLoaded(true);
   }, []);
 
   useEffect(() => {
-    savePlayers(players);
-  }, [players]);
+    if (loaded) savePlayers(players);
+  }, [players, loaded]);
 
-  const handleAddPlayer = () => {
-    const name = playerName.trim();
-    if (name.length < 2) {
-      toast.error('Name must be at least 2 characters');
-      return;
-    }
-    if (players.includes(name)) {
-      toast.error('That name is already taken');
-      return;
-    }
+  const full = players.length >= MAX_PLAYERS;
+
+  const handleAdd = (e: React.FormEvent) => {
+    e.preventDefault();
+    const name = normalizeName(playerName);
+    if (!name) return setError('emptyName');
+    if (name.length > MAX_NAME_LENGTH) return setError('nameTooLong');
+    if (isReservedName(name)) return setError('reservedName');
+    if (full) return setError('max');
+    if (players.some((p) => nameKey(p) === nameKey(name))) return setError('duplicateName');
     setPlayers((prev) => [...prev, name]);
     setPlayerName('');
+    setError(null);
+    setCreateError(null);
     inputRef.current?.focus();
   };
 
-  const removePlayer = (name: string) => {
-    setPlayers((prev) => prev.filter((p) => p !== name));
-  };
-
-  const handleCreateGame = async () => {
-    if (players.length < 3) {
-      toast.error('Need at least 3 players to start');
-      return;
-    }
-    setIsLoading(true);
+  const handleCreate = async () => {
+    if (players.length < MIN_PLAYERS || creating) return;
+    setCreating(true);
+    setCreateError(null);
     try {
       const result = await dbCreateGame(players);
       if (!result.success) {
-        toast.error(result.error);
+        setCreateError(result.error);
+        setCreating(false);
         return;
       }
-      router.push(`/murderi/game/${result.data.gameId}/share`);
+      router.push(`${gamePath(result.data.gameId)}/share`);
     } catch {
-      toast.error('Something went wrong. Please try again.');
-    } finally {
-      setIsLoading(false);
+      setCreateError('unknown');
+      setCreating(false);
     }
   };
 
+  const missing = MIN_PLAYERS - players.length;
+
   return (
-    <div className="min-h-[100dvh] w-full bg-black flex flex-col px-5 py-6 sm:p-6 md:max-w-md md:mx-auto pb-[env(safe-area-inset-bottom,24px)]">
-      <div className="flex-1 flex flex-col space-y-5 sm:space-y-6">
-        {/* Header */}
-        <div className="text-center">
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-            Create Game
-          </h1>
-          <p className="text-[#888] text-sm mt-1">Add your players below</p>
-        </div>
-
-        {/* Add player form */}
-        <div className="bg-[#111] rounded-2xl border border-[#222] p-4 sm:p-5 space-y-3">
-          <p className="text-xs font-bold text-[#888] uppercase tracking-widest">Add players</p>
-          <div className="flex gap-2">
-            <Input
-              ref={inputRef}
-              placeholder="Player name..."
-              value={playerName}
-              onChange={(e) => setPlayerName(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && handleAddPlayer()}
-              className="flex-1 bg-[#1a1a1a] border-[#333] text-white placeholder:text-[#555] text-[16px] rounded-xl h-12 focus-visible:ring-[#dc2626]"
-            />
-            <Button
-              type="button"
-              onClick={handleAddPlayer}
-              className="h-12 w-12 p-0 bg-[#dc2626] hover:bg-[#b91c1c] text-white rounded-xl shrink-0 active:scale-[0.95] transition-transform"
-            >
-              <Plus className="w-5 h-5" />
-            </Button>
-          </div>
-        </div>
-
-        {/* Player list */}
-        {players.length > 0 && (
-          <div className="bg-[#111] rounded-2xl border border-[#222] p-4 sm:p-5 space-y-3">
-            <p className="text-xs font-bold text-[#888] uppercase tracking-widest">
-              Players ({players.length})
-            </p>
-            <div className="space-y-2 max-h-[40vh] overflow-y-auto">
-              {players.map((player) => (
-                <div
-                  key={player}
-                  className="flex items-center justify-between bg-[#1a1a1a] rounded-xl px-4 py-3 border border-[#2a2a2a]"
-                >
-                  <span className="text-white font-medium truncate mr-3">{player}</span>
-                  <button
-                    onClick={() => removePlayer(player)}
-                    className="text-[#555] hover:text-[#dc2626] active:text-[#dc2626] transition-colors p-2 -m-2 shrink-0"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Create button */}
-        <div className="mt-auto pt-2 pb-2">
-          {players.length < 3 && (
-            <p className="text-center text-[#555] text-sm mb-3">
-              Add {3 - players.length} more player{3 - players.length !== 1 ? 's' : ''} to start
-            </p>
-          )}
-          <Button
-            onClick={handleCreateGame}
-            disabled={players.length < 3 || isLoading}
-            className="w-full h-14 text-base font-bold rounded-2xl bg-[#dc2626] hover:bg-[#b91c1c] text-white disabled:opacity-40 active:scale-[0.98] transition-transform"
-          >
-            {isLoading ? (
-              <Loader2 className="w-5 h-5 animate-spin mr-2" />
+    <PageShell
+      backHref="/murderi"
+      footer={
+        <div className="flex flex-col gap-4">
+          <p role="status" className="text-center text-sm text-white/60 tabular-nums">
+            {createError ? (
+              <span className="text-[#f87171]">{errorMessage(t, createError)}</span>
+            ) : missing > 0 ? (
+              t.needMore(missing)
             ) : (
-              <Play className="w-5 h-5 mr-2" />
+              t.playerCount(players.length)
             )}
-            {isLoading ? 'Creating...' : 'Start Game'}
-          </Button>
+          </p>
+          <button
+            type="button"
+            className={primaryButtonClass}
+            disabled={missing > 0 || creating}
+            onClick={handleCreate}
+          >
+            {creating ? t.creating : t.create}
+          </button>
         </div>
-      </div>
-    </div>
+      }
+    >
+      <h1 className="text-4xl font-bold tracking-tight md:text-5xl">{t.createTitle}</h1>
+      <p className="mt-2 text-base leading-relaxed text-white/60">
+        {t.createSubtitle(MIN_PLAYERS)}
+      </p>
+
+      <form onSubmit={handleAdd} className="mt-12 flex flex-col gap-2" noValidate>
+        <label htmlFor="murderi-name" className="text-sm font-medium text-white/60">
+          {t.nameLabel}
+        </label>
+        <div className="flex gap-2">
+          <input
+            ref={inputRef}
+            id="murderi-name"
+            value={playerName}
+            onChange={(e) => {
+              setPlayerName(e.target.value);
+              setError(null);
+            }}
+            maxLength={MAX_NAME_LENGTH}
+            autoComplete="off"
+            autoCapitalize="words"
+            enterKeyHint="done"
+            placeholder={t.namePlaceholder}
+            aria-describedby="murderi-name-error"
+            aria-invalid={error !== null}
+            disabled={full}
+            className={cn(inputClass, 'flex-1')}
+          />
+          <button
+            type="submit"
+            disabled={full}
+            className={cn(secondaryButtonClass, 'w-auto shrink-0 px-4')}
+          >
+            {t.add}
+          </button>
+        </div>
+        <p id="murderi-name-error" role="alert" className="text-sm text-[#f87171]">
+          {error === 'max' ? t.maxReached(MAX_PLAYERS) : error ? errorMessage(t, error) : null}
+        </p>
+        {full && !error && <p className="text-sm text-white/60">{t.maxReached(MAX_PLAYERS)}</p>}
+      </form>
+
+      {players.length > 0 && (
+        <section className="mt-8" aria-labelledby="murderi-players">
+          <h2 id="murderi-players" className="text-xl font-semibold">
+            {t.playersHeading}
+          </h2>
+          <ul className="mt-4 divide-y divide-white/10 border-y border-white/10">
+            {players.map((player) => (
+              <li
+                key={nameKey(player)}
+                className="flex min-h-14 items-center justify-between gap-4"
+              >
+                <span className="min-w-0 text-base break-words">{player}</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPlayers((prev) => prev.filter((p) => p !== player));
+                    setCreateError(null);
+                  }}
+                  aria-label={t.remove(player)}
+                  className="-mr-2 flex size-12 shrink-0 items-center justify-center rounded-xl text-white/60 outline-none hover:text-white focus-visible:outline-2 focus-visible:outline-white"
+                >
+                  <X size={20} aria-hidden />
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+    </PageShell>
   );
 }

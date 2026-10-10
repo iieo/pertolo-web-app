@@ -11,12 +11,15 @@ export function EndScreen({
   playAgainLabel,
   homeLabel,
   onPlayAgain,
+  onHome,
 }: {
   title: string;
   detail: string;
   playAgainLabel: string;
   homeLabel: string;
   onPlayAgain: () => void;
+  /** When set, the second button runs this instead of linking to the start page. */
+  onHome?: () => void;
 }) {
   return (
     <PageShell
@@ -25,9 +28,15 @@ export function EndScreen({
           <button type="button" className={primaryButtonClass} onClick={onPlayAgain}>
             {playAgainLabel}
           </button>
-          <Link href="/" className={secondaryButtonClass} onClick={() => exitFullscreen()}>
-            {homeLabel}
-          </Link>
+          {onHome ? (
+            <button type="button" className={secondaryButtonClass} onClick={onHome}>
+              {homeLabel}
+            </button>
+          ) : (
+            <Link href="/" className={secondaryButtonClass} onClick={() => exitFullscreen()}>
+              {homeLabel}
+            </Link>
+          )}
         </div>
       }
     >

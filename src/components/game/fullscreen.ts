@@ -1,9 +1,12 @@
+import { useSyncExternalStore } from 'react';
+
 type WebkitElement = HTMLElement & {
   webkitRequestFullscreen?: () => Promise<void> | void;
 };
 
 type WebkitDocument = Document & {
   webkitFullscreenElement?: Element | null;
+  webkitFullscreenEnabled?: boolean;
   webkitExitFullscreen?: () => Promise<void> | void;
 };
 
@@ -32,4 +35,35 @@ export async function exitFullscreen() {
   } catch {
     return;
   }
+}
+
+function subscribeFullscreen(onChange: () => void) {
+  document.addEventListener('fullscreenchange', onChange);
+  document.addEventListener('webkitfullscreenchange', onChange);
+  return () => {
+    document.removeEventListener('fullscreenchange', onChange);
+    document.removeEventListener('webkitfullscreenchange', onChange);
+  };
+}
+
+const noopSubscribe = () => () => {};
+
+export function useIsFullscreen() {
+  return useSyncExternalStore(
+    subscribeFullscreen,
+    () => getFullscreenElement() !== null,
+    () => false,
+  );
+}
+
+// False on iPhone Safari, which only supports fullscreen for video elements.
+export function useFullscreenSupported() {
+  return useSyncExternalStore(
+    noopSubscribe,
+    () => {
+      const doc = document as WebkitDocument;
+      return Boolean(doc.fullscreenEnabled ?? doc.webkitFullscreenEnabled);
+    },
+    () => false,
+  );
 }

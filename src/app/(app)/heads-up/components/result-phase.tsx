@@ -1,9 +1,9 @@
 'use client';
 
-import { enterFullscreen, exitFullscreen } from '@/components/game/fullscreen';
+import { exitFullscreen } from '@/components/game/fullscreen';
 import { PageShell, primaryButtonClass, secondaryButtonClass } from '@/components/game/page-shell';
 
-import { lockLandscape, unlockOrientation } from '../device';
+import { unlockOrientation } from '../device';
 import { useHeadsUpGame } from '../game-provider';
 
 export function ResultPhase() {
@@ -18,7 +18,6 @@ export function ResultPhase() {
             type="button"
             className={primaryButtonClass}
             onClick={() => {
-              enterFullscreen().then(lockLandscape);
               beginRound();
             }}
           >

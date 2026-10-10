@@ -1,6 +1,6 @@
 'use client';
 
-import { enterFullscreen } from '@/components/game/fullscreen';
+import { BackLink } from '@/components/game/back-link';
 import type { Locale } from '@/components/game/locale';
 import {
   CategoryTile,
@@ -39,6 +39,7 @@ export function SetupPhase({
     <SetupScreen
       title={t.title}
       subtitle={t.subtitle}
+      back={<BackLink locale={locale} />}
       rules={
         <RulesLink
           label={t.rules}
@@ -66,7 +67,6 @@ export function SetupPhase({
         <StartButton
           label={t.start}
           onClick={() => {
-            enterFullscreen();
             onStart();
           }}
         />

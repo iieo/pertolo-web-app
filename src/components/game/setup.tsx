@@ -19,6 +19,7 @@ const pressClass =
 export function SetupScreen({
   title,
   subtitle,
+  back,
   rules,
   settings,
   footer,
@@ -26,6 +27,8 @@ export function SetupScreen({
 }: {
   title: string;
   subtitle: string;
+  /** A BackLink, shown at the top where the Quit button sits on game screens. */
+  back?: React.ReactNode;
   rules?: React.ReactNode;
   settings?: React.ReactNode;
   footer: React.ReactNode;
@@ -33,7 +36,15 @@ export function SetupScreen({
 }) {
   return (
     <div className="min-h-dvh w-full bg-black pr-[max(1rem,env(safe-area-inset-right))] pl-[max(1rem,env(safe-area-inset-left))] text-white sm:pr-[max(1.5rem,env(safe-area-inset-right))] sm:pl-[max(1.5rem,env(safe-area-inset-left))] md:pr-[max(2rem,env(safe-area-inset-right))] md:pl-[max(2rem,env(safe-area-inset-left))] lg:pr-[max(3rem,env(safe-area-inset-right))] lg:pl-[max(3rem,env(safe-area-inset-left))]">
-      <div className="mx-auto flex min-h-dvh w-full max-w-6xl flex-col pt-[calc(env(safe-area-inset-top)+3rem)] md:pt-[calc(env(safe-area-inset-top)+4rem)] lg:pt-[calc(env(safe-area-inset-top)+6rem)]">
+      <div
+        className={cn(
+          'mx-auto flex min-h-dvh w-full max-w-6xl flex-col',
+          back
+            ? 'pt-[calc(env(safe-area-inset-top)+0.5rem)]'
+            : 'pt-[calc(env(safe-area-inset-top)+3rem)] md:pt-[calc(env(safe-area-inset-top)+4rem)] lg:pt-[calc(env(safe-area-inset-top)+6rem)]',
+        )}
+      >
+        {back && <div className="mb-8 md:mb-12 lg:mb-16">{back}</div>}
         <header className="flex flex-col items-start gap-4 md:gap-6">
           <h1 className="max-w-full text-5xl leading-[0.95] font-bold tracking-tight text-balance wrap-break-word md:text-7xl lg:text-8xl">
             {title}
