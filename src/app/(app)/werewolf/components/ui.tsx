@@ -1,7 +1,7 @@
 'use client';
 
 import { Fragment, useEffect, useState } from 'react';
-import { X } from 'lucide-react';
+import { Volume2, VolumeX, X } from 'lucide-react';
 
 import { FullscreenButton } from '@/components/game/fullscreen-button';
 import { useScrollLock, useThemeColor } from '@/components/game/hooks';
@@ -165,6 +165,7 @@ export function GameHeader({ extra }: { extra?: React.ReactNode }) {
       </button>
       <div className="flex items-center gap-1">
         {extra}
+        <NarrationButton />
         <FullscreenButton lang={locale} className={focusRing} />
       </div>
 
@@ -199,6 +200,26 @@ export function GameHeader({ extra }: { extra?: React.ReactNode }) {
         </DialogContent>
       </Dialog>
     </div>
+  );
+}
+
+function NarrationButton() {
+  const { view, t, narration } = useRoom();
+  if (!view.isHost || !narration.supported) return null;
+  const Icon = narration.enabled ? Volume2 : VolumeX;
+  return (
+    <button
+      type="button"
+      aria-label={t.narration}
+      aria-pressed={narration.enabled}
+      onClick={(e) => {
+        e.stopPropagation();
+        narration.toggle();
+      }}
+      className={cn('flex min-h-12 min-w-12 items-center justify-center rounded-xl', focusRing)}
+    >
+      <Icon size={20} aria-hidden />
+    </button>
   );
 }
 

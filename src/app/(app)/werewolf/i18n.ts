@@ -1,6 +1,6 @@
 import { LOCALES, type Locale } from '@/components/game/locale';
 
-import type { DeathCause, Winner } from './lib/engine';
+import type { DeathCause, NightStep, Winner } from './lib/engine';
 import type { Role, RolesError, Team } from './lib/roles';
 import type { TransformCause } from './lib/view';
 
@@ -240,6 +240,32 @@ export type Dictionary = {
   quitTitle: string;
   quitDescription: string;
   keepPlaying: string;
+
+  narration: string;
+  speech: {
+    reveal: string;
+    nightFalls: string;
+    steps: Record<NightStep, { wake: string; sleep: string }>;
+    dayBreaks: string;
+    noDeaths: string;
+    /** Sentence subject for a player of this role, e.g. "Die Seherin". */
+    who: Record<Role, string>;
+    death: (who: string) => string;
+    deathUnknown: string;
+    voteOut: (who: string) => string;
+    voteOutUnknown: string;
+    scapegoat: string;
+    idiotRevealed: string;
+    hunterChoosing: string;
+    silenced: string;
+    bearGrowls: string;
+    bearQuiet: string;
+    tie: string;
+    noVotes: string;
+    voteStarts: string;
+    secondVoteStarts: string;
+    gameOver: Record<Winner, string>;
+  };
 
   teams: Record<Team, string>;
   roles: Record<Role, RoleText>;
@@ -535,6 +561,114 @@ const de: Dictionary = {
   quitTitle: 'Spiel verlassen?',
   quitDescription: 'Über den Link kannst du mit deinem Namen wieder einsteigen.',
   keepPlaying: 'Weiterspielen',
+
+  narration: 'Sprachausgabe',
+  speech: {
+    reveal: 'Schaut euch heimlich eure Rollen an.',
+    nightFalls: 'Die Nacht bricht herein. Alle schließen die Augen.',
+    steps: {
+      cupid: { wake: 'Amor erwacht und wählt zwei Verliebte.', sleep: 'Amor schläft wieder ein.' },
+      wild_child: { wake: 'Das wilde Kind erwacht.', sleep: 'Das wilde Kind schläft wieder ein.' },
+      wanderer: {
+        wake: 'Die Nachtwandlerin erwacht.',
+        sleep: 'Die Nachtwandlerin schläft wieder ein.',
+      },
+      protector: { wake: 'Der Beschützer erwacht.', sleep: 'Der Beschützer schläft wieder ein.' },
+      priest: { wake: 'Der Priester erwacht.', sleep: 'Der Priester schläft wieder ein.' },
+      seer: { wake: 'Die Seherin erwacht.', sleep: 'Die Seherin schläft wieder ein.' },
+      wolf_seer: { wake: 'Der Wolfsseher erwacht.', sleep: 'Der Wolfsseher schläft wieder ein.' },
+      fox: { wake: 'Der Fuchs erwacht.', sleep: 'Der Fuchs schläft wieder ein.' },
+      detective: { wake: 'Der Detektiv erwacht.', sleep: 'Der Detektiv schläft wieder ein.' },
+      werewolves: {
+        wake: 'Die Werwölfe erwachen und suchen sich ein Opfer.',
+        sleep: 'Die Werwölfe schlafen wieder ein.',
+      },
+      infect_father: { wake: 'Der Urwolf erwacht.', sleep: 'Der Urwolf schläft wieder ein.' },
+      big_bad_wolf: {
+        wake: 'Der große böse Wolf erwacht.',
+        sleep: 'Der große böse Wolf schläft wieder ein.',
+      },
+      white_werewolf: {
+        wake: 'Der weiße Werwolf erwacht.',
+        sleep: 'Der weiße Werwolf schläft wieder ein.',
+      },
+      serial_killer: {
+        wake: 'Der Serienmörder erwacht.',
+        sleep: 'Der Serienmörder schläft wieder ein.',
+      },
+      witch: { wake: 'Die Hexe erwacht.', sleep: 'Die Hexe schläft wieder ein.' },
+      grumpy_grandma: {
+        wake: 'Die grummelige Oma erwacht.',
+        sleep: 'Die grummelige Oma schläft wieder ein.',
+      },
+      piper: { wake: 'Der Rattenfänger erwacht.', sleep: 'Der Rattenfänger schläft wieder ein.' },
+    },
+    dayBreaks: 'Der Tag bricht an. Das Dorf erwacht.',
+    noDeaths: 'Heute Nacht ist niemand gestorben.',
+    who: {
+      werewolf: 'Ein Werwolf',
+      villager: 'Ein Dorfbewohner',
+      seer: 'Die Seherin',
+      witch: 'Die Hexe',
+      protector: 'Der Beschützer',
+      hunter: 'Der Jäger',
+      cupid: 'Amor',
+      elder: 'Der Älteste',
+      idiot: 'Der Dorftrottel',
+      wild_child: 'Das wilde Kind',
+      big_bad_wolf: 'Der große böse Wolf',
+      wolf_cub: 'Das Wolfsjunge',
+      infect_father: 'Der Urwolf',
+      wolf_seer: 'Der Wolfsseher',
+      traitor: 'Der Verräter',
+      fox: 'Der Fuchs',
+      bear_tamer: 'Der Bärenführer',
+      knight: 'Der Ritter mit dem rostigen Schwert',
+      scapegoat: 'Der Sündenbock',
+      mayor: 'Der Bürgermeister',
+      detective: 'Der Detektiv',
+      priest: 'Der Priester',
+      sisters: 'Eine der Schwestern',
+      brothers: 'Einer der Brüder',
+      cursed: 'Der Verfluchte',
+      red_riding_hood: 'Rotkäppchen',
+      wanderer: 'Die Nachtwandlerin',
+      grumpy_grandma: 'Die grummelige Oma',
+      stuttering_judge: 'Der stotternde Richter',
+      apprentice_seer: 'Der Seherlehrling',
+      lycan: 'Der Lykanthrop',
+      beholder: 'Der Beobachter',
+      white_werewolf: 'Der weiße Werwolf',
+      serial_killer: 'Der Serienmörder',
+      piper: 'Der Rattenfänger',
+      angel: 'Der Engel',
+    },
+    death: (who) => `${who} ist gestorben.`,
+    deathUnknown: 'Jemand ist gestorben.',
+    voteOut: (who) => `Das Dorf hat entschieden. ${who} muss gehen.`,
+    voteOutUnknown: 'Das Dorf hat entschieden. Jemand muss gehen.',
+    scapegoat: 'Gleichstand. Der Sündenbock muss gehen.',
+    idiotRevealed:
+      'Das Dorf hat den Dorftrottel gewählt. Er bleibt im Spiel, darf aber nicht mehr abstimmen.',
+    hunterChoosing: 'Der Jäger wählt, wen er mitnimmt.',
+    silenced: 'Jemand darf heute nicht abstimmen.',
+    bearGrowls: 'Der Bär brummt.',
+    bearQuiet: 'Der Bär bleibt still.',
+    tie: 'Gleichstand. Niemand muss gehen.',
+    noVotes: 'Keine Stimmen. Niemand muss gehen.',
+    voteStarts: 'Die Abstimmung beginnt.',
+    secondVoteStarts: 'Die zweite Abstimmung beginnt.',
+    gameOver: {
+      village: 'Das Spiel ist vorbei. Das Dorf gewinnt.',
+      wolves: 'Das Spiel ist vorbei. Die Werwölfe gewinnen.',
+      lovers: 'Das Spiel ist vorbei. Die Verliebten gewinnen.',
+      angel: 'Das Spiel ist vorbei. Der Engel gewinnt.',
+      piper: 'Das Spiel ist vorbei. Der Rattenfänger gewinnt.',
+      white_werewolf: 'Das Spiel ist vorbei. Der weiße Werwolf gewinnt.',
+      serial_killer: 'Das Spiel ist vorbei. Der Serienmörder gewinnt.',
+      none: 'Das Spiel ist vorbei. Niemand gewinnt.',
+    },
+  },
 
   teams: { village: 'Dorf', wolves: 'Werwölfe', solo: 'Einzelgänger' },
   roles: {
@@ -1101,6 +1235,117 @@ const en: Dictionary = {
   quitTitle: 'Leave the game?',
   quitDescription: 'You can rejoin with your name using the link.',
   keepPlaying: 'Keep playing',
+
+  narration: 'Narration',
+  speech: {
+    reveal: 'Everyone, look at your role in secret.',
+    nightFalls: 'Night falls. Everyone, close your eyes.',
+    steps: {
+      cupid: { wake: 'Cupid wakes up and picks two lovers.', sleep: 'Cupid goes back to sleep.' },
+      wild_child: { wake: 'The Wild Child wakes up.', sleep: 'The Wild Child goes back to sleep.' },
+      wanderer: {
+        wake: 'The Night Wanderer wakes up.',
+        sleep: 'The Night Wanderer goes back to sleep.',
+      },
+      protector: { wake: 'The Protector wakes up.', sleep: 'The Protector goes back to sleep.' },
+      priest: { wake: 'The Priest wakes up.', sleep: 'The Priest goes back to sleep.' },
+      seer: { wake: 'The Seer wakes up.', sleep: 'The Seer goes back to sleep.' },
+      wolf_seer: { wake: 'The Wolf Seer wakes up.', sleep: 'The Wolf Seer goes back to sleep.' },
+      fox: { wake: 'The Fox wakes up.', sleep: 'The Fox goes back to sleep.' },
+      detective: { wake: 'The Detective wakes up.', sleep: 'The Detective goes back to sleep.' },
+      werewolves: {
+        wake: 'The werewolves wake up and choose a victim.',
+        sleep: 'The werewolves go back to sleep.',
+      },
+      infect_father: {
+        wake: 'The Accursed Wolf-Father wakes up.',
+        sleep: 'The Accursed Wolf-Father goes back to sleep.',
+      },
+      big_bad_wolf: {
+        wake: 'The Big Bad Wolf wakes up.',
+        sleep: 'The Big Bad Wolf goes back to sleep.',
+      },
+      white_werewolf: {
+        wake: 'The White Werewolf wakes up.',
+        sleep: 'The White Werewolf goes back to sleep.',
+      },
+      serial_killer: {
+        wake: 'The Serial Killer wakes up.',
+        sleep: 'The Serial Killer goes back to sleep.',
+      },
+      witch: { wake: 'The Witch wakes up.', sleep: 'The Witch goes back to sleep.' },
+      grumpy_grandma: {
+        wake: 'The Grumpy Grandma wakes up.',
+        sleep: 'The Grumpy Grandma goes back to sleep.',
+      },
+      piper: { wake: 'The Piper wakes up.', sleep: 'The Piper goes back to sleep.' },
+    },
+    dayBreaks: 'The day breaks. The village wakes up.',
+    noDeaths: 'Nobody died tonight.',
+    who: {
+      werewolf: 'A werewolf',
+      villager: 'A villager',
+      seer: 'The Seer',
+      witch: 'The Witch',
+      protector: 'The Protector',
+      hunter: 'The Hunter',
+      cupid: 'Cupid',
+      elder: 'The Elder',
+      idiot: 'The Village Idiot',
+      wild_child: 'The Wild Child',
+      big_bad_wolf: 'The Big Bad Wolf',
+      wolf_cub: 'The Wolf Cub',
+      infect_father: 'The Accursed Wolf-Father',
+      wolf_seer: 'The Wolf Seer',
+      traitor: 'The Minion',
+      fox: 'The Fox',
+      bear_tamer: 'The Bear Tamer',
+      knight: 'The Rusty Knight',
+      scapegoat: 'The Scapegoat',
+      mayor: 'The Mayor',
+      detective: 'The Detective',
+      priest: 'The Priest',
+      sisters: 'One of the sisters',
+      brothers: 'One of the brothers',
+      cursed: 'The Cursed One',
+      red_riding_hood: 'Red Riding Hood',
+      wanderer: 'The Night Wanderer',
+      grumpy_grandma: 'The Grumpy Grandma',
+      stuttering_judge: 'The Stuttering Judge',
+      apprentice_seer: 'The Apprentice Seer',
+      lycan: 'The Lycan',
+      beholder: 'The Beholder',
+      white_werewolf: 'The White Werewolf',
+      serial_killer: 'The Serial Killer',
+      piper: 'The Piper',
+      angel: 'The Angel',
+    },
+    death: (who) => `${who} has died.`,
+    deathUnknown: 'Someone has died.',
+    voteOut: (who) => `The village has decided. ${who} has to leave.`,
+    voteOutUnknown: 'The village has decided. Someone has to leave.',
+    scapegoat: 'A tie. The Scapegoat has to leave.',
+    idiotRevealed:
+      'The village voted out the Village Idiot. They stay in the game but can no longer vote.',
+    hunterChoosing: 'The Hunter is choosing who to take along.',
+    silenced: 'Someone cannot vote today.',
+    bearGrowls: 'The bear growls.',
+    bearQuiet: 'The bear stays quiet.',
+    tie: 'A tie. Nobody has to leave.',
+    noVotes: 'No votes. Nobody has to leave.',
+    voteStarts: 'The vote begins.',
+    secondVoteStarts: 'The second vote begins.',
+    gameOver: {
+      village: 'The game is over. The village wins.',
+      wolves: 'The game is over. The werewolves win.',
+      lovers: 'The game is over. The lovers win.',
+      angel: 'The game is over. The Angel wins.',
+      piper: 'The game is over. The Piper wins.',
+      white_werewolf: 'The game is over. The White Werewolf wins.',
+      serial_killer: 'The game is over. The Serial Killer wins.',
+      none: 'The game is over. Nobody wins.',
+    },
+  },
 
   teams: { village: 'Village', wolves: 'Werewolves', solo: 'Solo' },
   roles: {

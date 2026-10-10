@@ -26,7 +26,8 @@
     "seed:most-likely-to": "dotenv -e .env -- tsx ./src/db/seed/most-likely-to/index.ts",
     "seed:wavelength": "dotenv -e .env -- tsx ./src/db/seed/wavelength/index.ts",
     "seed:codenames": "dotenv -e .env -- tsx ./src/db/seed/codenames/index.ts",
-    "seed:drink": "dotenv -e .env -- tsx ./src/db/seed/drink/index.ts"
+    "seed:drink": "dotenv -e .env -- tsx ./src/db/seed/drink/index.ts",
+    "audio:werewolf": "dotenv -e .env -- tsx ./src/scripts/werewolf-audio.ts"
   },
   "packageManager": "pnpm@10.27.0",
   "dependencies": {

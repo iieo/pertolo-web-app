@@ -20,6 +20,7 @@ import { NightScreen } from './night';
 import { RevealScreen } from './reveal';
 import { RoomContext, type RoomContextValue } from './room-context';
 import { PageShell, primaryButtonClass, useI18n } from './ui';
+import { useNarration } from './use-narration';
 import { VoteResultScreen, VoteScreen } from './vote';
 
 const POLL_MS = 1500;
@@ -158,6 +159,7 @@ function JoinedRoom({
   const [error, setError] = useState<string | null>(null);
   const busyRef = useRef(false);
   const game = view.game;
+  const narration = useNarration(view, t, locale);
 
   const screenKey = `${view.status}:${game?.phase}:${game?.round}:${game?.turn?.kind ?? ''}`;
   const [errorKey, setErrorKey] = useState(screenKey);
@@ -217,8 +219,9 @@ function JoinedRoom({
       player: (id) => (id ? byId.get(id) : undefined),
       name: (id) => (id ? (byId.get(id)?.name ?? '') : ''),
       quit,
+      narration,
     };
-  }, [gameId, view, game, t, locale, clockOffset, busy, error, run, refresh, quit]);
+  }, [gameId, view, game, t, locale, clockOffset, busy, error, run, refresh, quit, narration]);
 
   return <RoomContext.Provider value={value}>{renderScreen(view)}</RoomContext.Provider>;
 }

@@ -143,6 +143,8 @@ export interface PrivateInfo {
 export interface GameView {
   phase: Phase;
   round: number;
+  /** Host only (for narration): the current night step. */
+  nightStep: NightStep | null;
   stepStartedAt: number;
   me: PrivateInfo | null;
   /** Set when this player has to act right now (night step or hunter shot). */
@@ -314,6 +316,7 @@ function buildGameView(engine: EngineGame, meId: string, isHost: boolean): GameV
   return {
     phase: s.phase,
     round: s.round,
+    nightStep: isHost && s.phase === 'night' && s.night ? s.night.step : null,
     stepStartedAt: hideStep ? s.nightStartedAt : s.stepStartedAt,
     me: me ? privateInfo(engine, meId) : null,
     turn,

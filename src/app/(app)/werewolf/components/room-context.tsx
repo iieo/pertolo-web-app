@@ -6,6 +6,7 @@ import type { Result } from '@/util/types';
 
 import type { Dictionary, Locale } from '../i18n';
 import type { GameView, JoinedView, ViewPlayer } from '../lib/view';
+import type { Narration } from './use-narration';
 
 export interface RoomContextValue {
   gameId: string;
@@ -23,6 +24,8 @@ export interface RoomContextValue {
   player: (id: string | null | undefined) => ViewPlayer | undefined;
   name: (id: string | null | undefined) => string;
   quit: () => Promise<void>;
+  /** Host-only spoken narration. */
+  narration: Narration;
 }
 
 export const RoomContext = createContext<RoomContextValue | null>(null);
