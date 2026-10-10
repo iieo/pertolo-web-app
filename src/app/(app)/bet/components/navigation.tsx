@@ -2,68 +2,96 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { List, PlusCircle, Trophy, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { PUBLIC_PATHS } from '../bet-provider';
 
 const navItems = [
-  { href: '/bet', label: 'Feed', icon: List },
-  { href: '/bet/create', label: 'Erstellen', icon: PlusCircle },
-  { href: '/bet/leaderboard', label: 'Ränge', icon: Trophy },
-  { href: '/bet/profile', label: 'Profil', icon: User },
+  { href: '/bet', label: 'Feed' },
+  { href: '/bet/create', label: 'Erstellen' },
+  { href: '/bet/leaderboard', label: 'Ränge' },
+  { href: '/bet/profile', label: 'Profil' },
 ];
+
+const linkFocus =
+  'outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-white';
 
 export function Navigation() {
   const pathname = usePathname();
 
+  if (PUBLIC_PATHS.includes(pathname)) return null;
+
+  const isActive = (href: string) =>
+    href === '/bet' ? pathname === '/bet' : pathname.startsWith(href);
+
   return (
     <>
-      {/* Mobile Navigation (Bottom) */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-black/80 backdrop-blur-xl md:hidden">
-        <div className="mx-auto flex max-w-lg items-center justify-around py-2">
+      <header className="sticky top-0 z-40 hidden border-b border-white/10 bg-black md:block">
+        <nav
+          aria-label="Wetten"
+          className="mx-auto flex h-16 w-full max-w-5xl items-center justify-between gap-8 pr-[max(2rem,env(safe-area-inset-right))] pl-[max(2rem,env(safe-area-inset-left))]"
+        >
+          <Link
+            href="/bet"
+            className={cn('-ml-2 rounded-xl px-2 py-2 text-xl font-bold tracking-tight', linkFocus)}
+          >
+            Pertolo Bets
+          </Link>
+          <ul className="flex items-center gap-2">
+            {navItems.map((item) => {
+              const active = isActive(item.href);
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    aria-current={active ? 'page' : undefined}
+                    className={cn(
+                      'flex min-h-12 items-center rounded-xl px-4 text-base transition-colors duration-150 motion-reduce:transition-none',
+                      linkFocus,
+                      active
+                        ? 'font-semibold text-white underline decoration-2 underline-offset-8'
+                        : 'font-medium text-white/60 hover:text-white',
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+      </header>
+
+      <nav
+        aria-label="Wetten"
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-black pr-[env(safe-area-inset-right)] pb-[env(safe-area-inset-bottom)] pl-[env(safe-area-inset-left)] md:hidden"
+      >
+        <ul className="mx-auto grid max-w-lg grid-cols-4">
           {navItems.map((item) => {
-            const isActive =
-              item.href === '/bet' ? pathname === '/bet' : pathname.startsWith(item.href);
+            const active = isActive(item.href);
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  'flex flex-col items-center gap-1 px-4 py-1.5 text-xs font-medium transition-colors',
-                  isActive ? 'text-amber-400' : 'text-white/40 hover:text-white/70',
-                )}
-              >
-                <item.icon size={22} />
-                <span>{item.label}</span>
-              </Link>
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  aria-current={active ? 'page' : undefined}
+                  className={cn(
+                    'flex min-h-16 items-center justify-center px-2 text-sm transition-colors duration-150 motion-reduce:transition-none',
+                    linkFocus,
+                    active ? 'font-semibold text-white' : 'font-medium text-white/50',
+                  )}
+                >
+                  <span
+                    className={cn(
+                      'border-b-2 pb-1',
+                      active ? 'border-white' : 'border-transparent',
+                    )}
+                  >
+                    {item.label}
+                  </span>
+                </Link>
+              </li>
             );
           })}
-        </div>
-      </nav>
-
-      {/* Desktop Navigation (Side) */}
-      <nav className="hidden sticky top-8 md:flex flex-col gap-2 rounded-2xl border border-white/10 bg-white/5 p-4">
-        <div className="mb-4 px-2">
-          <h2 className="text-xl font-extrabold text-white">Pertolo Bets</h2>
-        </div>
-        {navItems.map((item) => {
-          const isActive =
-            item.href === '/bet' ? pathname === '/bet' : pathname.startsWith(item.href);
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                'flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold transition-all',
-                isActive
-                  ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20'
-                  : 'text-white/60 hover:bg-white/10 hover:text-white',
-              )}
-            >
-              <item.icon size={20} className={cn(isActive ? 'text-black' : 'text-white/60')} />
-              <span>{item.label}</span>
-            </Link>
-          );
-        })}
+        </ul>
       </nav>
     </>
   );

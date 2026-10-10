@@ -2,16 +2,9 @@
 
 import { useState } from 'react';
 import { UserDrawer } from '../components/user-drawer';
-import { Coins } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type LeaderboardEntry = { userId: string; name: string; pointsBalance: number };
-
-const rankStyles = [
-  'border-yellow-500/30 bg-yellow-500/10',
-  'border-gray-400/30 bg-gray-400/10',
-  'border-orange-700/30 bg-orange-700/10',
-];
 
 interface LeaderboardListProps {
   entries: LeaderboardEntry[];
@@ -24,51 +17,44 @@ export function LeaderboardList({ entries }: LeaderboardListProps) {
 
   return (
     <>
-      <div className="space-y-2">
+      <ol className="flex flex-col divide-y divide-white/10 border-y border-white/10">
         {entries.map((entry, index) => {
           const rank = index + 1;
+          const top = rank <= 3;
           return (
-            <button
-              key={entry.userId}
-              onClick={() => setSelectedUser({ ...entry, rank })}
-              className={cn(
-                'flex w-full items-center gap-4 rounded-xl border p-4 text-left transition-all hover:bg-white/10',
-                index < 3 ? rankStyles[index] : 'border-white/10 bg-white/5',
-              )}
-            >
-              <div
-                className={cn(
-                  'flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold',
-                  index === 0
-                    ? 'bg-yellow-500 text-black'
-                    : index === 1
-                      ? 'bg-gray-400 text-black'
-                      : index === 2
-                        ? 'bg-orange-700 text-white'
-                        : 'bg-white/10 text-white/50',
-                )}
+            <li key={entry.userId}>
+              <button
+                type="button"
+                onClick={() => setSelectedUser({ ...entry, rank })}
+                className="flex min-h-16 w-full items-center gap-4 rounded-xl px-2 py-4 text-left transition-colors duration-150 outline-none hover:bg-white/5 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-white motion-reduce:transition-none sm:gap-6 sm:px-4"
               >
-                {rank}
-              </div>
-
-              <div className="min-w-0 flex-1">
-                <p className="truncate font-semibold text-white">{entry.name}</p>
-              </div>
-
-              <div className="flex items-center gap-1 text-amber-400">
-                <Coins size={14} />
-                <span className="text-sm font-bold">{entry.pointsBalance.toLocaleString()}</span>
-              </div>
-            </button>
+                <span
+                  className={cn(
+                    'w-8 shrink-0 text-right tabular-nums',
+                    top ? 'text-xl font-bold text-white' : 'text-base font-medium text-white/60',
+                  )}
+                >
+                  {rank}
+                </span>
+                <span
+                  className={cn(
+                    'min-w-0 flex-1 truncate',
+                    top ? 'text-lg font-semibold md:text-xl' : 'text-base font-medium md:text-lg',
+                  )}
+                >
+                  {entry.name}
+                </span>
+                <span className="shrink-0 text-base font-semibold tabular-nums md:text-lg">
+                  {entry.pointsBalance.toLocaleString()}
+                  <span className="ml-1 font-normal text-white/60">Punkte</span>
+                </span>
+              </button>
+            </li>
           );
         })}
-      </div>
+      </ol>
 
-      <UserDrawer
-        open={!!selectedUser}
-        onClose={() => setSelectedUser(null)}
-        user={selectedUser}
-      />
+      <UserDrawer open={!!selectedUser} onClose={() => setSelectedUser(null)} user={selectedUser} />
     </>
   );
 }

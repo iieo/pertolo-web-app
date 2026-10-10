@@ -55,7 +55,7 @@ export const GameProvider = ({ children, words }: { children: React.ReactNode; w
     setCurrentIndex(nextIdx);
     setSecretType(null);
     setPhase('word');
-  }, [usedIndices, currentIndex]);
+  }, [usedIndices, currentIndex, WORDS.length]);
 
   return (
     <GameContext.Provider

@@ -2,11 +2,10 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 import { sellWager } from './actions';
 import { useBet } from '../bet-provider';
-import { TrendingDown } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { smallButtonClass } from '../components/styles';
 
 interface SellButtonProps {
   wagerId: string;
@@ -37,15 +36,13 @@ export function SellButton({ wagerId, cashout }: SellButtonProps) {
   };
 
   return (
-    <Button
-      variant="outline"
-      size="sm"
+    <button
+      type="button"
       disabled={loading || cashout <= 0}
       onClick={handleSell}
-      className="border-amber-500/30 text-amber-500 hover:bg-amber-500/10 hover:text-amber-400"
+      className={`${smallButtonClass} shrink-0`}
     >
-      <TrendingDown size={14} className="mr-1.5" />
-      {loading ? '...' : 'Verkaufen'}
-    </Button>
+      {loading ? 'Wird verkauft…' : 'Verkaufen'}
+    </button>
   );
 }

@@ -2,12 +2,18 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import { Check } from 'lucide-react';
 import { resolveBet, cancelBet } from '../[betId]/actions';
 import { useBet } from '../bet-provider';
-import { CheckCircle, XCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { cn } from '@/lib/utils';
+import {
+  choiceTileClass,
+  hintClass,
+  primaryButtonClass,
+  secondaryButtonClass,
+  sectionTitleClass,
+} from './styles';
 
 interface ResolveFormProps {
   betId: string;
@@ -32,7 +38,9 @@ export function ResolveForm({ betId, options }: ResolveFormProps) {
         toast.error(result.error);
         return;
       }
-      toast.success(`Wette beendet! ${result.data.payouts.toLocaleString()} Punkte wurden verteilt`);
+      toast.success(
+        `Wette beendet! ${result.data.payouts.toLocaleString()} Punkte wurden verteilt`,
+      );
       await refreshBalance();
       router.refresh();
     } catch {
@@ -50,7 +58,9 @@ export function ResolveForm({ betId, options }: ResolveFormProps) {
         toast.error(result.error);
         return;
       }
-      toast.success(`Wette storniert. ${result.data.refunded.toLocaleString()} Punkte wurden erstattet`);
+      toast.success(
+        `Wette storniert. ${result.data.refunded.toLocaleString()} Punkte wurden erstattet`,
+      );
       await refreshBalance();
       router.refresh();
     } catch {
@@ -61,46 +71,55 @@ export function ResolveForm({ betId, options }: ResolveFormProps) {
   }
 
   return (
-    <div className="space-y-4 rounded-2xl border border-orange-500/20 bg-orange-500/5 p-4">
-      <h3 className="text-sm font-semibold text-orange-400">Wette auswerten (Besitzer)</h3>
-
-      <div className="flex flex-col gap-2">
-        {options.map((opt) => (
-          <Button
-            key={opt.id}
-            type="button"
-            variant="outline"
-            className={cn(
-              'justify-start text-left font-normal bg-white/5 border-white/10 hover:bg-white/10 hover:text-white text-white/80',
-              selectedOption === opt.id &&
-              'bg-orange-500/20 border-orange-500/50 text-orange-400 hover:bg-orange-500/30 hover:text-orange-300',
-            )}
-            onClick={() => setSelectedOption(opt.id)}
-          >
-            {opt.label}
-          </Button>
-        ))}
+    <section
+      aria-labelledby="resolve-heading"
+      className="flex flex-col gap-6 border-t border-white/15 pt-12"
+    >
+      <div>
+        <h2 id="resolve-heading" className={sectionTitleClass}>
+          Wette auswerten
+        </h2>
+        <p className={cn(hintClass, 'mt-2')}>
+          Nur du als Ersteller siehst diesen Bereich. Wähle die Option, die gewonnen hat.
+        </p>
       </div>
 
-      <div className="flex gap-2">
-        <Button
+      <div role="group" aria-label="Gewinnende Option" className="flex flex-col gap-2">
+        {options.map((opt) => {
+          const selected = selectedOption === opt.id;
+          return (
+            <button
+              key={opt.id}
+              type="button"
+              aria-pressed={selected}
+              className={choiceTileClass(selected)}
+              onClick={() => setSelectedOption(opt.id)}
+            >
+              <span className="min-w-0 wrap-break-word">{opt.label}</span>
+              {selected && <Check size={20} strokeWidth={3} className="shrink-0" aria-hidden />}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="flex flex-col gap-2 sm:flex-row">
+        <button
+          type="button"
           onClick={handleResolve}
           disabled={loading || !selectedOption}
-          className="flex-1 bg-green-600 text-white font-bold hover:bg-green-500"
+          className={primaryButtonClass}
         >
-          <CheckCircle size={16} className="mr-2" />
           Auswerten
-        </Button>
-        <Button
+        </button>
+        <button
+          type="button"
           onClick={handleCancel}
           disabled={loading}
-          variant="ghost"
-          className="flex-1 border border-red-500/30 text-red-400 hover:bg-red-500/10"
+          className={secondaryButtonClass}
         >
-          <XCircle size={16} className="mr-2" />
           Stornieren
-        </Button>
+        </button>
       </div>
-    </div>
+    </section>
   );
 }

@@ -141,6 +141,27 @@
       "when": 1791624799972,
       "tag": "0019_would_you_rather",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1791626230274,
+      "tag": "0020_heads_up",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1791626743643,
+      "tag": "0021_hot_takes",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1791626752643,
+      "tag": "0022_hot_potato",
+      "breakpoints": true
     }
   ]
 }

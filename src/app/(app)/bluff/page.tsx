@@ -7,7 +7,7 @@ export default async function BluffGame() {
 
   if (!words || words.length === 0) {
     return (
-      <div className="min-h-dvh w-full bg-black flex items-center justify-center text-white text-center">
+      <div className="min-h-dvh w-full bg-black flex items-center justify-center px-6 text-white/70 text-center">
         No words found. Please run the seed script!
       </div>
     );

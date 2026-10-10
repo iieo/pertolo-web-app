@@ -7,12 +7,9 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { registerUser } from '../register/actions';
 import { authClient } from '@/lib/auth-client';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { UserPlus } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
+import { errorClass, inputClass, labelClass, primaryButtonClass } from './styles';
 
 const registerSchema = z
   .object({
@@ -72,76 +69,76 @@ export function RegisterForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-      <div className="space-y-2">
-        <Label htmlFor="name" className="text-white/70">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
+      <div className="flex flex-col gap-2">
+        <label htmlFor="name" className={labelClass}>
           Name
-        </Label>
-        <Input
+        </label>
+        <input
           id="name"
           placeholder="Dein Name"
-          className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
+          autoComplete="name"
+          className={inputClass}
           {...register('name')}
         />
-        {errors.name && <p className="text-sm text-red-400">{errors.name.message}</p>}
+        {errors.name && <p className={errorClass}>{errors.name.message}</p>}
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="email" className="text-white/70">
+      <div className="flex flex-col gap-2">
+        <label htmlFor="email" className={labelClass}>
           E-Mail
-        </Label>
-        <Input
+        </label>
+        <input
           id="email"
           type="email"
+          autoComplete="email"
           placeholder="you@example.com"
-          className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
+          className={inputClass}
           {...register('email')}
         />
-        {errors.email && <p className="text-sm text-red-400">{errors.email.message}</p>}
+        {errors.email && <p className={errorClass}>{errors.email.message}</p>}
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="password" className="text-white/70">
+      <div className="flex flex-col gap-2">
+        <label htmlFor="password" className={labelClass}>
           Passwort
-        </Label>
-        <Input
+        </label>
+        <input
           id="password"
           type="password"
+          autoComplete="new-password"
           placeholder="••••••••"
-          className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
+          className={inputClass}
           {...register('password')}
         />
-        {errors.password && <p className="text-sm text-red-400">{errors.password.message}</p>}
+        {errors.password && <p className={errorClass}>{errors.password.message}</p>}
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="confirmPassword" className="text-white/70">
+      <div className="flex flex-col gap-2">
+        <label htmlFor="confirmPassword" className={labelClass}>
           Passwort bestätigen
-        </Label>
-        <Input
+        </label>
+        <input
           id="confirmPassword"
           type="password"
+          autoComplete="new-password"
           placeholder="••••••••"
-          className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
+          className={inputClass}
           {...register('confirmPassword')}
         />
-        {errors.confirmPassword && (
-          <p className="text-sm text-red-400">{errors.confirmPassword.message}</p>
-        )}
+        {errors.confirmPassword && <p className={errorClass}>{errors.confirmPassword.message}</p>}
       </div>
 
-      <Button
-        type="submit"
-        disabled={loading}
-        className="w-full bg-amber-500 text-black font-bold hover:bg-amber-400"
-      >
-        <UserPlus size={18} className="mr-2" />
-        {loading ? 'Konto wird erstellt...' : 'Konto erstellen'}
-      </Button>
+      <button type="submit" disabled={loading} className={primaryButtonClass}>
+        {loading ? 'Konto wird erstellt…' : 'Konto erstellen'}
+      </button>
 
-      <p className="text-center text-sm text-white/40">
+      <p className="text-center text-base text-white/60">
         Bereits ein Konto vorhanden?{' '}
-        <Link href="/bet/login" className="text-amber-400 hover:underline">
+        <Link
+          href="/bet/login"
+          className="inline-flex min-h-12 items-center rounded-xl px-1 font-semibold text-white underline decoration-white/40 underline-offset-4 outline-none hover:decoration-white focus-visible:outline-2 focus-visible:outline-white"
+        >
           Anmelden
         </Link>
       </p>

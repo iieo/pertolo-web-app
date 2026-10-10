@@ -114,18 +114,35 @@ export default function BCOTrainerPage() {
   };
 
   return (
-    <main className="flex flex-col items-center min-h-dvh bg-linear-to-b from-slate-50 to-slate-100 p-4 md:p-8 gap-4 md:gap-6">
-      <Header />
+    <div className="min-h-dvh w-full bg-black pr-[max(1rem,env(safe-area-inset-right))] pl-[max(1rem,env(safe-area-inset-left))] text-white sm:pr-[max(2rem,env(safe-area-inset-right))] sm:pl-[max(2rem,env(safe-area-inset-left))]">
+      <main className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col gap-8 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(3rem,env(safe-area-inset-bottom))] sm:gap-12 lg:pb-24">
+        <Header />
 
-      <SheetMusicCard
-        ref={paperRef}
-        isPlaying={isPlaying}
-        isPaperVisible={isPaperVisible}
-        measures={measures}
-        tempo={tempo}
-      />
+        <div className="flex flex-col gap-4">
+          <SheetMusicCard
+            ref={paperRef}
+            isPlaying={isPlaying}
+            isPaperVisible={isPaperVisible}
+            measures={measures}
+            tempo={tempo}
+          />
 
-      <div className="w-full max-w-5xl flex flex-col gap-4 md:gap-6 shrink-0">
+          <ActionButtons
+            isPlaying={isPlaying}
+            isPaperVisible={isPaperVisible}
+            onPlay={handlePlay}
+            onStop={handleStop}
+            onToggleVisibility={handleToggleVisibility}
+            onReload={handleReload}
+          />
+
+          {audioError && (
+            <p role="alert" className="text-base text-white">
+              Audio is not supported in this browser.
+            </p>
+          )}
+        </div>
+
         <SettingsPanel
           difficulty={difficulty}
           setDifficulty={setDifficulty}
@@ -136,25 +153,8 @@ export default function BCOTrainerPage() {
           isPlaying={isPlaying}
         />
 
-        <ActionButtons
-          isPlaying={isPlaying}
-          isPaperVisible={isPaperVisible}
-          onPlay={handlePlay}
-          onStop={handleStop}
-          onToggleVisibility={handleToggleVisibility}
-          onReload={handleReload}
-        />
-      </div>
-
-      {audioError && (
-        <div className="mt-4 px-4 py-2 bg-red-100 border border-red-200 rounded-lg">
-          <p className="text-red-600 text-sm text-center">
-            Audio is not supported in this browser.
-          </p>
-        </div>
-      )}
-
-      <p className="mt-auto pt-4 text-xs text-slate-400">By Lars & Leo</p>
-    </main>
+        <p className="mt-auto pt-8 text-sm text-white/60">By Lars &amp; Leo</p>
+      </main>
+    </div>
   );
 }

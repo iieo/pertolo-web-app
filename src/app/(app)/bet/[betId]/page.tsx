@@ -1,20 +1,15 @@
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import { getBetDetail, getBetChartData } from './actions';
 import { getSession } from '@/lib/auth-server';
 import { OddsDisplay } from '../components/odds-display';
 import { WagerForm } from '../components/wager-form';
 import { ResolveForm } from '../components/resolve-form';
 import { BetChart } from '../components/bet-chart';
+import { STATUS_LABEL, pageClass, sectionTitleClass } from '../components/styles';
 import { SellButton } from './sell-button';
-import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Coins } from 'lucide-react';
-import Link from 'next/link';
 
-export default async function BetDetailPage({
-  params,
-}: {
-  params: Promise<{ betId: string }>;
-}) {
+export default async function BetDetailPage({ params }: { params: Promise<{ betId: string }> }) {
   const { betId } = await params;
 
   const [betResult, chartResult, session] = await Promise.all([
@@ -31,110 +26,95 @@ export default async function BetDetailPage({
   const isOwner = session?.user?.id === bet.ownerId;
   const userTotalWagered = bet.userWagers.reduce((sum, w) => sum + w.amount, 0);
 
-  const statusColor = {
-    open: 'bg-green-500/20 text-green-400 border-green-500/30',
-    resolved: 'bg-blue-500/20 text-blue-400 border-blue-500/30',
-    cancelled: 'bg-red-500/20 text-red-400 border-red-500/30',
-  }[bet.status];
-
-  const statusLabel = {
-    open: 'Offen',
-    resolved: 'Beendet',
-    cancelled: 'Storniert',
-  }[bet.status];
-
   const chartData = chartResult.success ? chartResult.data : { history: [], lineKeys: [] };
 
   return (
-    <div className="mx-auto max-w-3xl space-y-5 px-4 pt-6">
+    <div className={`${pageClass} max-w-3xl`}>
       <Link
         href="/bet"
-        className="flex items-center gap-1 text-sm text-white/40 transition-colors hover:text-white/70"
+        className="-ml-2 inline-flex min-h-12 items-center rounded-xl px-2 text-base font-medium text-white/60 underline decoration-white/30 underline-offset-4 outline-none hover:text-white hover:decoration-white focus-visible:outline-2 focus-visible:outline-white"
       >
-        <ArrowLeft size={16} />
         Zurück zum Feed
       </Link>
 
-      <div>
-        <div className="mb-2 flex items-center gap-2">
-          <Badge variant="outline" className={statusColor}>
-            {statusLabel}
-          </Badge>
-          <span className="text-xs text-white/40">von {bet.ownerName}</span>
-        </div>
-        <h1 className="text-2xl font-extrabold text-white">{bet.title}</h1>
-        {bet.description && <p className="mt-1 text-sm text-white/50">{bet.description}</p>}
-      </div>
+      <header className="mt-8">
+        <p className="text-sm text-white/60">
+          {STATUS_LABEL[bet.status]} · von {bet.ownerName}
+        </p>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight wrap-break-word hyphens-auto md:text-5xl">
+          {bet.title}
+        </h1>
+        {bet.description && (
+          <p className="mt-4 text-lg leading-relaxed text-white/70">{bet.description}</p>
+        )}
+      </header>
 
-      <BetChart data={chartData.history} lineKeys={chartData.lineKeys} />
+      <div className="mt-12 flex flex-col gap-16">
+        <BetChart data={chartData.history} lineKeys={chartData.lineKeys} />
 
-      <OddsDisplay
-        options={bet.options}
-        totalPool={bet.totalPool}
-        resolvedOptionId={bet.resolvedOptionId}
-      />
+        <OddsDisplay
+          options={bet.options}
+          totalPool={bet.totalPool}
+          resolvedOptionId={bet.resolvedOptionId}
+        />
 
-      {bet.userWagers.length > 0 && bet.status === 'open' && (
-        <div className="space-y-2">
-          <h3 className="text-sm font-semibold text-white/70">Deine aktiven Wetten</h3>
-          <div className="grid gap-2">
-            {bet.userWagers.map((wager) => {
-              const opt = bet.options.find((o) => o.id === wager.optionId);
-              if (!opt) return null;
+        {bet.userWagers.length > 0 && bet.status === 'open' && (
+          <section aria-labelledby="my-wagers-heading" className="flex flex-col gap-4">
+            <h2 id="my-wagers-heading" className={sectionTitleClass}>
+              Deine aktiven Wetten
+            </h2>
+            <ul className="flex flex-col gap-2">
+              {bet.userWagers.map((wager) => {
+                const opt = bet.options.find((o) => o.id === wager.optionId);
+                if (!opt) return null;
+                const value = wager.currentValue - wager.creatorFee;
 
-              return (
-                <div
-                  key={wager.id}
-                  className="flex flex-col gap-3 rounded-xl border border-amber-500/20 bg-amber-500/5 p-3 sm:flex-row sm:items-center sm:justify-between"
-                >
-                  <div className="flex flex-row items-center justify-between sm:flex-col sm:items-start sm:justify-center">
-                    <span className="max-w-[60%] truncate text-sm font-bold text-white sm:max-w-full">
-                      {opt.label}
-                    </span>
-                    <span className="text-xs text-white/50">
-                      Eingesetzt: {wager.amount.toLocaleString()}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between gap-3 rounded-lg border border-amber-500/10 bg-amber-500/10 p-2.5 sm:border-none sm:bg-transparent sm:p-0">
-                    <div className="flex flex-col sm:items-end">
-                      <span className="text-[11px] uppercase tracking-wider text-white/50 sm:text-xs sm:normal-case sm:tracking-normal">
-                        Aktueller Wert
-                      </span>
-                      <div className="flex items-center gap-1 font-bold text-amber-400">
-                        <Coins size={14} />
-                        <span>{(wager.currentValue - wager.creatorFee).toLocaleString()}</span>
-                      </div>
-                      {wager.creatorFee > 0 && (
-                        <span className="mt-0.5 text-[10px] text-white/40">
-                          -10% Ersteller-Fee
-                        </span>
-                      )}
+                return (
+                  <li
+                    key={wager.id}
+                    className="flex flex-col gap-4 rounded-xl border border-white/15 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-6"
+                  >
+                    <div className="min-w-0">
+                      <p className="text-base font-semibold wrap-break-word">{opt.label}</p>
+                      <p className="mt-1 text-sm text-white/60 tabular-nums">
+                        Eingesetzt: {wager.amount.toLocaleString()} Punkte
+                      </p>
                     </div>
-                    <SellButton wagerId={wager.id} cashout={wager.currentValue - wager.creatorFee} />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
+                    <div className="flex items-center justify-between gap-6 sm:justify-end">
+                      <div className="flex flex-col sm:items-end">
+                        <span className="text-sm text-white/60">Aktueller Wert</span>
+                        <span className="text-lg font-semibold tabular-nums">
+                          {value.toLocaleString()} Punkte
+                        </span>
+                        {wager.creatorFee > 0 && (
+                          <span className="text-sm text-white/60">abzüglich 10% Ersteller-Fee</span>
+                        )}
+                      </div>
+                      <SellButton wagerId={wager.id} cashout={value} />
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        )}
 
-      {bet.userWagers.length > 0 && bet.status !== 'open' && (
-        <div className="flex items-center gap-2 rounded-xl border border-amber-500/20 bg-amber-500/5 p-3">
-          <Coins size={16} className="text-amber-400" />
-          <span className="text-sm text-white/70">
+        {bet.userWagers.length > 0 && bet.status !== 'open' && (
+          <p className="text-lg text-white/70">
             Du hast{' '}
-            <span className="font-bold text-amber-400">{userTotalWagered.toLocaleString()}</span>{' '}
+            <span className="font-semibold text-white tabular-nums">
+              {userTotalWagered.toLocaleString()}
+            </span>{' '}
             Punkte gesetzt
-          </span>
-        </div>
-      )}
+          </p>
+        )}
 
-      {bet.status === 'open' && (
-        <WagerForm betId={bet.id} totalPool={bet.totalPool} options={bet.options} />
-      )}
+        {bet.status === 'open' && (
+          <WagerForm betId={bet.id} totalPool={bet.totalPool} options={bet.options} />
+        )}
 
-      {isOwner && bet.status === 'open' && <ResolveForm betId={bet.id} options={bet.options} />}
+        {isOwner && bet.status === 'open' && <ResolveForm betId={bet.id} options={bet.options} />}
+      </div>
     </div>
   );
 }

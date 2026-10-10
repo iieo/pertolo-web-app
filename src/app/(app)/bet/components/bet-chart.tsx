@@ -9,75 +9,60 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from 'recharts';
+import { ACCENT, sectionTitleClass, tooltipStyle } from './styles';
 
 interface BetChartProps {
   data: Array<{ date: string; [key: string]: any }>;
   lineKeys: string[];
 }
 
-const COLORS = [
-  '#f59e0b', // amber-500
-  '#3b82f6', // blue-500
-  '#ef4444', // red-500
-  '#10b981', // emerald-500
-  '#8b5cf6', // violet-500
-  '#ec4899', // pink-500
-];
+// Solid series colors that stay readable on black.
+const COLORS = [ACCENT, '#4CC9F0', '#FFB703', '#F15BB5', '#FB8500', '#B197FC'];
 
 export function BetChart({ data, lineKeys }: BetChartProps) {
-  if (data.length === 0) {
-    return (
-      <div className="flex h-64 items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-4 text-center text-sm text-white/40">
-        Noch keine Einsatzhistorie vorhanden
-      </div>
-    );
-  }
-
   return (
-    <div className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-4">
-      <h3 className="text-sm font-semibold text-white/70">Win/Loss Ratio über Zeit (Quoten)</h3>
-      <div className="h-64 w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-            <XAxis
-              dataKey="date"
-              stroke="#ffffff40"
-              fontSize={12}
-              tickMargin={10}
-              minTickGap={30}
-            />
-            <YAxis
-              stroke="#ffffff40"
-              fontSize={12}
-              tickFormatter={(val) => `${val}%`}
-              domain={[0, 100]}
-              width={40}
-            />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: '#111827',
-                borderColor: '#ffffff20',
-                borderRadius: '8px',
-                color: '#fff',
-              }}
-              itemStyle={{ color: '#fff' }}
-              labelStyle={{ color: '#ffffff80', marginBottom: '4px' }}
-            />
-            {lineKeys.map((key, index) => (
-              <Line
-                key={key}
-                type="monotone"
-                dataKey={key}
-                stroke={COLORS[index % COLORS.length]}
-                strokeWidth={2}
-                dot={false}
-                activeDot={{ r: 4 }}
+    <section aria-labelledby="chart-heading" className="flex flex-col gap-6">
+      <h2 id="chart-heading" className={sectionTitleClass}>
+        Quotenverlauf
+      </h2>
+      {data.length === 0 ? (
+        <p className="text-base text-white/60">Noch keine Einsatzhistorie vorhanden</p>
+      ) : (
+        <div className="h-64 w-full md:h-80">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: 0 }}>
+              <CartesianGrid stroke="rgba(255,255,255,0.1)" vertical={false} />
+              <XAxis
+                dataKey="date"
+                stroke="rgba(255,255,255,0.6)"
+                fontSize={12}
+                tickMargin={8}
+                minTickGap={32}
               />
-            ))}
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
+              <YAxis
+                stroke="rgba(255,255,255,0.6)"
+                fontSize={12}
+                tickFormatter={(val) => `${val}%`}
+                domain={[0, 100]}
+                width={40}
+              />
+              <Tooltip {...tooltipStyle} />
+              {lineKeys.map((key, index) => (
+                <Line
+                  key={key}
+                  type="monotone"
+                  dataKey={key}
+                  stroke={COLORS[index % COLORS.length]}
+                  strokeWidth={2}
+                  dot={false}
+                  activeDot={{ r: 4 }}
+                  isAnimationActive={false}
+                />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+    </section>
   );
 }

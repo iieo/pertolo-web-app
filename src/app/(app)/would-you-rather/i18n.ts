@@ -1,8 +1,5 @@
+import type { Locale } from '@/components/game/locale';
 import { CategoryKey } from './types';
-
-export type Locale = 'de' | 'en';
-
-export const LOCALES: Locale[] = ['de', 'en'];
 
 type Labelled = { name: string; description: string };
 

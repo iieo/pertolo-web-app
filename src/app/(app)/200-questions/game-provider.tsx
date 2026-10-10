@@ -2,10 +2,19 @@
 
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 
+import {
+  countByCategory as countCategories,
+  sumCounts,
+  useCategorySelection,
+} from '@/components/game/category-selection';
+import { createLocaleStore, type Locale } from '@/components/game/locale';
+import { shuffle } from '@/components/game/shuffle';
+
 import { MAX_QUESTIONS, MIXED_CATEGORIES } from './categories';
-import { DICTIONARIES, Dictionary, Locale } from './i18n';
-import { setLocale, useLocale } from './locale';
+import { DICTIONARIES, Dictionary } from './i18n';
 import { CategoryKey, GamePhase, Question } from './types';
+
+const { useLocale, setLocale } = createLocaleStore('200q-locale');
 
 type GameContextType = {
   locale: Locale;
@@ -38,15 +47,6 @@ export const useTwoHundredQuestionsGame = () => {
   return context;
 };
 
-function shuffle<T>(items: T[]): T[] {
-  const result = [...items];
-  for (let i = result.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [result[i], result[j]] = [result[j]!, result[i]!];
-  }
-  return result;
-}
-
 export const GameProvider = ({
   children,
   questions,
@@ -56,42 +56,19 @@ export const GameProvider = ({
 }) => {
   const locale = useLocale();
   const [phase, setPhase] = useState<GamePhase>('setup');
-  const [mixed, setMixed] = useState(true);
-  const [selectedCategories, setSelectedCategories] = useState<CategoryKey[]>([]);
+  const {
+    mixed,
+    selected: selectedCategories,
+    active: activeCategories,
+    selectMixed,
+    toggle: toggleCategory,
+  } = useCategorySelection(MIXED_CATEGORIES);
   const [deck, setDeck] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const countByCategory = useMemo(() => {
-    const counts = {} as Record<CategoryKey, number>;
-    for (const q of questions) counts[q.category] = (counts[q.category] ?? 0) + 1;
-    return counts;
-  }, [questions]);
+  const countByCategory = useMemo(() => countCategories(questions), [questions]);
 
-  const activeCategories = mixed ? MIXED_CATEGORIES : selectedCategories;
-
-  const availableCount = activeCategories.reduce(
-    (sum, key) => sum + (countByCategory[key] ?? 0),
-    0,
-  );
-
-  const selectMixed = useCallback(() => {
-    setMixed(true);
-    setSelectedCategories([]);
-  }, []);
-
-  const toggleCategory = useCallback(
-    (key: CategoryKey) => {
-      if (mixed) {
-        setMixed(false);
-        setSelectedCategories([key]);
-        return;
-      }
-      setSelectedCategories((prev) =>
-        prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
-      );
-    },
-    [mixed],
-  );
+  const availableCount = sumCounts(countByCategory, activeCategories);
 
   const startGame = useCallback(() => {
     const pool = questions.filter((q) => activeCategories.includes(q.category));

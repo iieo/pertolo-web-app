@@ -4,9 +4,14 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { authClient } from '@/lib/auth-client';
 import { PointHistoryChart } from '../components/point-history-chart';
-import { Button } from '@/components/ui/button';
-import { Coins, LogOut } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { cn } from '@/lib/utils';
+import {
+  pageClass,
+  pageTitleClass,
+  secondaryButtonClass,
+  sectionTitleClass,
+} from '../components/styles';
 
 interface ProfileContentProps {
   user: { id: string; name: string; email: string };
@@ -33,43 +38,43 @@ export function ProfileContent({ user, balance, pointHistory }: ProfileContentPr
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6 px-4 pt-6">
-      <div className="flex items-center gap-4">
-        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-500/20 text-2xl font-bold text-amber-400">
-          {user.name.charAt(0).toUpperCase()}
-        </div>
-        <div>
-          <h1 className="text-xl font-extrabold text-white">{user.name}</h1>
-          <p className="text-sm text-white/40">{user.email}</p>
-        </div>
-      </div>
+    <div className={cn(pageClass, 'max-w-3xl')}>
+      <header>
+        <h1 className={cn(pageTitleClass, 'wrap-break-word')}>{user.name}</h1>
+        <p className="mt-2 text-base break-all text-white/60">{user.email}</p>
+      </header>
 
-      <div className="flex items-center gap-3 rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5">
-        <Coins size={28} className="text-amber-400" />
-        <div>
-          <p className="text-xs text-white/40">Kontostand</p>
-          <p className="text-2xl font-extrabold text-amber-400">
-            {balance !== null ? balance.toLocaleString() : '—'}
+      <section aria-labelledby="balance-heading" className="mt-12">
+        <h2 id="balance-heading" className="text-base text-white/60">
+          Kontostand
+        </h2>
+        {balance !== null ? (
+          <p className="mt-1 text-5xl font-bold tracking-tight tabular-nums md:text-6xl">
+            {balance.toLocaleString()}
+            <span className="ml-2 text-xl font-medium text-white/60 md:text-2xl">Punkte</span>
           </p>
-        </div>
-      </div>
+        ) : (
+          <p className="mt-1 text-lg text-white/60">Nicht verfügbar</p>
+        )}
+      </section>
 
-      <div>
-        <h2 className="mb-3 text-sm font-semibold text-white/70">Punktestand-Verlauf</h2>
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+      <section aria-labelledby="history-heading" className="mt-16">
+        <h2 id="history-heading" className={sectionTitleClass}>
+          Punktestand-Verlauf
+        </h2>
+        <div className="mt-6">
           <PointHistoryChart initialData={pointHistory} />
         </div>
-      </div>
+      </section>
 
-      <Button
+      <button
+        type="button"
         onClick={handleSignOut}
         disabled={signingOut}
-        variant="ghost"
-        className="w-full border border-red-500/20 text-red-400 hover:bg-red-500/10"
+        className={cn(secondaryButtonClass, 'mt-16 sm:w-auto')}
       >
-        <LogOut size={16} className="mr-2" />
-        {signingOut ? 'Abmeldung...' : 'Abmelden'}
-      </Button>
+        {signingOut ? 'Wird abgemeldet…' : 'Abmelden'}
+      </button>
     </div>
   );
 }

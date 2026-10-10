@@ -2,13 +2,18 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Check } from 'lucide-react';
 import { placeWager } from '../[betId]/actions';
 import { useBet } from '../bet-provider';
-import { Coins } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { cn } from '@/lib/utils';
+import {
+  choiceTileClass,
+  inputClass,
+  labelClass,
+  primaryButtonClass,
+  sectionTitleClass,
+  smallButtonClass,
+} from './styles';
 
 interface WagerFormProps {
   betId: string;
@@ -55,92 +60,94 @@ export function WagerForm({ betId, totalPool, options }: WagerFormProps) {
     }
   }
 
+  const potentialPayout = (() => {
+    const opt = options.find((o) => o.id === selectedOption);
+    const w = parseInt(amount);
+    if (!opt || !w) return 0;
+    const newOptionTotal = opt.totalPoints + w;
+    const newTotalPool = totalPool + w;
+    return Math.floor((w / newOptionTotal) * newTotalPool);
+  })();
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-4"
-    >
-      <h3 className="text-sm font-semibold text-white/70">Einsatz tätigen</h3>
+    <section aria-labelledby="wager-heading">
+      <h2 id="wager-heading" className={sectionTitleClass}>
+        Einsatz tätigen
+      </h2>
 
-      <div className="flex flex-col gap-2">
-        {options.map((opt) => (
-          <Button
-            key={opt.id}
-            type="button"
-            variant="outline"
-            className={cn(
-              'justify-start text-left font-normal bg-white/5 border-white/10 hover:bg-white/10 hover:text-white text-white/80',
-              selectedOption === opt.id &&
-              'bg-amber-500/20 border-amber-500/50 text-amber-400 hover:bg-amber-500/30 hover:text-amber-300',
-            )}
-            onClick={() => setSelectedOption(opt.id)}
-          >
-            {opt.label}
-          </Button>
-        ))}
-      </div>
+      <form onSubmit={handleSubmit} className="mt-6 flex flex-col gap-8">
+        <fieldset className="flex flex-col gap-2">
+          <legend className={`${labelClass} mb-4`}>Option</legend>
+          {options.map((opt) => {
+            const selected = selectedOption === opt.id;
+            return (
+              <button
+                key={opt.id}
+                type="button"
+                aria-pressed={selected}
+                className={choiceTileClass(selected)}
+                onClick={() => setSelectedOption(opt.id)}
+              >
+                <span className="min-w-0 wrap-break-word">{opt.label}</span>
+                {selected && <Check size={20} strokeWidth={3} className="shrink-0" aria-hidden />}
+              </button>
+            );
+          })}
+        </fieldset>
 
-      <div className="space-y-2">
-        <Input
-          type="number"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          placeholder="Betrag"
-          min={1}
-          className="border-white/10 bg-white/5 text-white placeholder:text-white/30"
-        />
-        <div className="flex gap-2">
-          {quickAmounts.map((qa) => (
-            <Button
-              key={qa}
+        <div className="flex flex-col gap-4">
+          <label htmlFor="wager-amount" className={labelClass}>
+            Betrag
+          </label>
+          <input
+            id="wager-amount"
+            type="number"
+            inputMode="numeric"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder="Punkte"
+            min={1}
+            className={`${inputClass} tabular-nums`}
+          />
+          <div className="grid grid-cols-2 gap-2 min-[400px]:grid-cols-4">
+            {quickAmounts.map((qa) => (
+              <button
+                key={qa}
+                type="button"
+                onClick={() => setAmount(String(qa))}
+                className={`${smallButtonClass} tabular-nums`}
+              >
+                {qa.toLocaleString()}
+              </button>
+            ))}
+            <button
               type="button"
-              variant="ghost"
-              size="sm"
-              onClick={() => setAmount(String(qa))}
-              className="flex-1 border border-white/10 text-white/60 hover:text-amber-400 hover:border-amber-500/30"
+              onClick={() => balance !== null && setAmount(String(balance))}
+              className={smallButtonClass}
             >
-              {qa.toLocaleString()}
-            </Button>
-          ))}
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            onClick={() => balance !== null && setAmount(String(balance))}
-            className="flex-1 border border-amber-500/20 text-amber-400 hover:bg-amber-500/10"
-          >
-            All-in
-          </Button>
-        </div>
-      </div>
-
-      {selectedOption && parseInt(amount) > 0 && (
-        <div className="rounded-xl bg-amber-500/10 border border-amber-500/20 p-3 flex justify-between items-center text-sm">
-          <span className="text-white/60">Möglicher Gewinn</span>
-          <div className="flex items-center gap-1 font-bold text-amber-400">
-            <Coins size={14} />
-            <span>
-              {(() => {
-                const opt = options.find((o) => o.id === selectedOption);
-                const w = parseInt(amount);
-                if (!opt || !w) return '0';
-                const newOptionTotal = opt.totalPoints + w;
-                const newTotalPool = totalPool + w;
-                return Math.floor((w / newOptionTotal) * newTotalPool).toLocaleString();
-              })()}
-            </span>
+              All-in
+            </button>
           </div>
         </div>
-      )}
 
-      <Button
-        type="submit"
-        disabled={loading || !selectedOption || !amount}
-        className="w-full bg-amber-500 text-black font-bold hover:bg-amber-400"
-      >
-        <Coins size={16} className="mr-2" />
-        {loading ? 'Wird platziert...' : 'Wette platzieren'}
-      </Button>
-    </form>
+        <div className="flex flex-col gap-4">
+          {selectedOption && parseInt(amount) > 0 && (
+            <p className="flex items-baseline justify-between gap-4 text-base">
+              <span className="text-white/60">Möglicher Gewinn</span>
+              <span className="text-lg font-semibold tabular-nums">
+                {potentialPayout.toLocaleString()} Punkte
+              </span>
+            </p>
+          )}
+          <button
+            type="submit"
+            disabled={loading || !selectedOption || !amount}
+            className={primaryButtonClass}
+          >
+            {loading ? 'Wird platziert…' : 'Wette platzieren'}
+          </button>
+        </div>
+      </form>
+    </section>
   );
 }

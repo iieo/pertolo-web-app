@@ -345,3 +345,93 @@ export type BetModel = typeof betsTable.$inferSelect;
 export type BetOptionModel = typeof betOptionsTable.$inferSelect;
 export type WagerModel = typeof wagersTable.$inferSelect;
 export type PointTransactionModel = typeof pointTransactionsTable.$inferSelect;
+
+export const headsUpCategoryEnum = pgEnum('heads_up_category', [
+  'everyday',
+  'animals',
+  'food',
+  'movies',
+  'celebrities',
+  'music',
+  'sports',
+  'places',
+  'jobs',
+  'brands',
+  'sexual',
+]);
+
+export const headsUpWordsTable = pgTable(
+  'heads_up_words',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    word: text('word').notNull(),
+    wordEn: text('word_en').notNull(),
+    category: headsUpCategoryEnum('category').notNull(),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [unique('heads_up_words_word_category_unique').on(table.word, table.category)],
+);
+
+export type HeadsUpWordModel = typeof headsUpWordsTable.$inferSelect;
+export type HeadsUpCategory = (typeof headsUpCategoryEnum.enumValues)[number];
+
+export const hotTakeCategoryEnum = pgEnum('hot_take_category', [
+  'normal',
+  'food',
+  'love',
+  'work',
+  'popculture',
+  'lifestyle',
+  'party',
+  'unpopular',
+  'sexual',
+]);
+
+export const hotTakesTable = pgTable('hot_takes', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  statement: text('statement').notNull().unique(),
+  statementEn: text('statement_en').notNull(),
+  category: hotTakeCategoryEnum('category').notNull(),
+  votesAgree: integer('votes_agree').notNull().default(0),
+  votesDisagree: integer('votes_disagree').notNull().default(0),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export type HotTakeModel = typeof hotTakesTable.$inferSelect;
+export type HotTakeCategory = (typeof hotTakeCategoryEnum.enumValues)[number];
+
+export const hotPotatoCategoryEnum = pgEnum('hot_potato_category', [
+  'normal',
+  'food',
+  'animals',
+  'popculture',
+  'places',
+  'music',
+  'sports',
+  'brands',
+  'party',
+  'sexual',
+]);
+
+export const hotPotatoPromptsTable = pgTable('hot_potato_prompts', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  prompt: text('prompt').notNull().unique(),
+  promptEn: text('prompt_en').notNull(),
+  category: hotPotatoCategoryEnum('category').notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at')
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+});
+
+export type HotPotatoPromptModel = typeof hotPotatoPromptsTable.$inferSelect;
+export type HotPotatoCategory = (typeof hotPotatoCategoryEnum.enumValues)[number];

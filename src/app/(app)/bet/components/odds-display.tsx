@@ -1,7 +1,7 @@
 'use client';
 
-import { Coins, Trophy } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { sectionTitleClass } from './styles';
 
 interface OddsDisplayProps {
   options: Array<{ id: string; label: string; totalPoints: number }>;
@@ -11,52 +11,50 @@ interface OddsDisplayProps {
 
 export function OddsDisplay({ options, totalPool, resolvedOptionId }: OddsDisplayProps) {
   return (
-    <div className="space-y-3">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-white/70">Quoten</h3>
-        <div className="flex items-center gap-1 text-amber-400">
-          <Coins size={14} />
-          <span className="text-sm font-bold">{totalPool.toLocaleString()} Pool</span>
-        </div>
+    <section aria-labelledby="odds-heading" className="flex flex-col gap-6">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h2 id="odds-heading" className={sectionTitleClass}>
+          Quoten
+        </h2>
+        <p className="text-base text-white/60 tabular-nums">
+          {totalPool.toLocaleString()} Punkte im Pool
+        </p>
       </div>
 
-      {options.map((option) => {
-        const pct = totalPool > 0 ? (option.totalPoints / totalPool) * 100 : 0;
-        const odds = option.totalPoints > 0 ? (totalPool / option.totalPoints).toFixed(2) : '—';
-        const isWinner = resolvedOptionId === option.id;
+      <ul className="flex flex-col gap-6">
+        {options.map((option) => {
+          const pct = totalPool > 0 ? (option.totalPoints / totalPool) * 100 : 0;
+          const odds =
+            option.totalPoints > 0 ? `${(totalPool / option.totalPoints).toFixed(2)}x` : '–';
+          const isWinner = resolvedOptionId === option.id;
 
-        return (
-          <div
-            key={option.id}
-            className={cn(
-              'rounded-xl border p-3 transition-all',
-              isWinner ? 'border-green-500/40 bg-green-500/10' : 'border-white/10 bg-white/5',
-            )}
-          >
-            <div className="mb-2 flex items-center justify-between gap-2">
-              <div className="flex min-w-0 flex-1 items-center gap-2">
-                {isWinner && <Trophy size={14} className="shrink-0 text-green-400" />}
-                <span className={cn('truncate font-medium', isWinner ? 'text-green-400' : 'text-white')}>
+          return (
+            <li key={option.id} className="flex flex-col gap-2">
+              <div className="flex items-baseline justify-between gap-4">
+                <span className="min-w-0 text-lg font-semibold wrap-break-word">
                   {option.label}
+                  {isWinner && (
+                    <span className="ml-2 text-base font-semibold text-[#52B788]">Gewinner</span>
+                  )}
                 </span>
+                <span className="shrink-0 text-lg font-semibold tabular-nums">{odds}</span>
               </div>
-              <div className="flex shrink-0 items-center gap-2 text-xs sm:gap-3 sm:text-sm">
-                <span className="text-white/40">{option.totalPoints.toLocaleString()} Pkte</span>
-                <span className="rounded bg-amber-500/10 px-1.5 py-0.5 font-mono font-bold text-amber-400 sm:px-2">{odds}x</span>
+              <div className="h-2 overflow-hidden rounded-sm bg-white/10">
+                <div
+                  className={cn(
+                    'h-full rounded-sm transition-[width] duration-500 motion-reduce:transition-none',
+                    isWinner ? 'bg-[#52B788]' : 'bg-white/70',
+                  )}
+                  style={{ width: `${Math.max(pct, 1)}%` }}
+                />
               </div>
-            </div>
-            <div className="h-2 overflow-hidden rounded-full bg-white/10">
-              <div
-                className={cn(
-                  'h-full rounded-full transition-all duration-500',
-                  isWinner ? 'bg-green-500/70' : 'bg-amber-500/60',
-                )}
-                style={{ width: `${Math.max(pct, 1)}%` }}
-              />
-            </div>
-          </div>
-        );
-      })}
-    </div>
+              <p className="text-sm text-white/60 tabular-nums">
+                {option.totalPoints.toLocaleString()} Punkte · {Math.round(pct)}%
+              </p>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
   );
 }

@@ -19,6 +19,9 @@
     "seed:bluff-words": "dotenv -e .env -- tsx ./src/db/seed/bluff-words.ts",
     "seed:two-hundred-questions": "dotenv -e .env -- tsx ./src/db/seed/two-hundred-questions/index.ts",
     "seed:would-you-rather": "dotenv -e .env -- tsx ./src/db/seed/would-you-rather/index.ts",
+    "seed:heads-up": "dotenv -e .env -- tsx ./src/db/seed/heads-up/index.ts",
+    "seed:hot-takes": "dotenv -e .env -- tsx ./src/db/seed/hot-takes/index.ts",
+    "seed:hot-potato": "dotenv -e .env -- tsx ./src/db/seed/hot-potato/index.ts",
     "seed:drink": "dotenv -e .env -- tsx ./src/db/seed/drink/index.ts"
   },
   "packageManager": "pnpm@10.27.0",

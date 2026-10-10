@@ -2,10 +2,12 @@ import React from 'react';
 
 function Imprint() {
   return (
-    <main className="max-w-2xl mx-auto p-8 font-sans">
-      <h1 className="text-3xl font-bold mb-6">Impressum</h1>
-      <section className="mb-6">
-        <p className="mb-2">Angaben gemäß § 5 DDG</p>
+    <article>
+      <h1 className="mb-12 text-4xl font-bold tracking-tight text-white hyphens-auto sm:text-5xl lg:text-6xl">
+        Impressum
+      </h1>
+      <section className="mb-12">
+        <p className="mb-4">Angaben gemäß § 5 DDG</p>
         <address className="not-italic">
           Leopold Bauer
           <br />
@@ -16,30 +18,36 @@ function Imprint() {
         </address>
       </section>
 
-      <section className="mb-6">
-        <strong className="font-semibold">Vertreten durch:</strong>
+      <section className="mb-12">
+        <strong className="font-semibold text-white">Vertreten durch:</strong>
         <br />
         Leopold Bauer
       </section>
 
-      <section className="mb-6">
-        <strong className="font-semibold">Kontakt:</strong>
+      <section className="mb-12">
+        <strong className="font-semibold text-white">Kontakt:</strong>
         <br />
         Telefon:{' '}
-        <a href="tel:+4917684994760" className="text-blue-600 hover:underline">
+        <a
+          href="tel:+4917684994760"
+          className="rounded-sm text-white underline decoration-white/40 underline-offset-4 outline-none hover:decoration-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        >
           +49-17681701855
         </a>
         <br />
         E-Mail:{' '}
-        <a href="mailto:leopoldbauer@duck.com" className="text-blue-600 hover:underline">
+        <a
+          href="mailto:leopoldbauer@duck.com"
+          className="rounded-sm text-white underline decoration-white/40 underline-offset-4 outline-none hover:decoration-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        >
           leopoldbauer@duck.com
         </a>
       </section>
 
-      <section className="mb-6">
-        <strong className="font-semibold">Haftungsausschluss:</strong>
+      <section className="mb-12">
+        <strong className="font-semibold text-white">Haftungsausschluss:</strong>
         <br />
-        <strong className="font-semibold">Haftung für Inhalte</strong>
+        <strong className="font-semibold text-white">Haftung für Inhalte</strong>
         <p className="mb-4">
           Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit,
           Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen. Als
@@ -53,7 +61,7 @@ function Imprint() {
           Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend
           entfernen.
         </p>
-        <strong className="font-semibold">Haftung für Links</strong>
+        <strong className="font-semibold text-white">Haftung für Links</strong>
         <p className="mb-4">
           Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen
           Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen.
@@ -64,7 +72,7 @@ function Imprint() {
           ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei
           Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen.
         </p>
-        <strong className="font-semibold">Datenschutz</strong>
+        <strong className="font-semibold text-white">Datenschutz</strong>
         <p>
           Die Nutzung unserer Webseite ist in der Regel ohne Angabe personenbezogener Daten möglich.
           Soweit auf unseren Seiten personenbezogene Daten (beispielsweise Name, Anschrift oder
@@ -84,12 +92,12 @@ function Imprint() {
         </p>
       </section>
 
-      <footer className="mt-8 text-sm text-gray-500">
+      <footer className="mt-16 border-t border-white/10 pt-8 text-sm text-white/60">
         Erstellt mit dem{' '}
         <a
           href="https://impressum-generator.de"
           rel="dofollow"
-          className="text-blue-600 hover:underline"
+          className="rounded-sm text-white underline decoration-white/40 underline-offset-4 outline-none hover:decoration-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         >
           Impressum-Generator
         </a>{' '}
@@ -97,7 +105,7 @@ function Imprint() {
         <a
           href="https://websitewissen.com/website-erstellen"
           rel="dofollow"
-          className="text-blue-600 hover:underline"
+          className="rounded-sm text-white underline decoration-white/40 underline-offset-4 outline-none hover:decoration-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         >
           Website-Erstellung
         </a>
@@ -105,7 +113,7 @@ function Imprint() {
         <a
           href="https://websitewissen.com/homepage-baukasten-vergleich"
           rel="dofollow"
-          className="text-blue-600 hover:underline"
+          className="rounded-sm text-white underline decoration-white/40 underline-offset-4 outline-none hover:decoration-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         >
           Homepage-Baukästen
         </a>{' '}
@@ -113,7 +121,7 @@ function Imprint() {
         <a
           href="https://websitewissen.com/shopsysteme-vergleich"
           rel="dofollow"
-          className="text-blue-600 hover:underline"
+          className="rounded-sm text-white underline decoration-white/40 underline-offset-4 outline-none hover:decoration-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         >
           Shopsysteme
         </a>
@@ -121,13 +129,13 @@ function Imprint() {
         <a
           href="https://www.kanzlei-hasselbach.de/"
           rel="dofollow"
-          className="text-blue-600 hover:underline"
+          className="rounded-sm text-white underline decoration-white/40 underline-offset-4 outline-none hover:decoration-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
         >
           Kanzlei Hasselbach
         </a>
         .
       </footer>
-    </main>
+    </article>
   );
 }
 

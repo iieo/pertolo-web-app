@@ -6,7 +6,7 @@ import { useSession } from '@/lib/auth-client';
 import { getMyBalance, checkLoginBonus } from './actions';
 import toast from 'react-hot-toast';
 
-const PUBLIC_PATHS = ['/bet/login', '/bet/register'];
+export const PUBLIC_PATHS = ['/bet/login', '/bet/register'];
 
 interface BetContextType {
   balance: number | null;

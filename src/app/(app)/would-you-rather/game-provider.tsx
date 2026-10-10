@@ -2,11 +2,20 @@
 
 import { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
 
+import {
+  countByCategory as countCategories,
+  sumCounts,
+  useCategorySelection,
+} from '@/components/game/category-selection';
+import { createLocaleStore, type Locale } from '@/components/game/locale';
+import { shuffle } from '@/components/game/shuffle';
+
 import { voteWouldYouRather } from './actions';
 import { MAX_QUESTIONS, MIXED_CATEGORIES } from './categories';
-import { DICTIONARIES, Dictionary, Locale } from './i18n';
-import { setLocale, useLocale } from './locale';
+import { DICTIONARIES, Dictionary } from './i18n';
 import { CategoryKey, Choice, GamePhase, Question, Votes } from './types';
+
+const { useLocale, setLocale } = createLocaleStore('wyr-locale');
 
 type GameContextType = {
   locale: Locale;
@@ -45,15 +54,6 @@ function capitalize(text: string) {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
-function shuffle<T>(items: T[]): T[] {
-  const result = [...items];
-  for (let i = result.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [result[i], result[j]] = [result[j]!, result[i]!];
-  }
-  return result;
-}
-
 export const GameProvider = ({
   children,
   questions,
@@ -63,8 +63,13 @@ export const GameProvider = ({
 }) => {
   const locale = useLocale();
   const [phase, setPhase] = useState<GamePhase>('setup');
-  const [mixed, setMixed] = useState(true);
-  const [selectedCategories, setSelectedCategories] = useState<CategoryKey[]>([]);
+  const {
+    mixed,
+    selected: selectedCategories,
+    active: activeCategories,
+    selectMixed,
+    toggle: toggleCategory,
+  } = useCategorySelection(MIXED_CATEGORIES);
   const [deck, setDeck] = useState<Question[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [choice, setChoice] = useState<Choice | null>(null);
@@ -72,43 +77,15 @@ export const GameProvider = ({
   // Guards against a late server response overwriting the counts of a newer question.
   const voteRequest = useRef(0);
 
-  const countByCategory = useMemo(() => {
-    const counts = {} as Record<CategoryKey, number>;
-    for (const q of questions) counts[q.category] = (counts[q.category] ?? 0) + 1;
-    return counts;
-  }, [questions]);
+  const countByCategory = useMemo(() => countCategories(questions), [questions]);
 
-  const activeCategories = mixed ? MIXED_CATEGORIES : selectedCategories;
-
-  const availableCount = activeCategories.reduce(
-    (sum, key) => sum + (countByCategory[key] ?? 0),
-    0,
-  );
+  const availableCount = sumCounts(countByCategory, activeCategories);
 
   const resetVote = useCallback(() => {
     voteRequest.current += 1;
     setChoice(null);
     setVotes(null);
   }, []);
-
-  const selectMixed = useCallback(() => {
-    setMixed(true);
-    setSelectedCategories([]);
-  }, []);
-
-  const toggleCategory = useCallback(
-    (key: CategoryKey) => {
-      if (mixed) {
-        setMixed(false);
-        setSelectedCategories([key]);
-        return;
-      }
-      setSelectedCategories((prev) =>
-        prev.includes(key) ? prev.filter((k) => k !== key) : [...prev, key],
-      );
-    },
-    [mixed],
-  );
 
   const startGame = useCallback(() => {
     const pool = questions.filter((q) => activeCategories.includes(q.category));

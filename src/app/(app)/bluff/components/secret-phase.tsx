@@ -1,116 +1,83 @@
 'use client';
 
+import { useRef } from 'react';
+
+import { GameShell } from '@/components/game/game-shell';
+import { useTapGuard } from '@/components/game/hooks';
+
 import { useBluffGame } from '../game-provider';
+import { QUIT_LABELS } from '../labels';
+import { wordColor } from '../palette';
 
-export function SecretPhase() {
+export function SecretPhase({ onQuit }: { onQuit: () => void }) {
   const { currentWord, secretType, nextWord } = useBluffGame();
-
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const guarded = useTapGuard(secretType ?? '', { focusRef: buttonRef });
+  // Truth and bluff share the word's color, so the group cannot read the result from across the table.
+  const color = wordColor(currentWord.word);
   const isTruth = secretType === 'truth';
 
   return (
-    <div className="min-h-dvh w-full bg-black flex flex-col md:max-w-lg md:mx-auto">
-      {/* Dynamic background */}
-      <div
-        className={`fixed inset-0 pointer-events-none transition-colors duration-500 ${
-          isTruth
-            ? 'bg-linear-to-br from-emerald-950 via-black to-teal-950'
-            : 'bg-linear-to-br from-rose-950 via-black to-red-950'
-        }`}
-      />
-
-      <div className="relative flex flex-col flex-1 p-5">
-        {/* Top word label */}
-        <div className="pt-2 pb-4 text-center">
-          <p className="text-white/30 text-xs font-bold tracking-[0.2em] uppercase">Das Wort war</p>
-          <p
-            className="text-white font-black tracking-tight drop-shadow-md mt-1 wrap-break-word w-full"
-            style={{
-              fontSize:
-                currentWord.word.length > 12
-                  ? 'clamp(1.5rem, 8vw, 2rem)'
-                  : 'clamp(1.875rem, 10vw, 3rem)',
-              lineHeight: 1.1,
-            }}
-          >
+    <GameShell
+      color={color}
+      lang="de"
+      labels={QUIT_LABELS}
+      onQuit={() => {
+        nextWord();
+        onQuit();
+      }}
+      className="flex flex-col"
+    >
+      <button
+        ref={buttonRef}
+        type="button"
+        aria-label={`${isTruth ? 'Wahrheit' : 'Bluff'}. Tippen für das nächste Wort`}
+        onClick={guarded(nextWord)}
+        className="@container flex h-full w-full flex-1 cursor-pointer flex-col items-center justify-center overflow-hidden px-6 pt-[calc(env(safe-area-inset-top)+4rem)] pb-[max(3rem,env(safe-area-inset-bottom))] text-center outline-none focus-visible:outline-2 focus-visible:-outline-offset-8 focus-visible:outline-current"
+      >
+        <span className="mx-auto flex w-full max-w-2xl flex-col items-center gap-6 lg:max-w-3xl">
+          <span className="block text-base font-medium wrap-break-word hyphens-auto md:text-xl">
             {currentWord.word}
-          </p>
-        </div>
-
-        {/* Main secret card */}
-        <div
-          className={`flex-1 flex flex-col items-center justify-center rounded-3xl border p-7 gap-5 ${
-            isTruth
-              ? 'bg-emerald-500/10 border-emerald-500/30'
-              : 'bg-rose-500/10 border-rose-500/30'
-          }`}
-        >
-          {/* TRUTH / BLUFF banner */}
-          <div
-            className={`px-6 py-2 rounded-2xl border-2 ${
-              isTruth
-                ? 'bg-emerald-500/20 border-emerald-400/60'
-                : 'bg-rose-500/20 border-rose-400/60'
-            }`}
+          </span>
+          <span
+            className="block leading-none font-bold tracking-tight"
+            style={{ fontSize: 'clamp(3rem, 15cqi, 8rem)' }}
           >
-            <span
-              className={`font-black tracking-widest ${
-                isTruth ? 'text-emerald-300' : 'text-rose-300'
-              }`}
-              style={{ fontSize: 'clamp(2rem, 10vw, 3.5rem)' }}
-            >
-              {isTruth ? 'WAHRHEIT' : 'BLUFF!'}
-            </span>
-          </div>
+            {isTruth ? 'Wahrheit' : 'Bluff'}
+          </span>
 
           {isTruth ? (
             <>
-              <p className="text-white/50 text-xs font-bold tracking-widest uppercase">
-                Echte Bedeutung
-              </p>
-              <p className="text-white font-semibold text-center text-lg leading-relaxed">
-                "{currentWord.definition}"
-              </p>
-              <p className="text-emerald-400/70 text-sm text-center leading-relaxed">
-                Lies das selbstbewusst vor. Lass sie nicht merken, dass du aufgeregt bist!
-              </p>
+              <span
+                className={`block leading-snug font-semibold text-pretty ${
+                  currentWord.definition.length > 70
+                    ? 'text-xl md:text-3xl'
+                    : 'text-2xl md:text-4xl'
+                }`}
+              >
+                {currentWord.definition}
+              </span>
+              <span className="block max-w-md text-base leading-relaxed font-medium md:text-lg">
+                Lies die echte Bedeutung selbstbewusst vor.
+              </span>
             </>
           ) : (
             <>
-              <p
-                className="text-white font-black text-center leading-tight"
-                style={{ fontSize: 'clamp(1.4rem, 7vw, 2.2rem)' }}
-              >
-                Erfinde etwas.
-                <br />
-                <span className="text-rose-300">Jetzt sofort.</span>
-              </p>
-
-              <div className="px-4 py-3 rounded-xl bg-white/5 border border-white/10 mt-1">
-                <p className="text-white/30 text-xs font-bold tracking-widest uppercase mb-1 text-center">
-                  (Echte Bedeutung — für später)
-                </p>
-                <p className="text-white/50 text-sm text-center italic leading-relaxed">
-                  "{currentWord.definition}"
-                </p>
-              </div>
+              <span className="block text-2xl leading-snug font-semibold md:text-4xl">
+                Erfinde etwas. Jetzt sofort.
+              </span>
+              <span className="mt-4 flex flex-col gap-1">
+                <span className="text-sm font-medium md:text-base">
+                  Echte Bedeutung, für später
+                </span>
+                <span className="text-base leading-relaxed text-pretty md:text-lg">
+                  {currentWord.definition}
+                </span>
+              </span>
             </>
           )}
-        </div>
-
-        {/* Next Word button */}
-        <div className="pt-5 pb-6">
-          <button
-            onClick={nextWord}
-            className={`w-full py-6 rounded-2xl font-black text-white text-xl tracking-wide active:scale-[0.98] transition-all border ${
-              isTruth
-                ? 'bg-emerald-600 hover:bg-emerald-500 shadow-[0_0_40px_-4px_rgba(16,185,129,0.5)] border-emerald-500/50'
-                : 'bg-rose-600 hover:bg-rose-500 shadow-[0_0_40px_-4px_rgba(244,63,94,0.5)] border-rose-500/50'
-            }`}
-          >
-            Nächstes Wort →
-          </button>
-        </div>
-      </div>
-    </div>
+        </span>
+      </button>
+    </GameShell>
   );
 }

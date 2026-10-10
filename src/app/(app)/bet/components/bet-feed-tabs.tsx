@@ -1,10 +1,11 @@
 'use client';
 
+import Link from 'next/link';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils';
 import { BetCard } from './bet-card';
 import { useBet } from '../bet-provider';
-import { Coins, PlusCircle } from 'lucide-react';
-import Link from 'next/link';
+import { pageClass, pageTitleClass, secondaryButtonClass } from './styles';
 
 type BetSummary = {
   id: string;
@@ -40,24 +41,26 @@ export function BetFeedTabs({ openBets, resolvedBets, mineBets }: BetFeedTabsPro
   ] as const;
 
   return (
-    <div className="mx-auto max-w-3xl px-4 pt-6">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-extrabold text-white">Wetten</h1>
+    <div className={pageClass}>
+      <header className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+        <h1 className={pageTitleClass}>Wetten</h1>
         {balance !== null && (
-          <div className="flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1">
-            <Coins size={16} className="text-amber-400" />
-            <span className="text-sm font-bold text-amber-400">{balance.toLocaleString()}</span>
-          </div>
+          <p className="flex flex-col items-start sm:items-end">
+            <span className="text-sm text-white/60">Kontostand</span>
+            <span className="text-2xl font-bold tabular-nums md:text-3xl">
+              {balance.toLocaleString()} Punkte
+            </span>
+          </p>
         )}
-      </div>
+      </header>
 
-      <Tabs defaultValue="open">
-        <TabsList className="mb-4 w-full border border-white/10 bg-white/5">
+      <Tabs defaultValue="open" className="mt-12">
+        <TabsList className="flex h-auto w-full justify-start gap-6 rounded-none border-b border-white/15 bg-transparent p-0 text-white/60">
           {tabs.map(({ value, label }) => (
             <TabsTrigger
               key={value}
               value={value}
-              className="flex-1 data-[state=active]:bg-amber-500/20 data-[state=active]:text-amber-400"
+              className="-mb-px min-h-12 rounded-none border-b-2 border-transparent px-0 text-base font-medium text-white/60 transition-colors duration-150 hover:text-white focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white motion-reduce:transition-none data-[state=active]:border-white data-[state=active]:bg-transparent data-[state=active]:font-semibold data-[state=active]:text-white data-[state=active]:shadow-none"
             >
               {label}
             </TabsTrigger>
@@ -65,20 +68,26 @@ export function BetFeedTabs({ openBets, resolvedBets, mineBets }: BetFeedTabsPro
         </TabsList>
 
         {tabs.map(({ value, bets }) => (
-          <TabsContent key={value} value={value} className="space-y-3">
+          <TabsContent
+            key={value}
+            value={value}
+            className="mt-8 focus-visible:ring-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+          >
             {bets.length === 0 ? (
-              <div className="flex flex-col items-center gap-4 py-16 text-center">
-                <p className="text-white/40">{EMPTY_LABELS[value]}</p>
-                <Link
-                  href="/bet/create"
-                  className="flex items-center gap-2 rounded-xl bg-amber-500 px-4 py-2 text-sm font-bold text-black transition-colors hover:bg-amber-400"
-                >
-                  <PlusCircle size={16} />
+              <div className="flex flex-col items-start gap-6 py-16">
+                <p className="text-lg text-white/60">{EMPTY_LABELS[value]}</p>
+                <Link href="/bet/create" className={cn(secondaryButtonClass, 'sm:w-auto')}>
                   Wette erstellen
                 </Link>
               </div>
             ) : (
-              bets.map((bet) => <BetCard key={bet.id} {...bet} />)
+              <ul className="grid gap-4 lg:grid-cols-2">
+                {bets.map((bet) => (
+                  <li key={bet.id}>
+                    <BetCard {...bet} />
+                  </li>
+                ))}
+              </ul>
             )}
           </TabsContent>
         ))}

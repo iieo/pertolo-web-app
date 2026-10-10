@@ -67,15 +67,16 @@ All actions return `Result<T>` (`{ success: true, data } | { success: false, err
 
 | Component | Purpose |
 |---|---|
-| `navigation.tsx` | Sticky sidebar (desktop) + bottom nav (mobile) |
-| `bet-card.tsx` | Feed preview: title, status badge, pool, mini option bars |
+| `navigation.tsx` | Sticky top bar (desktop) + bottom nav (mobile), hidden on login/register |
+| `bet-card.tsx` | Feed preview: status line, title, mini option bars, pool |
 | `odds-display.tsx` | Odds bars, percentages, multipliers; highlights winner |
 | `wager-form.tsx` | Place/sell wager; quick amounts (100/500/1k/all-in); shows potential payout |
 | `create-bet-form.tsx` | Title, description, 2–10 options, public/private toggle |
 | `resolve-form.tsx` | Owner-only: pick winner or cancel |
 | `bet-chart.tsx` | Recharts line chart: odds % over time |
 | `point-history-chart.tsx` | Recharts line chart: running balance from transactions |
-| `user-drawer.tsx` | User avatar, rank, balance, point history |
+| `user-drawer.tsx` | User name, rank, balance, point history |
+| `styles.ts` | Shared class names (buttons, inputs, tiles, headings) and the accent color |
 
 ## Database Tables
 
@@ -104,9 +105,9 @@ allOptionTotals *= newRatio  (floor per option)
 
 ## Conventions
 
-- **Points currency**: displayed as `balance.toLocaleString()` + "Pkte"
+- **Points currency**: displayed as `balance.toLocaleString()` + "Punkte"
 - **Form validation**: `react-hook-form` + `zod`
-- **Styling**: Tailwind v4, dark theme, amber accent (`#f59e0b` / `amber-500`)
-- **Responsive**: `md:hidden` / `hidden md:block` for sidebar vs bottom nav split
-- **Loading states**: `animate-pulse` skeleton cards, spinner on submit buttons
-- **Toasts**: `sonner` for success/error feedback
+- **Styling**: Tailwind v4, plain black chrome, one green accent (`#52B788`, black text on it) for primary actions and selections. Follows the design rules in the root `CLAUDE.md`; use the class names from `components/styles.ts`
+- **Responsive**: `md:hidden` / `hidden md:block` for top bar vs bottom nav split
+- **Loading states**: `animate-pulse` skeletons (off with reduced motion), button label changes while submitting
+- **Toasts**: `react-hot-toast` for success/error feedback

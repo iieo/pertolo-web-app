@@ -1,20 +1,23 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
+
+import { GameShell } from '@/components/game/game-shell';
+import { useTapGuard } from '@/components/game/hooks';
+import { dimmed, type GameColor } from '@/components/game/palette';
 
 import { useWouldYouRatherGame } from '../game-provider';
-import { type Color, dimmed, questionColors } from '../palette';
+import { questionColors } from '../palette';
 import { Choice } from '../types';
-import { GameHeader } from './game-shell';
 
-const TAP_LOCK_MS = 300;
-
+// Sizes use the half's own width (cqi) and --unit, which is 1dvh while the halves are stacked
+// and 2dvh once they sit side by side in landscape and each gets the full height.
 function optionFontSize(length: number, scale = 1) {
   let size: string;
-  if (length <= 40) size = 'clamp(1.75rem, min(9vw, 5.5dvh), 3.5rem)';
-  else if (length <= 80) size = 'clamp(1.5rem, min(7.5vw, 4.5dvh), 3rem)';
-  else if (length <= 120) size = 'clamp(1.25rem, min(6.5vw, 3.75dvh), 2.5rem)';
-  else size = 'clamp(1.125rem, min(5.5vw, 3.25dvh), 2.125rem)';
+  if (length <= 40) size = 'clamp(1.75rem, min(9cqi, var(--unit) * 5.5), 4.5rem)';
+  else if (length <= 80) size = 'clamp(1.5rem, min(7.5cqi, var(--unit) * 4.5), 3.75rem)';
+  else if (length <= 120) size = 'clamp(1.25rem, min(6.5cqi, var(--unit) * 3.75), 3rem)';
+  else size = 'clamp(1.125rem, min(5.5cqi, var(--unit) * 3.25), 2.5rem)';
   return scale === 1 ? size : `calc(${size} * ${scale})`;
 }
 
@@ -33,49 +36,19 @@ export function QuestionPhase() {
     choose,
     isLastQuestion,
     nextQuestion,
+    backToSetup,
     locale,
     t,
   } = useWouldYouRatherGame();
   const topRef = useRef<HTMLButtonElement>(null);
   const nextRef = useRef<HTMLButtonElement>(null);
-  const lockedUntil = useRef(Infinity);
   const revealed = choice !== null && votes !== null;
   const colors = questionColors(currentIndex);
-
-  useEffect(() => {
-    lockedUntil.current = performance.now() + TAP_LOCK_MS;
-    (revealed ? nextRef : topRef).current?.focus({ preventScroll: true });
-  }, [currentIndex, revealed]);
-
-  useEffect(() => {
-    const html = document.documentElement;
-    const prevOverflow = html.style.overflow;
-    const prevOverscroll = html.style.overscrollBehavior;
-    html.style.overflow = 'hidden';
-    html.style.overscrollBehavior = 'none';
-    return () => {
-      html.style.overflow = prevOverflow;
-      html.style.overscrollBehavior = prevOverscroll;
-    };
-  }, []);
-
-  useEffect(() => {
-    const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
-    if (!meta) return;
-    const prev = meta.content;
-    meta.content = colors.top.bg;
-    return () => {
-      meta.content = prev;
-    };
-  }, [colors.top.bg]);
+  const guarded = useTapGuard(`${currentIndex}-${revealed}`, {
+    focusRef: revealed ? nextRef : topRef,
+  });
 
   if (currentOptions === null) return null;
-
-  const guarded = (action: () => void) => () => {
-    if (performance.now() < lockedUntil.current) return;
-    lockedUntil.current = Infinity;
-    action();
-  };
 
   const percent = revealed ? percentages(votes.votesA, votes.votesB) : null;
   const numberFormat = new Intl.NumberFormat(locale === 'de' ? 'de-DE' : 'en-US');
@@ -102,18 +75,28 @@ export function QuestionPhase() {
   };
 
   return (
-    <div className="fixed inset-0 flex h-dvh flex-col overflow-hidden overscroll-none bg-black select-none touch-manipulation">
+    <GameShell
+      color={{ bg: '#000000', fg: topColor.fg }}
+      themeColor={colors.top.bg}
+      lang={locale}
+      labels={t}
+      onQuit={backToSetup}
+      className="flex flex-col [--unit:1dvh] landscape:flex-row landscape:[--unit:2dvh]"
+    >
       <Half
         {...halfProps('a')}
         buttonRef={topRef}
-        className="pt-[calc(env(safe-area-inset-top)+4rem)] pb-6"
+        className="pt-[calc(env(safe-area-inset-top)+4rem)] pb-6 landscape:pr-0 landscape:pb-[max(1.5rem,env(safe-area-inset-bottom))]"
       />
-      <div className="relative z-[1] h-0.5 shrink-0 bg-black">
+      <div className="relative z-[1] h-0.5 shrink-0 bg-black landscape:h-auto landscape:w-0.5">
         <span className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black px-2 py-1 text-xs font-semibold tracking-wide text-white uppercase">
           {t.or}
         </span>
       </div>
-      <Half {...halfProps('b')} className="pt-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]" />
+      <Half
+        {...halfProps('b')}
+        className="pt-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] landscape:pt-[calc(env(safe-area-inset-top)+4rem)] landscape:pl-0"
+      />
 
       {revealed && (
         <button
@@ -128,9 +111,7 @@ export function QuestionPhase() {
       <p className="sr-only" aria-live="polite">
         {percent ? t.resultsAnnouncement(percent.a, percent.b) : ''}
       </p>
-
-      <GameHeader color={topColor.fg} />
-    </div>
+    </GameShell>
   );
 }
 
@@ -145,7 +126,7 @@ function Half({
   className,
 }: {
   text: string;
-  color: Color;
+  color: GameColor;
   result: { percent: number; votesLabel: string; chosen: boolean } | null;
   chooseLabel: string;
   yourChoice: string;
@@ -157,14 +138,14 @@ function Half({
   const scale = result ? (result.chosen ? 0.75 : 0.6) : 1;
 
   const content = (
-    <span className="mx-auto flex h-full w-full max-w-2xl flex-col items-center justify-center gap-2 px-6 text-center">
+    <span className="mx-auto flex h-full w-full max-w-2xl flex-col items-center justify-center gap-2 px-6 text-center lg:max-w-4xl">
       {result && (
         <span
           className="block leading-none font-bold tracking-tight tabular-nums"
           style={{
             fontSize: result.chosen
-              ? 'clamp(3rem, min(20vw, 11dvh), 7rem)'
-              : 'clamp(2rem, min(12vw, 7dvh), 4.5rem)',
+              ? 'clamp(3rem, min(20cqi, var(--unit) * 11), 8rem)'
+              : 'clamp(2rem, min(12cqi, var(--unit) * 7), 5rem)',
           }}
         >
           {result.percent}%
@@ -177,7 +158,7 @@ function Half({
         {text}
       </span>
       {result && (
-        <span className="block text-sm font-medium tabular-nums">
+        <span className="block text-sm font-medium tabular-nums md:text-base">
           {result.chosen && <span className="sr-only">{yourChoice}: </span>}
           {result.votesLabel}
         </span>
@@ -185,7 +166,7 @@ function Half({
     </span>
   );
 
-  const baseClass = `flex min-h-0 w-full flex-1 overflow-hidden transition-colors duration-150 motion-reduce:transition-none ${className}`;
+  const baseClass = `@container flex min-h-0 min-w-0 w-full flex-1 overflow-hidden pr-[env(safe-area-inset-right)] pl-[env(safe-area-inset-left)] transition-colors duration-150 motion-reduce:transition-none ${className}`;
   const style = { backgroundColor: shown.bg, color: shown.fg };
 
   if (result) {
