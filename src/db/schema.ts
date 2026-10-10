@@ -10,6 +10,7 @@ import {
   integer,
   doublePrecision,
   pgEnum,
+  unique,
 } from 'drizzle-orm/pg-core';
 
 export const drinkCategoryTable = pgTable('drink_categories', {
@@ -105,6 +106,41 @@ export const twoHundredQuestionsTable = pgTable('two_hundred_questions', {
 
 export type TwoHundredQuestionModel = typeof twoHundredQuestionsTable.$inferSelect;
 export type TwoHundredQuestionCategory = (typeof twoHundredQuestionCategoryEnum.enumValues)[number];
+
+export const wouldYouRatherCategoryEnum = pgEnum('would_you_rather_category', [
+  'normal',
+  'funny',
+  'gross',
+  'deep',
+  'crazy',
+  'party',
+  'coworkers',
+  'dilemma',
+  'sexual',
+]);
+
+export const wouldYouRatherTable = pgTable(
+  'would_you_rather',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    optionA: text('option_a').notNull(),
+    optionB: text('option_b').notNull(),
+    optionAEn: text('option_a_en').notNull(),
+    optionBEn: text('option_b_en').notNull(),
+    category: wouldYouRatherCategoryEnum('category').notNull(),
+    votesA: integer('votes_a').notNull().default(0),
+    votesB: integer('votes_b').notNull().default(0),
+    createdAt: timestamp('created_at').defaultNow().notNull(),
+    updatedAt: timestamp('updated_at')
+      .defaultNow()
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [unique('would_you_rather_options_unique').on(table.optionA, table.optionB)],
+);
+
+export type WouldYouRatherModel = typeof wouldYouRatherTable.$inferSelect;
+export type WouldYouRatherCategory = (typeof wouldYouRatherCategoryEnum.enumValues)[number];
 
 export const werewolfGamesTable = pgTable('werewolf_games', {
   id: varchar('id', { length: 20 }).primaryKey(), // Simple join code

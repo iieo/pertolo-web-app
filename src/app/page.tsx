@@ -10,6 +10,7 @@ import {
   Skull,
   Coins,
   MessagesSquare,
+  Split,
 } from 'lucide-react';
 
 export default function Home() {
@@ -249,6 +250,31 @@ export default function Home() {
                 200 QUESTIONS
               </h2>
               <p className="text-white/50 font-medium text-sm">Who is it most likely to be?</p>
+            </div>
+          </Link>
+          {/* Would You Rather Card */}
+          <Link
+            href="/would-you-rather"
+            className="group relative flex flex-col justify-between h-72 rounded-3xl bg-white/5 border border-white/10 p-8 overflow-hidden hover:bg-white/10 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(244,63,94,0.3)] animate-in fade-in slide-in-from-bottom-12 duration-1000 fill-mode-backwards delay-1000"
+          >
+            <div className="absolute inset-0 bg-linear-to-br from-rose-500/0 via-rose-500/0 to-rose-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute top-0 right-0 w-32 h-32 bg-rose-500/20 blur-[50px] -translate-y-1/2 translate-x-1/2 group-hover:bg-rose-500/40 transition-colors duration-500" />
+
+            <div className="relative z-10 flex items-center justify-between">
+              <div className="w-14 h-14 rounded-2xl bg-rose-500/20 flex items-center justify-center border border-rose-500/30 text-rose-400 group-hover:scale-110 group-hover:bg-rose-500 group-hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(244,63,94,0.2)]">
+                <Split size={28} strokeWidth={2.5} />
+              </div>
+              <ChevronRight
+                className="text-white/20 group-hover:text-rose-400 group-hover:translate-x-1 transition-all duration-300"
+                size={28}
+              />
+            </div>
+
+            <div className="relative z-10 mt-auto">
+              <h2 className="text-3xl font-extrabold text-white mb-2 tracking-tight">
+                WOULD YOU RATHER
+              </h2>
+              <p className="text-white/50 font-medium text-sm">Which one would you pick?</p>
             </div>
           </Link>
         </nav>
