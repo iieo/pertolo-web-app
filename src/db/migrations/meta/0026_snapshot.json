@@ -95,12 +95,8 @@
           "name": "accounts_user_id_users_id_fk",
           "tableFrom": "accounts",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -148,12 +144,8 @@
           "name": "bet_access_control_bet_id_bets_id_fk",
           "tableFrom": "bet_access_control",
           "tableTo": "bets",
-          "columnsFrom": [
-            "bet_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["bet_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -161,12 +153,8 @@
           "name": "bet_access_control_user_id_users_id_fk",
           "tableFrom": "bet_access_control",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -214,12 +202,8 @@
           "name": "bet_options_bet_id_bets_id_fk",
           "tableFrom": "bet_options",
           "tableTo": "bets",
-          "columnsFrom": [
-            "bet_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["bet_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -302,12 +286,8 @@
           "name": "bets_owner_id_users_id_fk",
           "tableFrom": "bets",
           "tableTo": "users",
-          "columnsFrom": [
-            "owner_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["owner_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -369,9 +349,7 @@
         "bluff_words_word_unique": {
           "name": "bluff_words_word_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "word"
-          ]
+          "columns": ["word"]
         }
       },
       "policies": {},
@@ -423,9 +401,7 @@
         "drink_categories_name_unique": {
           "name": "drink_categories_name_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
+          "columns": ["name"]
         }
       },
       "policies": {},
@@ -476,12 +452,8 @@
           "name": "drink_tasks_category_id_drink_categories_id_fk",
           "tableFrom": "drink_tasks",
           "tableTo": "drink_categories",
-          "columnsFrom": [
-            "category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["category_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -544,10 +516,7 @@
         "heads_up_words_word_category_unique": {
           "name": "heads_up_words_word_category_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "word",
-            "category"
-          ]
+          "columns": ["word", "category"]
         }
       },
       "policies": {},
@@ -606,9 +575,7 @@
         "hot_potato_prompts_prompt_unique": {
           "name": "hot_potato_prompts_prompt_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "prompt"
-          ]
+          "columns": ["prompt"]
         }
       },
       "policies": {},
@@ -681,9 +648,7 @@
         "hot_takes_statement_unique": {
           "name": "hot_takes_statement_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "statement"
-          ]
+          "columns": ["statement"]
         }
       },
       "policies": {},
@@ -735,9 +700,7 @@
         "impostor_categories_name_unique": {
           "name": "impostor_categories_name_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
+          "columns": ["name"]
         }
       },
       "policies": {},
@@ -788,12 +751,8 @@
           "name": "impostor_words_category_id_impostor_categories_id_fk",
           "tableFrom": "impostor_words",
           "tableTo": "impostor_categories",
-          "columnsFrom": [
-            "category_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["category_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -856,9 +815,7 @@
         "most_likely_to_question_unique": {
           "name": "most_likely_to_question_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "question"
-          ]
+          "columns": ["question"]
         }
       },
       "policies": {},
@@ -968,9 +925,7 @@
         "never_have_i_ever_statement_unique": {
           "name": "never_have_i_ever_statement_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "statement"
-          ]
+          "columns": ["statement"]
         }
       },
       "policies": {},
@@ -1027,12 +982,8 @@
           "name": "point_transactions_user_id_users_id_fk",
           "tableFrom": "point_transactions",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1104,12 +1055,8 @@
           "name": "sessions_user_id_users_id_fk",
           "tableFrom": "sessions",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1119,9 +1066,7 @@
         "sessions_token_unique": {
           "name": "sessions_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -1180,9 +1125,7 @@
         "two_hundred_questions_question_unique": {
           "name": "two_hundred_questions_question_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "question"
-          ]
+          "columns": ["question"]
         }
       },
       "policies": {},
@@ -1219,12 +1162,8 @@
           "name": "user_profiles_user_id_users_id_fk",
           "tableFrom": "user_profiles",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1292,9 +1231,7 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -1413,12 +1350,8 @@
           "name": "wagers_bet_id_bets_id_fk",
           "tableFrom": "wagers",
           "tableTo": "bets",
-          "columnsFrom": [
-            "bet_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["bet_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1426,12 +1359,8 @@
           "name": "wagers_option_id_bet_options_id_fk",
           "tableFrom": "wagers",
           "tableTo": "bet_options",
-          "columnsFrom": [
-            "option_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["option_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1439,12 +1368,8 @@
           "name": "wagers_user_id_users_id_fk",
           "tableFrom": "wagers",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -1613,12 +1538,8 @@
           "name": "werewolf_players_game_id_werewolf_games_id_fk",
           "tableFrom": "werewolf_players",
           "tableTo": "werewolf_games",
-          "columnsFrom": [
-            "game_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["game_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1628,9 +1549,7 @@
         "werewolf_players_token_unique": {
           "name": "werewolf_players_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -1715,10 +1634,7 @@
         "would_you_rather_options_unique": {
           "name": "would_you_rather_options_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "option_a",
-            "option_b"
-          ]
+          "columns": ["option_a", "option_b"]
         }
       },
       "policies": {},
@@ -1730,27 +1646,17 @@
     "public.bet_access_type": {
       "name": "bet_access_type",
       "schema": "public",
-      "values": [
-        "whitelist",
-        "blacklist"
-      ]
+      "values": ["whitelist", "blacklist"]
     },
     "public.bet_status": {
       "name": "bet_status",
       "schema": "public",
-      "values": [
-        "open",
-        "resolved",
-        "cancelled"
-      ]
+      "values": ["open", "resolved", "cancelled"]
     },
     "public.bet_visibility": {
       "name": "bet_visibility",
       "schema": "public",
-      "values": [
-        "public",
-        "private"
-      ]
+      "values": ["public", "private"]
     },
     "public.heads_up_category": {
       "name": "heads_up_category",
@@ -1803,17 +1709,7 @@
     "public.most_likely_to_category": {
       "name": "most_likely_to_category",
       "schema": "public",
-      "values": [
-        "normal",
-        "party",
-        "friends",
-        "work",
-        "love",
-        "crazy",
-        "future",
-        "roast",
-        "sexual"
-      ]
+      "values": ["normal", "party", "friends", "work", "love", "crazy", "future", "roast", "sexual"]
     },
     "public.never_have_i_ever_category": {
       "name": "never_have_i_ever_category",
@@ -1834,13 +1730,7 @@
     "public.point_transaction_type": {
       "name": "point_transaction_type",
       "schema": "public",
-      "values": [
-        "signup_bonus",
-        "login_bonus",
-        "wager",
-        "payout",
-        "refund"
-      ]
+      "values": ["signup_bonus", "login_bonus", "wager", "payout", "refund"]
     },
     "public.two_hundred_question_category": {
       "name": "two_hundred_question_category",

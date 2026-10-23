@@ -38,9 +38,7 @@ export default function PlayerGameView({
   const [reporting, setReporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [transferPath, setTransferPath] = useState<string | null>(null);
-  const [transferState, setTransferState] = useState<'idle' | 'busy' | 'copied' | 'failed'>(
-    'idle',
-  );
+  const [transferState, setTransferState] = useState<'idle' | 'busy' | 'copied' | 'failed'>('idle');
   const [transferError, setTransferError] = useState<string | null>(null);
   const transferTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 

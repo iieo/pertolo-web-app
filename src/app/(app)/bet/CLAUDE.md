@@ -4,23 +4,25 @@
 
 ## Routes
 
-| Route | File | Purpose |
-|---|---|---|
-| `/bet` | `page.tsx` | Feed with open/resolved/mine tabs |
-| `/bet/[betId]` | `[betId]/page.tsx` | Bet detail: odds, wager placement, resolution |
-| `/bet/create` | `create/page.tsx` | Create a new bet |
-| `/bet/login` | `login/page.tsx` | Email/password login |
-| `/bet/register` | `register/page.tsx` | Registration (+10,000 signup bonus) |
-| `/bet/leaderboard` | `leaderboard/page.tsx` | Top 50 users by points |
-| `/bet/profile` | `profile/page.tsx` | Balance, transaction history, logout |
+| Route              | File                   | Purpose                                       |
+| ------------------ | ---------------------- | --------------------------------------------- |
+| `/bet`             | `page.tsx`             | Feed with open/resolved/mine tabs             |
+| `/bet/[betId]`     | `[betId]/page.tsx`     | Bet detail: odds, wager placement, resolution |
+| `/bet/create`      | `create/page.tsx`      | Create a new bet                              |
+| `/bet/login`       | `login/page.tsx`       | Email/password login                          |
+| `/bet/register`    | `register/page.tsx`    | Registration (+10,000 signup bonus)           |
+| `/bet/leaderboard` | `leaderboard/page.tsx` | Top 50 users by points                        |
+| `/bet/profile`     | `profile/page.tsx`     | Balance, transaction history, logout          |
 
 ## State Management
 
 `bet-provider.tsx` — `BetProvider` wraps the entire module via `layout.tsx`.
+
 - `useBet()` hook exposes `{ balance, refreshBalance }`
 - On mount: fetches balance via `getMyBalance()`, checks weekly login bonus via `checkLoginBonus()` (500 pts every 7 days)
 
 Bets are **not phase-based**. Lifecycle is managed by a `status` field:
+
 - `open` → accepting wagers
 - `resolved` → winner selected, payouts distributed
 - `cancelled` → all wagers refunded
@@ -40,24 +42,29 @@ All UI text and error messages are in **German**.
 All actions return `Result<T>` (`{ success: true, data } | { success: false, error }`).
 
 ### Auth
+
 - `registerUser(name, email, password)` — creates user + profile + 10k bonus transaction
 - `checkLoginBonus()` — awards 500 pts if 7+ days since last bonus
 - `getMyBalance()` — current user's points balance
 
 ### Bets
+
 - `createBet(input)` — 2–10 options, public/private with blacklist access control
 - `getBets(filter?)` — `'open' | 'resolved' | 'mine'`, respects blacklist
 - `getBetDetail(betId)` — full details + user's wagers + access check
 
 ### Wagering
+
 - `placeWager(betId, optionId, amount)` — deducts balance, creates wager, updates option total, logs transaction
 - `sellWager(wagerId)` — proportional cashout; reduces all option totals by cashout ratio
 
 ### Resolution (owner only)
+
 - `resolveBet(betId, winningOptionId)` — distributes pool proportionally to winners
 - `cancelBet(betId)` — refunds all wagers
 
 ### Analytics
+
 - `getLeaderboard()` — top 50 by points
 - `getUserPointHistory(userId)` — transactions with running balance
 - `getBetChartData(betId)` — odds evolution timeline (percentage per option over time)
@@ -65,18 +72,18 @@ All actions return `Result<T>` (`{ success: true, data } | { success: false, err
 
 ## Key Components
 
-| Component | Purpose |
-|---|---|
-| `navigation.tsx` | Sticky top bar (desktop) + bottom nav (mobile), hidden on login/register |
-| `bet-card.tsx` | Feed preview: status line, title, mini option bars, pool |
-| `odds-display.tsx` | Odds bars, percentages, multipliers; highlights winner |
-| `wager-form.tsx` | Place/sell wager; quick amounts (100/500/1k/all-in); shows potential payout |
-| `create-bet-form.tsx` | Title, description, 2–10 options, public/private toggle |
-| `resolve-form.tsx` | Owner-only: pick winner or cancel |
-| `bet-chart.tsx` | Recharts line chart: odds % over time |
-| `point-history-chart.tsx` | Recharts line chart: running balance from transactions |
-| `user-drawer.tsx` | User name, rank, balance, point history |
-| `styles.ts` | Shared class names (buttons, inputs, tiles, headings) and the accent color |
+| Component                 | Purpose                                                                     |
+| ------------------------- | --------------------------------------------------------------------------- |
+| `navigation.tsx`          | Sticky top bar (desktop) + bottom nav (mobile), hidden on login/register    |
+| `bet-card.tsx`            | Feed preview: status line, title, mini option bars, pool                    |
+| `odds-display.tsx`        | Odds bars, percentages, multipliers; highlights winner                      |
+| `wager-form.tsx`          | Place/sell wager; quick amounts (100/500/1k/all-in); shows potential payout |
+| `create-bet-form.tsx`     | Title, description, 2–10 options, public/private toggle                     |
+| `resolve-form.tsx`        | Owner-only: pick winner or cancel                                           |
+| `bet-chart.tsx`           | Recharts line chart: odds % over time                                       |
+| `point-history-chart.tsx` | Recharts line chart: running balance from transactions                      |
+| `user-drawer.tsx`         | User name, rank, balance, point history                                     |
+| `styles.ts`               | Shared class names (buttons, inputs, tiles, headings) and the accent color  |
 
 ## Database Tables
 
@@ -97,6 +104,7 @@ payout     = floor((wagerAmount / winningTotal) * totalPool)
 ```
 
 **Sell cashout:**
+
 ```
 cashout       = floor((wagerAmount / optionTotal) * totalPool)
 newRatio      = (totalPool - cashout) / totalPool
