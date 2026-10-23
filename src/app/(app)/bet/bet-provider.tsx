@@ -35,7 +35,9 @@ export function BetProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    refreshBalance();
+    getMyBalance().then((result) => {
+      if (result.success) setBalance(result.data);
+    });
 
     // Check login bonus on mount
     checkLoginBonus().then((result) => {

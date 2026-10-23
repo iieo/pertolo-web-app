@@ -10,3 +10,5 @@ const nextConfig = {
   // https://nextjs.org/docs/app/api-reference/config/next-config-js/output#automatically-copying-traced-files
   output: 'standalone',
 } satisfies NextConfig;
+
+export default nextConfig;

@@ -12,7 +12,7 @@ import {
 import { ACCENT, sectionTitleClass, tooltipStyle } from './styles';
 
 interface BetChartProps {
-  data: Array<{ date: string; [key: string]: any }>;
+  data: Array<{ date: string; [key: string]: string | number }>;
   lineKeys: string[];
 }
 

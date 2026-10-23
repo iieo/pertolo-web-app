@@ -421,7 +421,9 @@ export async function cancelBet(betId: string): Promise<Result<{ refunded: numbe
 
 export async function getBetChartData(
   betId: string,
-): Promise<Result<{ history: Array<{ date: string; [key: string]: any }>; lineKeys: string[] }>> {
+): Promise<
+  Result<{ history: Array<{ date: string; [key: string]: string | number }>; lineKeys: string[] }>
+> {
   try {
     const wagers = await db
       .select({
@@ -438,7 +440,7 @@ export async function getBetChartData(
       .from(betOptionsTable)
       .where(eq(betOptionsTable.betId, betId));
 
-    const history: Array<{ date: string; [key: string]: any }> = [];
+    const history: Array<{ date: string; [key: string]: string | number }> = [];
     const totals: Record<string, number> = {};
     const lineKeys = options.map((o) => o.label);
     lineKeys.forEach((key) => {
@@ -454,7 +456,7 @@ export async function getBetChartData(
       totals[option.label] = (totals[option.label] || 0) + wager.amount;
       globalTotal += wager.amount;
 
-      const dataPoint: { date: string; [key: string]: any } = {
+      const dataPoint: { date: string; [key: string]: string | number } = {
         date:
           new Date(wager.createdAt).toLocaleDateString() +
           ' ' +

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { useRouter } from 'next/navigation';
 import { X } from 'lucide-react';
 
@@ -54,6 +54,8 @@ function loadSavedPlayers(): string[] {
   }
 }
 
+const noopSubscribe = () => () => {};
+
 function savePlayers(players: string[]) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(players));
@@ -71,10 +73,16 @@ export default function CreateGame() {
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
 
-  useEffect(() => {
-    setPlayers(loadSavedPlayers());
+  // Saved players live in localStorage, so they are read only once the client has hydrated.
+  const hydrated = useSyncExternalStore(
+    noopSubscribe,
+    () => true,
+    () => false,
+  );
+  if (hydrated && !loaded) {
     setLoaded(true);
-  }, []);
+    setPlayers(loadSavedPlayers());
+  }
 
   useEffect(() => {
     if (loaded) savePlayers(players);
