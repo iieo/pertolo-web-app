@@ -323,9 +323,7 @@ function buildGameView(engine: EngineGame, meId: string, isHost: boolean): GameV
     reveal:
       s.phase === 'reveal' ? { readyIds: [...s.ready], meReady: s.ready.includes(meId) } : null,
     pendingHunterId:
-      (s.phase === 'day' || s.phase === 'voteResult') && s.pendingHunters.length > 0
-        ? s.pendingHunters[0]
-        : null,
+      s.phase === 'day' || s.phase === 'voteResult' ? (s.pendingHunters[0] ?? null) : null,
     mayorId: s.mayorId,
     morning: daytime ? { bearGrowl: s.bearGrowl, silencedId: s.silencedId } : null,
     announcement: s.announcement,

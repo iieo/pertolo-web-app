@@ -195,7 +195,7 @@ function NightTurnScreen({ turn }: { turn: NightTurn }) {
           targets={turn.targets}
           min={2}
           max={2}
-          toAction={(ids) => ({ type: 'cupid', targetIds: [ids[0], ids[1]] })}
+          toAction={([a, b]) => (a && b ? { type: 'cupid', targetIds: [a, b] } : null)}
         />
       );
     case 'detective':
@@ -206,7 +206,7 @@ function NightTurnScreen({ turn }: { turn: NightTurn }) {
           targets={turn.targets}
           min={2}
           max={2}
-          toAction={(ids) => ({ type: 'detect', targetIds: [ids[0], ids[1]] })}
+          toAction={([a, b]) => (a && b ? { type: 'detect', targetIds: [a, b] } : null)}
         />
       );
     case 'piper':
@@ -402,10 +402,11 @@ function MultiTurn({
   targets: string[];
   min: number;
   max: number;
-  toAction: (ids: string[]) => ActAction;
+  toAction: (ids: string[]) => ActAction | null;
 }) {
   const { t, name, run, busy, gameId, view } = useRoom();
   const [selected, setSelected] = useState<string[]>([]);
+  const action = selected.length >= min && selected.length <= max ? toAction(selected) : null;
 
   const toggle = (id: string) =>
     setSelected((s) =>
@@ -428,8 +429,8 @@ function MultiTurn({
           <button
             type="button"
             className={primaryButtonClass}
-            disabled={busy || selected.length < min || selected.length > max}
-            onClick={() => run(() => act(gameId, toAction(selected)))}
+            disabled={busy || !action}
+            onClick={() => action && run(() => act(gameId, action))}
           >
             {t.confirm}
           </button>

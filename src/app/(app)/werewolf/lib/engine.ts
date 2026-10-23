@@ -40,7 +40,7 @@ export type Winner =
   | 'serial_killer'
   | 'none';
 
-export const NIGHT_STEPS: NightStep[] = [
+export const NIGHT_STEPS: [NightStep, ...NightStep[]] = [
   'cupid',
   'wild_child',
   'wanderer',
@@ -359,6 +359,7 @@ export function livingNeighbours(game: EngineGame, player: EnginePlayer): Engine
   if (n < 2) return [];
   const left = ring[(i - 1 + n) % n];
   const right = ring[(i + 1) % n];
+  if (!left || !right) return [];
   return left.id === right.id ? [left] : [left, right];
 }
 
@@ -403,9 +404,10 @@ export function whiteWolfMustKill(game: EngineGame) {
 /** Players who must act in a night step. Empty means the step is skipped. */
 export function stepActors(game: EngineGame, step: NightStep): EnginePlayer[] {
   const actors = rawStepActors(game, step);
-  if (actors.length === 0 || step === 'witch') return actors;
+  const first = actors[0];
+  if (!first || step === 'witch') return actors;
   const minTargets = step === 'cupid' || step === 'detective' ? 2 : 1;
-  return targetsFor(game, step, actors[0].id).length >= minTargets ? actors : [];
+  return targetsFor(game, step, first.id).length >= minTargets ? actors : [];
 }
 
 function rawStepActors(game: EngineGame, step: NightStep): EnginePlayer[] {
@@ -647,7 +649,12 @@ export function withDefaults(state: EngineState): EngineState {
     };
   }
   if (merged.voteResult) {
-    merged.voteResult = { scapegoat: false, second: false, ...merged.voteResult };
+    const legacy: Partial<VoteResult> = merged.voteResult;
+    merged.voteResult = {
+      ...merged.voteResult,
+      scapegoat: legacy.scapegoat ?? false,
+      second: legacy.second ?? false,
+    };
   }
   return merged;
 }
@@ -656,7 +663,7 @@ export function withDefaults(state: EngineState): EngineState {
 export function startGame(players: EnginePlayer[], roles: Role[], now: number): EngineGame {
   const sorted = [...players].sort((a, b) => a.seat - b.seat);
   const game: EngineGame = {
-    players: sorted.map((p, i) => ({ ...p, role: roles[i], alive: true })),
+    players: sorted.map((p, i) => ({ ...p, role: roles[i] ?? null, alive: true })),
     state: initialState(now),
   };
   game.state.initialRoles = Object.fromEntries(game.players.map((p) => [p.id, p.role!]));
@@ -694,9 +701,9 @@ function startNight(game: EngineGame, now: number) {
 /** Moves to the first step at or after `index` that has actors, or resolves the night. */
 function enterStep(game: EngineGame, index: number, now: number) {
   const night = game.state.night!;
-  for (let i = index; i < NIGHT_STEPS.length; i++) {
-    if (stepActors(game, NIGHT_STEPS[i]).length > 0) {
-      night.step = NIGHT_STEPS[i];
+  for (const step of NIGHT_STEPS.slice(index)) {
+    if (stepActors(game, step).length > 0) {
+      night.step = step;
       game.state.stepStartedAt = now;
       return;
     }
@@ -883,7 +890,7 @@ function resolveVote(game: EngineGame, now: number) {
   }
   const max = Math.max(0, ...Object.values(tally));
   const top = Object.keys(tally).filter((id) => tally[id] === max);
-  let eliminatedId = max > 0 && top.length === 1 ? top[0] : null;
+  let eliminatedId = max > 0 && top.length === 1 ? (top[0] ?? null) : null;
   let scapegoat = false;
   if (max > 0 && top.length > 1) {
     const goat = holderOf(game, 'scapegoat');
@@ -932,7 +939,7 @@ function majorityWolfTarget(night: NightState): string | null {
   for (const t of Object.values(night.wolfPicks)) counts[t] = (counts[t] ?? 0) + 1;
   const max = Math.max(0, ...Object.values(counts));
   const top = Object.keys(counts).filter((id) => counts[id] === max);
-  return max > 0 && top.length === 1 ? top[0] : null;
+  return max > 0 && top.length === 1 ? (top[0] ?? null) : null;
 }
 
 // ─── Actions ────────────────────────────────────────────────────────────────
@@ -1051,7 +1058,7 @@ function skipStep(game: EngineGame, ctx: ActionContext): EngineError | null {
       const actor = stepActors(game, 'white_werewolf')[0];
       const targets = actor ? targetsFor(game, 'white_werewolf', actor.id) : [];
       if (targets.length > 0) {
-        night.whiteWolfTargetId = targets[Math.floor(Math.random() * targets.length)];
+        night.whiteWolfTargetId = targets[Math.floor(Math.random() * targets.length)] ?? null;
       }
     }
     finishStep(game, ctx.now);

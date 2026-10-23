@@ -355,7 +355,11 @@ export const werewolfGamesTable = pgTable('werewolf_games', {
   status: varchar('status', { length: 20 }).$type<WerewolfStatus>().notNull().default('lobby'),
   version: integer('version').notNull().default(0),
   hostPlayerId: uuid('host_player_id'),
-  rolesConfig: jsonb('roles_config').$type<RolesConfig>().notNull().default({}),
+  // Missing roles count as 0: readers merge with emptyRoles() before use.
+  rolesConfig: jsonb('roles_config')
+    .$type<RolesConfig>()
+    .notNull()
+    .default({} as RolesConfig),
   rolesCustom: boolean('roles_custom').notNull().default(false),
   state: jsonb('state').$type<EngineState | null>(),
   createdAt: timestamp('created_at').defaultNow().notNull(),

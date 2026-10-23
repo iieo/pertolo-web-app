@@ -111,9 +111,10 @@ async function main() {
   async function worker() {
     while (next < jobs.length) {
       const job = jobs[next++];
+      if (!job) break;
       const audio = await generate(job.text);
       await writeFile(job.file, audio);
-      manifest[job.locale][job.key] = job.text;
+      (manifest[job.locale] ??= {})[job.key] = job.text;
       done++;
       console.log(`[${done}/${jobs.length}] ${job.locale}/${job.key}.mp3`);
     }

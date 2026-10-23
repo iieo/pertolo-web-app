@@ -51,6 +51,7 @@ export async function updateGame(tx: Tx, gameId: string, patch: GamePatch) {
     .set({ ...patch, version: sql`${werewolfGamesTable.version} + 1` })
     .where(eq(werewolfGamesTable.id, gameId))
     .returning({ version: werewolfGamesTable.version });
+  if (!row) throw new Error(`Game ${gameId} not found`);
   return row.version;
 }
 

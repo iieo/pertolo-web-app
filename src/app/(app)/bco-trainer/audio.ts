@@ -244,7 +244,7 @@ export function playRhythm(rhythm: Rhythm, options: PlayOptions): () => void {
     const latency = Number.isFinite(ctx.outputLatency) ? Math.max(0, ctx.outputLatency) : 0;
     const now = ctx.currentTime - latency;
 
-    while (nextCount < countTimes.length && now >= countTimes[nextCount]) {
+    for (let t = countTimes[nextCount]; t !== undefined && now >= t; t = countTimes[nextCount]) {
       nextCount++;
       onCountIn?.(nextCount);
     }
@@ -258,10 +258,9 @@ export function playRhythm(rhythm: Rhythm, options: PlayOptions): () => void {
       setActive(null);
     } else {
       const beatPos = (now - rhythmStart) / beat;
-      while (
-        noteCursor < timeline.length - 1 &&
-        beatPos >= timeline[noteCursor].start + timeline[noteCursor].duration
-      ) {
+      while (noteCursor < timeline.length - 1) {
+        const current = timeline[noteCursor];
+        if (!current || beatPos < current.start + current.duration) break;
         noteCursor++;
       }
       const note = timeline[noteCursor];

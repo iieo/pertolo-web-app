@@ -73,7 +73,8 @@ function shuffle<T>(items: T[]): T[] {
   const a = [...items];
   for (let i = a.length - 1; i > 0; i--) {
     const j = randomInt(i + 1);
-    [a[i], a[j]] = [a[j], a[i]];
+    // i and j are always in bounds.
+    [a[i], a[j]] = [a[j] as T, a[i] as T];
   }
   return a;
 }
@@ -152,6 +153,7 @@ export async function createGame(rawName: string): Promise<Result<{ gameId: stri
           .insert(werewolfPlayersTable)
           .values({ gameId, token, name, seat: 1, lastSeenAt: new Date() })
           .returning({ id: werewolfPlayersTable.id });
+        if (!player) throw new Error('Failed to insert host player');
         await tx
           .update(werewolfGamesTable)
           .set({ hostPlayerId: player.id })
@@ -220,6 +222,7 @@ export async function joinGame(
         .insert(werewolfPlayersTable)
         .values({ gameId, token, name, seat, lastSeenAt: nowDate })
         .returning();
+      if (!player) throw new Error('Failed to insert player');
       players.push(player);
       await handOverHostIfStale(tx, game, players, now);
       await updateGame(

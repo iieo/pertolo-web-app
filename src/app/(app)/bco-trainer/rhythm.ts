@@ -157,7 +157,9 @@ function pickWeighted<T>(items: T[], weight: (item: T) => number): T {
     roll -= weight(item);
     if (roll <= 0) return item;
   }
-  return items[items.length - 1];
+  const last = items[items.length - 1];
+  if (last === undefined) throw new Error('pickWeighted called with no items');
+  return last;
 }
 
 function measureOk(cells: Cell[], level: Level): boolean {
@@ -276,17 +278,20 @@ function mutate(cells: Cell[][], level: Level): Cell[][] | null {
   let done = 0;
   for (let attempt = 0; attempt < 20 && done < replacements; attempt++) {
     const m = Math.floor(Math.random() * next.length);
-    const c = Math.floor(Math.random() * next[m].length);
-    const current = next[m][c];
-    const position = next[m].slice(0, c).reduce((sum, cell) => sum + cell.span, 0);
+    const original = next[m];
+    if (!original) continue;
+    const c = Math.floor(Math.random() * original.length);
+    const current = original[c];
+    if (!current) continue;
+    const position = original.slice(0, c).reduce((sum, cell) => sum + cell.span, 0);
     const options = pool.filter(
       (cell) => cell.span === current.span && cell.id !== current.id && fitsAt(cell, position),
     );
     if (options.length === 0) continue;
     const replacement = pickWeighted(options, (cell) => weightOf(cell, level));
-    const measure = [...next[m]];
+    const measure = [...original];
     measure[c] = replacement;
-    if (!measureOk(measure, level) && measureOk(next[m], level)) continue;
+    if (!measureOk(measure, level) && measureOk(original, level)) continue;
     next[m] = measure;
     done++;
   }
